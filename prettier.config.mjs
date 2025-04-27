@@ -1,8 +1,4 @@
-/**
- * @see https://prettier.io/docs/configuration
- * @type {import("prettier").Config}
- */
-const config = {
+export default {
   printWidth: 70,
   tabWidth: 2,
   useTabs: false,
@@ -14,8 +10,16 @@ const config = {
   requirePragma: false,
   insertPragma: false,
   proseWrap: "never",
-  plugins: ["prettier-plugin-organize-imports"],
-  htmlWhitespaceSensitivity: "strict",
+  plugins: [
+    "prettier-plugin-astro",
+    "prettier-plugin-organize-imports"
+  ],
+  overrides: [
+    {
+      files: "*.astro",
+      options: {
+        parser: "astro",
+      },
+    },
+  ],
 };
-
-export default config;
