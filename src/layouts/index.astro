@@ -1,0 +1,49 @@
+---
+interface Props {
+  title: string;
+  description: string;
+  imageOverride?: string;
+}
+
+import { SEO } from "astro-seo";
+
+// TODO: Put og image to /public/opengraph/main.jpg
+// TODO: Put favicon to /public/favicon.ico
+---
+
+<html lang="en">
+  <head>
+    <title>{Astro.props.title}</title>
+    <SEO
+      title={Astro.props.title}
+      description={Astro.props.description}
+      charset="UTF-8"
+      openGraph={{
+        basic: {
+          title: Astro.props.title,
+          type: "website",
+          image:
+            Astro.props.imageOverride ??
+            "https://sitcon.camp/2025/opengraph/main.jpg",
+        },
+        optional: {
+          description: Astro.props.description,
+          siteName: "SITCON Camp",
+        },
+      }}
+      twitter={{
+        title: Astro.props.title,
+        image:
+          Astro.props.imageOverride ??
+          "https://sitcon.camp/2025/opengraph/main.jpg",
+        card: "summary_large_image",
+      }}
+      extend={{
+        link: [{ rel: "icon", href: "/favicon.ico" }],
+      }}
+    />
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>
