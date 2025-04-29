@@ -1,54 +1,44 @@
 ---
+import Footer from "../components/Footer.astro";
+import Nav from "../components/Nav.astro";
+
 interface Props {
   title: string;
   description: string;
   imageOverride?: string;
 }
 
-import { SEO } from "astro-seo";
-
 // TODO: Put og image to /public/opengraph/main.jpg
 // TODO: Put favicon to /public/favicon.ico
 ---
 
-<html lang="en">
+<html lang="zh-Hant">
   <head>
-    <title>{Astro.props.title}</title>
-    <SEO
-      title={Astro.props.title}
-      description={Astro.props.description}
-      charset="UTF-8"
-      openGraph={{
-        basic: {
-          title: Astro.props.title,
-          type: "website",
-          image:
-            Astro.props.imageOverride ??
-            "https://sitcon.camp/2025/opengraph/main.jpg",
-        },
-        optional: {
-          description: Astro.props.description,
-          siteName: "SITCON Camp",
-        },
-      }}
-      twitter={{
-        title: Astro.props.title,
-        image:
-          Astro.props.imageOverride ??
-          "https://sitcon.camp/2025/opengraph/main.jpg",
-        card: "summary_large_image",
-      }}
-      extend={{
-        link: [
-          {
-            rel: "icon",
-            href: "https://sitcon.camp/2025/favicon.ico",
-          },
-        ],
-      }}
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
     />
+    <meta name="theme-color" content="#009DF3" />
+    <title>{Astro.props.title}</title>
+    <meta name="description" content={Astro.props.description} />
+    <style
+      is:global
+      define:vars={{
+        foregroundColor: "#FFF",
+        backgroundColor: "#009DF3",
+        maxWidth: "1200px",
+      }}
+    >
+      body {
+        background-color: var(--backgroundColor);
+        color: var(--foregroundColor);
+      }
+    </style>
   </head>
   <body>
+    <Nav />
     <slot />
+    <Footer />
   </body>
 </html>
