@@ -1,3 +1,8 @@
+---
+import { Image } from "astro:assets";
+import image from "../../assets/img/image.webp";
+---
+
 <section>
   <div>
     <h2 class="emfont-UnboundedSans">樂趣之餘，不忘學習</h2>
@@ -20,5 +25,46 @@
       程式語言到做出自己的聊天機器人的實作課程，介紹各資訊領域議題的廣度課程，並透過社群闖關讓學員更加了解各個社群的理念與文化。開源宇宙也將更進一步把故事和營隊整合，配合豐富的課程、座談會及社群闖關，絕對能讓學員擁有截然不同的營隊體驗。
     </p>
   </div>
-  <div></div>
+  <div class="image-container">
+    <Image src={image} alt="課程照片" class="image" width="400" />
+  </div>
 </section>
+
+<style>
+  section {
+    max-width: var(--maxWidth);
+    margin: auto;
+    padding: 3rem 2rem;
+    display: flex;
+    align-items: center;
+    gap: 3rem;
+  }
+
+  h2 + div {
+    font-size: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  .image-container {
+    flex-shrink: 0;
+    position: relative;
+  }
+  img{
+    transform: rotate(0.774deg);
+    border-radius: 1.5rem 0rem;
+  }
+
+  .image-container::before{
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #F3EB01;
+    z-index: -1;
+    border-radius: 0rem 1.5rem;
+    box-shadow: var(--shadow);
+    transform: rotate(-4.613deg);
+  }
+</style>

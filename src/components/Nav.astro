@@ -1,14 +1,61 @@
 ---
-
+import { Image } from "astro:assets";
+import logo from "../assets/img/logo.svg";
 ---
 
 <nav>
-  <a href="/"> <img src="SITCON Camp 2025" alt="" id="logo" /></a>
-  <ul>
-    <li><a href="/">報名資訊</a></li>
-    <li><a href="/">課程活動</a></li>
-    <li><a href="/">過往紀錄</a></li>
-    <li><a href="/">行為準則</a></li>
-    <li><a href="/">籌備團隊</a></li>
-  </ul>
+  <div class="nav-container">
+    <a href="/">
+      <Image src={logo} alt="SITCON Camp 2025" id="logo" /></a
+    >
+    <ul>
+      <li><a href="/">報名資訊</a></li>
+      <li><a href="/">課程活動</a></li>
+      <li><a href="/">過往紀錄</a></li>
+      <li><a href="/">行為準則</a></li>
+      <li><a href="/">籌備團隊</a></li>
+    </ul>
+  </div>
 </nav>
+
+<style>
+  nav {
+    background-color: #0048da;
+    position: fixed;
+    width: 100%;
+    z-index: 10;
+  }
+
+  .nav-container {
+    display: flex;
+    max-width: 1400px;
+    padding: 1rem 2rem;
+    justify-content: space-between;
+    align-items: center;
+    margin: auto;
+  }
+
+  img {
+    height: 3rem;
+  }
+
+  ul {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+  }
+
+  ul li {
+    list-style: none;
+  }
+
+  a {
+    text-decoration: none;
+    transition: transform 0.3s ease-out;
+    display: inline-block; 
+  }
+
+  a:hover {
+    transform: rotate(3deg) scale(1.1);
+  }
+</style>

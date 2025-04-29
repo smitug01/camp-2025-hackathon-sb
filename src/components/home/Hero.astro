@@ -1,3 +1,12 @@
+---
+import { Image } from "astro:assets";
+import heroBackground from "../../assets/img/hero-background.svg";
+import notFoundBackgound from "../../assets/img/404.svg";
+const notFoundBackgounddUrl = `url(${notFoundBackgound.src})`;
+import clock from "../../assets/img/icon/clock.svg";
+import location from "../../assets/img/icon/location.svg";
+---
+
 <header>
   <div class="visual">
     <!-- background image 404 -->
@@ -6,12 +15,58 @@
   </div>
   <div class="info">
     <div>
-      <img src="" alt="date" />
-      7/9-7/13
+      <Image src={clock} alt="date" />
+      <div>7/9-7/13</div>
     </div>
     <div>
-      <img src="" alt="location" />
-      陽明交通大學光復校區
+      <Image src={location} alt="location" />
+      <div>陽明交通大學光復校區</div>
     </div>
   </div>
+  <div class="paint">
+    <Image src={heroBackground} alt="" />
+  </div>
 </header>
+
+<style define:vars={{ notFoundBackgounddUrl }}>
+  header {
+    padding-top: 6rem;
+    min-height: 100vh;
+    position: relative;
+  }
+  .paint {
+    width: 100%;
+    position: absolute;
+    z-index: -1;
+    top: 0;
+    left: 0;
+  }
+  .paint img {
+    width: 100%;
+    filter: blur(20px);
+  }
+
+  .visual {
+    height: 70vh;
+    width: 100%;
+    background: var(--notFoundBackgounddUrl) no-repeat center
+      center/contain;
+    margin-bottom: 1rem;
+  }
+
+  .info {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 2rem;
+  }
+  .info > div {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+  }
+
+  .info img {
+    width: 1.5rem;
+  }
+</style>
