@@ -160,6 +160,7 @@ import logo from "../assets/img/logo.svg";
     const hamburgerMenu = document.querySelector('.hamburger-menu');
     const navLinks = document.querySelector('.nav-links');
     const navItems = document.querySelectorAll('.nav-links li');
+    const navAnchors = document.querySelectorAll('.nav-links a');
 
     // Add index for staggered animation
     navItems.forEach((item, index) => {
@@ -168,17 +169,36 @@ import logo from "../assets/img/logo.svg";
       }
     });
 
-    hamburgerMenu?.addEventListener('click', () => {
+    // Toggle menu when hamburger is clicked
+    hamburgerMenu?.addEventListener('click', (e) => {
+      e.stopPropagation(); // Prevent click from bubbling to document
       hamburgerMenu.classList.toggle('active');
       navLinks?.classList.toggle('active');
     });
 
-    // Close menu when a link is clicked
-    navItems.forEach(item => {
-      item.addEventListener('click', () => {
+    // Prevent navigation anchors from causing menu close when clicked
+    navAnchors.forEach(anchor => {
+      anchor.addEventListener('click', (e) => {
+        e.stopPropagation();
+      });
+    });
+
+    // Close menu when clicking anywhere on the nav-links background (the menu area)
+    navLinks?.addEventListener('click', () => {
+      hamburgerMenu?.classList.remove('active');
+      navLinks.classList.remove('active');
+    });
+
+    // Close menu when clicking outside
+    document.addEventListener('click', (e) => {
+      // Check if menu is open and click is outside the hamburger
+      if (
+        navLinks?.classList.contains('active') && 
+        e.target !== hamburgerMenu
+      ) {
         hamburgerMenu?.classList.remove('active');
         navLinks?.classList.remove('active');
-      });
+      }
     });
   });
 </script>
