@@ -10,21 +10,8 @@ import { Image } from "astro:assets";
   - Links to previous SITCON camp websites
 -->
 <footer>
-  <!-- SVG background shape from Figma -->
-  <div class="footer-bg">
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="100%"
-      height="100%"
-      viewBox="0 0 1512 433"
-      fill="none"
-      preserveAspectRatio="none"
-    >
-      <path
-        d="M105.279 0L0 114V433H1512V95L1316.5 0H105.279Z"
-        fill="#023249"></path>
-    </svg>
-  </div>
+  <!-- Background with clip-path -->
+  <div class="footer-bg"></div>
 
   <div class="footer-container">
     <!-- Left section: Organization info and contact details -->
@@ -232,14 +219,14 @@ import { Image } from "astro:assets";
 </footer>
 
 <style>
-  /* Main footer styles with SVG background */
+  /* Main footer styles with clip-path background */
   footer {
     color: var(--text-white, #e7fbff);
     position: relative;
     padding: 5rem 0 2rem;
   }
 
-  /* SVG background positioning */
+  /* Background using clip-path instead of SVG */
   .footer-bg {
     position: absolute;
     top: 0;
@@ -247,12 +234,8 @@ import { Image } from "astro:assets";
     width: 100%;
     height: 100%;
     z-index: -1;
-  }
-
-  .footer-bg svg {
-    width: 100%;
-    height: 100%;
-    display: block;
+    background-color: #023249;
+    clip-path: polygon(0% 26.3%, 7% 0%, 87.1% 0%, 100% 21.9%, 100% 100%, 0% 100%);
   }
 
   /* Container with max width and centered content */
@@ -341,18 +324,18 @@ import { Image } from "astro:assets";
   @media (max-width: 768px) {
     footer {
       padding-top: 3rem;
+    }
+
+    .footer-bg {
+      /* Simpler clip-path for mobile */
+      clip-path: none;
       background: #023249;
-      border-radius: 30px 30px 0px 0px;
     }
 
     .footer-container {
       flex-direction: column;
       max-width: 430px;
       padding: 0 1.5rem;
-    }
-
-    .footer-bg {
-      display: none; /* Hide the SVG on mobile */
     }
 
     h3 {
