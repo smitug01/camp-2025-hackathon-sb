@@ -13,5 +13,61 @@
     <div class="course">前後端整合</div>
     <div class="course">版本管理 & 部署</div>
   </div>
-  <div class="await">完整課表敬請期待</div>
+  <div class="await">完整課表敬請期待...</div>
 </section>
+
+<style>
+  .container {
+    padding: 2rem 0;
+    text-align: center;
+  }
+  
+  h2 {
+    margin-bottom: 2rem;
+    text-align: center;
+  }
+  
+  .schedule-preview {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  
+  .course {
+    background-color: #FFF;
+    color: #000;
+    font-size: 1.5rem;
+    font-weight: 500;
+    border-radius: 28px 0 28px 0;
+    padding: 1rem;
+    width: calc(33.33% - 1rem);
+    box-sizing: border-box;
+    min-width: 180px;
+    transition: all 0.3s ease;
+  }
+  
+  .course:hover {
+    background-color: #e0eaff;
+    transform: translateY(-2px);
+  }
+  
+  .await {
+    margin-top: 2rem;
+    text-align: center;
+  }
+
+  @media (max-width: 768px) {
+    .course {
+      width: calc(50% - 1rem);
+    }
+  }
+  @media (max-width: 480px) {
+    .course {
+      width: calc(100% - 1rem);
+      margin: 0 20px;
+    }
+  
+</style>
