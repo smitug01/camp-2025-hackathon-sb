@@ -2,8 +2,10 @@
 import { Image } from "astro:assets";
 import heroBackground from "../../assets/img/hero-background.svg";
 import notFoundBackground from "../../assets/img/404.svg";
-
 import { Icon } from "astro-icon/components";
+import { getLocale } from "../../i18n";
+
+const t = getLocale(Astro.url);
 ---
 
 <header>
@@ -21,7 +23,7 @@ import { Icon } from "astro-icon/components";
     </div>
     <div>
       <Icon name="material-symbols:location-on-rounded" size={24} />
-      <div>陽明交通大學光復校區</div>
+      <div>{t.components.home.hero.schoolName}</div>
     </div>
   </div>
   <div class="paint">

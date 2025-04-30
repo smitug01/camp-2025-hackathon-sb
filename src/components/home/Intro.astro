@@ -1,32 +1,25 @@
 ---
 import { Image } from "astro:assets";
 import image from "../../assets/img/image.webp";
+import { getLocale } from "../../i18n";
+
+const t = getLocale(Astro.url);
 ---
 
 <section>
   <div>
-    <h2 class="emfont-UnboundedSans">樂趣之餘，不忘學習</h2>
-    <div>由資訊社群所打造，超高知識含量的夏令營</div>
+    <h2 class="emfont-UnboundedSans">
+      {t.components.home.intro.title}
+    </h2>
+    <div>{t.components.home.intro.subtitle}</div>
     <p>
-      隨著資訊科學成為科技時代的重要學科，SITCON
-      團隊決定打造一個結合知識與實作的夏令營，讓有志於資訊領域的學生能夠輕鬆入門並激發對開源精神的熱情。
-      自 2014 年起，SITCON
-      夏令營已邁入第九屆，課程涵蓋開放原始碼、資訊安全、Maker、Python、Node.js、前端資料爬蟲、視覺化、Telegram
-      bot
-      等多元領域。此外，營隊還設有社群闖關、視界咖啡館及黑客松等互動活動，讓學員們能夠動手實作，發掘自己的興趣與專長。
+      {t.components.home.intro.text[0]}
     </p>
     <p>
-      SITCON Camp 今年以「404 Not Found：青春不該 throw
-      error」為主題，希望告訴每一位懷抱夢想與好奇心的學生：青春本就充滿著未知與挑戰，偶爾遇上錯誤或迷路都是自然的現象。透過不斷嘗試、勇於突破，最終都能在困惑中找到屬於自己的路。就如同寫程式一樣，遇到問題就勇敢
-      debug、持續迭代，讓青春的每一個錯誤都轉化為成長的契機，創造出充滿意義且獨一無二的精彩作品。
+      {t.components.home.intro.text[1]}
     </p>
     <p>
-      AI 正引領新一波的科技浪潮，SITCON Camp 2025
-      首次加入人工智慧（AI）輔助前端開發課程，結合從零開始教授的後端程式語言，帶領學員完整打造一個專屬的網頁應用程式。不論是為了生活中的瑣碎需求設計實用工具，或是發揮想像力創作全新作品，都能透過
-      AI
-      的協助，輕鬆將創意轉化為現實。透過實作過程，學員不僅能深入理解
-      AI
-      輔助工具的運作邏輯，更能培養跨領域整合思維，掌握未來科技趨勢，開創出屬於自己的精彩未來。
+      {t.components.home.intro.text[1]}
     </p>
   </div>
   <div class="image-container">

@@ -1,18 +1,30 @@
 ---
-// Content 組件 - 顯示關於 SITCON 的主要內容
+import { getLocale } from "../../i18n";
+
+const t = getLocale(Astro.url);
 ---
 
 <section class="container content">
-  <h2 class="section-title">關於 SITCON</h2>
+  <h2 class="section-title">
+    {t.components.about.content.aboutSitcon}
+  </h2>
   <div class="content-section">
     <p class="content-paragraph">
-      SITCON 學生計算機年會是由學生自發舉辦、投身學生資訊教育與推廣開源精神的社群，也是一個由學生主辦、學生擔任講者、以學生為主軸的資訊研討會，給學生們一個發表交流技術的舞台。
+      {t.components.about.content.sitconIs}
     </p>
     <p class="content-paragraph">
-      除了技術研討之外，還有許多從學生角度出發的經驗分享、專題研究成果或探討學生相關議題等等議程。我們也會舉辦黑客松、工作坊，和各地學校社團舉辦聯合講座等等。
+      {t.components.about.content.sitconNotOnly}
     </p>
     <p class="content-paragraph">
-      對我們所做的事情感興趣？歡迎加入 <a href="#" class="link">郵件論壇</a> 或 <a href="#" class="link">Telegram 群組</a> 一起來規劃討論。
+      {t.components.about.content.sitconInterested[0]}
+      <a href="#" class="link"
+        >{t.components.about.content.sitconInterested[1]}</a
+      >
+      {t.components.about.content.sitconInterested[2]}
+      <a href="#" class="link"
+        >{t.components.about.content.sitconInterested[3]}</a
+      >
+      {t.components.about.content.sitconInterested[4]}
     </p>
   </div>
 </section>
@@ -28,7 +40,7 @@
   }
 
   .section-title {
-    color: #FFF;
+    color: #fff;
     font-family: Inter;
     font-size: 48px;
     font-weight: 700;
@@ -45,7 +57,7 @@
   }
 
   .content-paragraph {
-    color: #FFF;
+    color: #fff;
     font-family: Inter;
     font-size: 32px;
     font-weight: 500;
@@ -55,7 +67,7 @@
   }
 
   .link {
-    color: #FFF;
+    color: #fff;
     font-family: Inter;
     font-size: 32px;
     font-weight: 500;
@@ -83,4 +95,4 @@
       font-size: 24px;
     }
   }
-</style> 
+</style>

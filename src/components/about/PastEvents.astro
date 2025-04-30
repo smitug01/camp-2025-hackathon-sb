@@ -1,21 +1,26 @@
 ---
-// PastEvents 組件 - 顯示 SITCON 過去的活動
 import hourOfCodeImage from "../../assets/img/about/past_events/hour_of_code.png";
+import { getLocale } from "../../i18n";
+
+const t = getLocale(Astro.url);
 ---
 
 <section class="container past-events">
-  <h2 class="section-title">我們舉辦過的活動</h2>
+  <h2 class="section-title">{t.components.about.pastEvents.title}</h2>
   <div class="events-container">
     <div class="event-card">
       <div class="event-content">
         <div class="event-description">
           <h3 class="event-title">Hour of Code</h3>
           <p class="event-text">
-            Hour of Code 是個一小時介紹計算機科學的活動，希望在揭開程式設計的神秘面紗的同時，說明它是任何人都可以學習的基礎知識，並期望擴展人們在計算機科學領域的參與。
+            {t.components.about.pastEvents.text}
           </p>
         </div>
         <div class="event-image">
-          <img src={hourOfCodeImage.src} alt="Hour of Code 活動照片" />
+          <img
+            src={hourOfCodeImage.src}
+            alt="Hour of Code 活動照片 / Hour of Code event pictures"
+          />
         </div>
       </div>
       <img
@@ -150,13 +155,13 @@ import hourOfCodeImage from "../../assets/img/about/past_events/hour_of_code.png
     .section-title {
       font-size: 36px;
     }
-    
+
     .events-container,
     .event-card {
       width: 100%;
       height: auto;
     }
-    
+
     .event-content {
       flex-direction: column;
       padding: 30px;

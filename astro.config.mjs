@@ -1,4 +1,5 @@
 // @ts-check
+import { i18n } from "astro-i18n-aut/integration";
 import astroIcon from "astro-icon";
 import { defineConfig } from "astro/config";
 
@@ -7,5 +8,13 @@ export default defineConfig({
   site: "https://sitcon.camp",
   base: "/2025",
   output: "static",
-  integrations: [astroIcon()],
+  trailingSlash: "never",
+  integrations: [
+    i18n({
+      locales: { zh: "zh-Hant", en: "en-US" },
+      defaultLocale: "zh",
+      redirectDefaultLocale: true,
+    }),
+    astroIcon(),
+  ],
 });

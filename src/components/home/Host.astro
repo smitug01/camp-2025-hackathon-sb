@@ -3,10 +3,13 @@ import ocfLogo from "../../assets/img/sponsors/ocf.png";
 import nycuCsClubLogo from "../../assets/img/sponsors/nycuCsClub.png";
 import nycuCsLogo from "../../assets/img/sponsors/nycuCs.png";
 import itsaLogo from "../../assets/img/sponsors/itsa.png";
+import { getLocale } from "../../i18n";
+
+const t = getLocale(Astro.url);
 ---
 
 <section class="container">
-  <h3>共同主辦</h3>
+  <h3>{t.components.home.host.organize}</h3>
   <div class="host-container">
     <div class="host-item">
       <div class="host-logo">
@@ -15,13 +18,15 @@ import itsaLogo from "../../assets/img/sponsors/itsa.png";
           alt="SITCON logo"
         />
       </div>
-      <div class="host-name">SITCON 學生計算機年會</div>
+      <div class="host-name">
+        {t.components.home.host.hosts.sitcon}
+      </div>
     </div>
     <div class="host-item">
       <div class="host-logo">
         <img src={ocfLogo.src} alt="開放文化基金會 logo" />
       </div>
-      <div class="host-name">開放文化基金會</div>
+      <div class="host-name">{t.components.home.host.hosts.ocf}</div>
     </div>
     <div class="host-item">
       <div class="host-logo nctu-cs-club">
@@ -30,22 +35,26 @@ import itsaLogo from "../../assets/img/sponsors/itsa.png";
           alt="陽明交通大學資訊工程系學會 logo"
         />
       </div>
-      <div class="host-name">陽明交通大學資訊工程系學會</div>
+      <div class="host-name">
+        {t.components.home.host.hosts.nycuCsClub}
+      </div>
     </div>
     <div class="host-item">
       <div class="host-logo">
         <img src={nycuCsLogo.src} alt="陽明交通大學資訊工程系 logo" />
       </div>
-      <div class="host-name">陽明交通大學資訊工程系</div>
+      <div class="host-name">
+        {t.components.home.host.hosts.nycuCs}
+      </div>
     </div>
   </div>
-  <h3>協辦單位</h3>
+  <h3>{t.components.home.host.sponsor}</h3>
   <div class="host-container">
     <div class="host-item">
       <div class="host-logo">
         <img src={itsaLogo.src} alt="ITSA logo" />
       </div>
-      <div class="host-name">ITSA 教育部智慧創新關鍵人才躍升計畫</div>
+      <div class="host-name">{t.components.home.host.hosts.itsa}</div>
     </div>
   </div>
 </section>
