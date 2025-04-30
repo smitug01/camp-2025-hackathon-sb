@@ -8,7 +8,7 @@ import logo from "../assets/img/logo.svg";
     <a href="/" class="logo-link">
       <Image src={logo} alt="SITCON Camp 2025" id="logo" />
     </a>
-    
+
     <!-- Hamburger menu for mobile -->
     <div class="hamburger-menu">
       <span class="hamburger-bar"></span>
@@ -63,7 +63,7 @@ import logo from "../assets/img/logo.svg";
   a {
     text-decoration: none;
     transition: transform 0.3s ease-out;
-    display: inline-block; 
+    display: inline-block;
   }
 
   a:hover {
@@ -143,7 +143,9 @@ import logo from "../assets/img/logo.svg";
     .nav-links li {
       opacity: 0;
       transform: translateY(15px);
-      transition: opacity 0.3s ease, transform 0.3s ease;
+      transition:
+        opacity 0.3s ease,
+        transform 0.3s ease;
       transition-delay: calc(0.1s * var(--i, 0));
     }
 
@@ -156,48 +158,48 @@ import logo from "../assets/img/logo.svg";
 
 <script>
   // JavaScript to toggle mobile menu
-  document.addEventListener('DOMContentLoaded', () => {
-    const hamburgerMenu = document.querySelector('.hamburger-menu');
-    const navLinks = document.querySelector('.nav-links');
-    const navItems = document.querySelectorAll('.nav-links li');
-    const navAnchors = document.querySelectorAll('.nav-links a');
+  document.addEventListener("DOMContentLoaded", () => {
+    const hamburgerMenu = document.querySelector(".hamburger-menu");
+    const navLinks = document.querySelector(".nav-links");
+    const navItems = document.querySelectorAll(".nav-links li");
+    const navAnchors = document.querySelectorAll(".nav-links a");
 
     // Add index for staggered animation
     navItems.forEach((item, index) => {
       if (item instanceof HTMLElement) {
-        item.style.setProperty('--i', index.toString());
+        item.style.setProperty("--i", index.toString());
       }
     });
 
     // Toggle menu when hamburger is clicked
-    hamburgerMenu?.addEventListener('click', (e) => {
+    hamburgerMenu?.addEventListener("click", (e) => {
       e.stopPropagation(); // Prevent click from bubbling to document
-      hamburgerMenu.classList.toggle('active');
-      navLinks?.classList.toggle('active');
+      hamburgerMenu.classList.toggle("active");
+      navLinks?.classList.toggle("active");
     });
 
     // Prevent navigation anchors from causing menu close when clicked
-    navAnchors.forEach(anchor => {
-      anchor.addEventListener('click', (e) => {
+    navAnchors.forEach((anchor) => {
+      anchor.addEventListener("click", (e) => {
         e.stopPropagation();
       });
     });
 
     // Close menu when clicking anywhere on the nav-links background (the menu area)
-    navLinks?.addEventListener('click', () => {
-      hamburgerMenu?.classList.remove('active');
-      navLinks.classList.remove('active');
+    navLinks?.addEventListener("click", () => {
+      hamburgerMenu?.classList.remove("active");
+      navLinks.classList.remove("active");
     });
 
     // Close menu when clicking outside
-    document.addEventListener('click', (e) => {
+    document.addEventListener("click", (e) => {
       // Check if menu is open and click is outside the hamburger
       if (
-        navLinks?.classList.contains('active') && 
+        navLinks?.classList.contains("active") &&
         e.target !== hamburgerMenu
       ) {
-        hamburgerMenu?.classList.remove('active');
-        navLinks?.classList.remove('active');
+        hamburgerMenu?.classList.remove("active");
+        navLinks?.classList.remove("active");
       }
     });
   });

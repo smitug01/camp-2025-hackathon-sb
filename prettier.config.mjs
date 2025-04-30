@@ -12,7 +12,7 @@ export default {
   proseWrap: "never",
   plugins: [
     "prettier-plugin-astro",
-    "prettier-plugin-organize-imports"
+    "prettier-plugin-organize-imports",
   ],
   overrides: [
     {
