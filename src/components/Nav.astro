@@ -2,6 +2,7 @@
 import { Image } from "astro:assets";
 import logo from "../assets/img/logo.svg";
 import { getLocale } from "../i18n";
+import { getLocale as extractLocale } from "astro-i18n-aut";
 
 const t = getLocale(Astro.url);
 ---
@@ -24,6 +25,14 @@ const t = getLocale(Astro.url);
       <li><a href="/">{t.components.nav.previous}</a></li>
       <li><a href="/">{t.components.nav.coc}</a></li>
       <li><a href="/2025/about">{t.components.nav.team}</a></li>
+      <li>
+        <a
+          href={extractLocale(Astro.url) === "en"
+            ? "/2025"
+            : "/2025/en"}
+          >{extractLocale(Astro.url) === "en" ? "中文" : "EN"}</a
+        >
+      </li>
     </ul>
   </div>
 </nav>

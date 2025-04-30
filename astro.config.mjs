@@ -9,6 +9,9 @@ export default defineConfig({
   base: "/2025",
   output: "static",
   trailingSlash: "never",
+  build: {
+    format: "file",
+  },
   integrations: [
     i18n({
       locales: { zh: "zh-Hant", en: "en-US" },
