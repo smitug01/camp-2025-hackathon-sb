@@ -161,6 +161,23 @@ const zhStrings = {
         comingSoon: "完整課表敬請期待...",
       },
     },
+
+    footer: {
+      contact: {
+        title: "聯繫我們",
+        cooperation: "合作聯繫：",
+        signup: "報名事宜：",
+        social: "社群媒體",
+        previous: "歷年網站",
+      },
+    },
+    nav: {
+      signup: "報名資訊",
+      record: "課程活動",
+      previous: "過往紀錄",
+      coc: "行為準則",
+      team: "籌備團隊",
+    },
   },
 };
 

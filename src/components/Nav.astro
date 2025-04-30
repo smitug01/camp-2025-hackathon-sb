@@ -1,6 +1,9 @@
 ---
 import { Image } from "astro:assets";
 import logo from "../assets/img/logo.svg";
+import { getLocale } from "../i18n";
+
+const t = getLocale(Astro.url);
 ---
 
 <nav>
@@ -16,11 +19,11 @@ import logo from "../assets/img/logo.svg";
     </div>
 
     <ul class="nav-links">
-      <li><a href="/">報名資訊</a></li>
-      <li><a href="/">課程活動</a></li>
-      <li><a href="/">過往紀錄</a></li>
-      <li><a href="/">行為準則</a></li>
-      <li><a href="/2025/about">籌備團隊</a></li>
+      <li><a href="/">{t.components.nav.signup}</a></li>
+      <li><a href="/">{t.components.nav.record}</a></li>
+      <li><a href="/">{t.components.nav.previous}</a></li>
+      <li><a href="/">{t.components.nav.coc}</a></li>
+      <li><a href="/2025/about">{t.components.nav.team}</a></li>
     </ul>
   </div>
 </nav>

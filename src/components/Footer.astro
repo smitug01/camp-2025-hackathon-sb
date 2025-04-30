@@ -1,5 +1,8 @@
 ---
 import { Image } from "astro:assets";
+import { getLocale } from "../i18n";
+
+const t = getLocale(Astro.url);
 ---
 
 <!-- 
@@ -22,22 +25,20 @@ import { Image } from "astro:assets";
         Conference
       </h3>
       <div class="contact">
-        <h3>聯繫我們</h3>
+        <h3>{t.components.footer.contact.title}</h3>
         <p>
-          合作聯繫：<a href="mailto:contact@sitcon.org"
-            >contact@sitcon.org</a
-          >
+          {t.components.footer.contact.cooperation}
+          <a href="mailto:contact@sitcon.org">contact@sitcon.org</a>
         </p>
         <p>
-          報名事宜：<a href="mailto:ask@sitcon.camp"
-            >ask@sitcon.camp</a
-          >
+          {t.components.footer.contact.signup}
+          <a href="mailto:ask@sitcon.camp">ask@sitcon.camp</a>
         </p>
       </div>
     </div>
     <div class="footer-right">
       <div class="social-media">
-        <h3>Social Media</h3>
+        <h3>{t.components.footer.contact.social}</h3>
         <div class="social-icons">
           <a
             href="https://www.facebook.com/SITCONtw/"
@@ -170,7 +171,7 @@ import { Image } from "astro:assets";
       </div>
       <!-- Previous websites section with year links -->
       <div class="previous-websites">
-        <h3>Previous Websites</h3>
+        <h3>{t.components.footer.contact.previous}</h3>
         <div class="year-links">
           <a
             href="https://sitcon.camp/2024"

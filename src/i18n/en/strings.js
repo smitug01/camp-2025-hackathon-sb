@@ -186,7 +186,22 @@ const enStrings = {
       },
     },
 
-    footer: {},
+    footer: {
+      contact: {
+        title: "Contact us",
+        cooperation: "Cooperation request:",
+        signup: "Signup related:",
+        social: "Social media",
+        previous: "Previous website",
+      },
+    },
+    nav: {
+      signup: "Registration Info",
+      record: "Course Activities",
+      previous: "Past Records",
+      coc: "Code of Conduct",
+      team: "Organizing Team",
+    },
   },
 };
 
