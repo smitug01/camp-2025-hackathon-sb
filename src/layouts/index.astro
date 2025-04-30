@@ -1,12 +1,10 @@
 ---
 import Footer from "../components/Footer.astro";
 import Nav from "../components/Nav.astro";
-import { SEO } from "astro-seo";
-
+import ogImage from "../assets/img/og.webp";
 interface Props {
   title: string;
   description: string;
-  imageOverride?: string;
 }
 
 // TODO: Put og image to /public/opengraph/main.jpg
@@ -24,40 +22,22 @@ interface Props {
     <meta name="theme-color" content="#009DF3" />
     <title>{Astro.props.title}</title>
     <meta name="description" content={Astro.props.description} />
-
-    <SEO
-      title={Astro.props.title}
-      description={Astro.props.description}
-      charset="UTF-8"
-      openGraph={{
-        basic: {
-          title: Astro.props.title,
-          type: "website",
-          image:
-            Astro.props.imageOverride ??
-            "https://sitcon.camp/2025/opengraph/main.jpg",
-        },
-        optional: {
-          description: Astro.props.description,
-          siteName: "SITCON Camp",
-        },
-      }}
-      twitter={{
-        title: Astro.props.title,
-        image:
-          Astro.props.imageOverride ??
-          "https://sitcon.camp/2025/opengraph/main.jpg",
-        card: "summary_large_image",
-      }}
-      extend={{
-        link: [
-          {
-            rel: "icon",
-            href: "https://sitcon.camp/2025/favicon.ico",
-          },
-        ],
-      }}
+    <meta property="og:title" content={Astro.props.title} />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content={ogImage.src} />
+    <meta
+      property="og:description"
+      content={Astro.props.description}
     />
+    <meta property="og:site_name" content="SITCON Camp" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:title" content={Astro.props.title} />
+    <meta name="twitter:image" content={ogImage.src} />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <!-- Favicon -->
+    <link rel="icon" href="https://sitcon.camp/2025/favicon.ico" />
 
     <style
       is:global
