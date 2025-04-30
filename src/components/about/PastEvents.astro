@@ -1,0 +1,173 @@
+---
+// PastEvents 組件 - 顯示 SITCON 過去的活動
+---
+
+<section class="container past-events">
+  <h2 class="section-title">我們舉辦過的活動</h2>
+  <div class="events-container">
+    <div class="event-card">
+      <div class="event-content">
+        <div class="event-description">
+          <h3 class="event-title">Hour of Code</h3>
+          <p class="event-text">
+            Hour of Code
+            是一個特別設計專為編程初學的活動，希望在編程教學的神秘面紗之下，說明它是如何入門可以學習的基礎知識。並開放讓編程人員在計算機科學學習中參與。
+          </p>
+        </div>
+        <div class="event-image">
+          <img src="#" alt="Hour of Code 活動照片" />
+        </div>
+      </div>
+      <img
+        src="/2025/assets/img/bg/RoundedRectangle-white.svg"
+        alt=""
+        class="background-svg-white"
+      />
+      <img
+        src="/2025/assets/img/bg/RoundedRectangle.svg"
+        alt=""
+        class="background-svg"
+      />
+    </div>
+  </div>
+</section>
+
+<style>
+  .past-events {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  .section-title {
+    color: #fff;
+    font-family: Inter;
+    font-size: 48px;
+    font-weight: 700;
+    line-height: 150%;
+    margin-bottom: 2rem;
+  }
+
+  .events-container {
+    display: flex;
+    flex-direction: column;
+    gap: 80px;
+    width: 100%;
+    max-width: 1200px;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .event-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 1208px;
+    height: 383px;
+  }
+
+  .event-content {
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    z-index: 1;
+    padding: 40px;
+  }
+
+  .background-svg-white {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+    width: 1119px;
+    height: 307px;
+    z-index: -1;
+    object-fit: contain;
+  }
+
+  .background-svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+    width: 1200px;
+    height: 384px;
+    z-index: -2;
+    object-fit: contain;
+  }
+
+  .event-description {
+    flex: 2;
+  }
+
+  .event-title {
+    color: #000;
+    font-family: Inter;
+    font-size: 32px;
+    font-weight: 700;
+    line-height: 150%;
+    margin-bottom: 1rem;
+  }
+
+  .event-text {
+    color: #000;
+    font-family: Inter;
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 150%;
+    margin-bottom: 1rem;
+  }
+
+  .event-image {
+    flex: 1;
+    max-width: 300px;
+  }
+
+  .event-image img {
+    width: 100%;
+    border-radius: 0.5rem;
+  }
+
+  @media (max-width: 768px) {
+    .section-title {
+      font-size: 36px;
+    }
+    
+    .events-container,
+    .event-card {
+      width: 100%;
+      height: auto;
+    }
+    
+    .event-content {
+      flex-direction: column;
+      padding: 30px;
+    }
+
+    .event-image {
+      max-width: 100%;
+      margin-top: 1rem;
+    }
+
+    .event-title {
+      font-size: 24px;
+    }
+
+    .event-text {
+      font-size: 16px;
+    }
+  }
+</style>
