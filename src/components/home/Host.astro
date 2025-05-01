@@ -91,6 +91,7 @@ const t = getLocale(Astro.url);
     flex-direction: column;
     align-items: center;
     gap: 1rem;
+    width: 220px;
   }
 
   .host-logo {
@@ -122,11 +123,19 @@ const t = getLocale(Astro.url);
   .host-name {
     font-size: 1.2rem;
     font-weight: 500;
+    width: 100%;
+    text-align: center;
+    word-wrap: break-word;
+    hyphens: auto;
   }
 
   @media (max-width: 768px) {
     .host-container {
       gap: 1.5rem;
+    }
+
+    .host-item {
+      width: 180px;
     }
 
     .host-logo {
