@@ -3,7 +3,6 @@ import { Image } from "astro:assets";
 import logo from "../assets/img/logo.svg";
 import { getLocale, linkTransformer } from "../i18n";
 import { getLocale as extractLocale } from "astro-i18n-aut";
-
 const t = getLocale(Astro.url),
   l = linkTransformer(Astro.url);
 ---
