@@ -1,6 +1,7 @@
 ---
 import { getLocale } from "../../i18n";
-import teams from '../../assets/data/teams';
+import teams from "../../assets/data/teams";
+import { Image } from "astro:assets";
 
 const t = getLocale(Astro.url);
 
@@ -13,54 +14,65 @@ function getGravatarUrl(emailHash, size = 80) {
 function hashToColor(hash) {
   let numericHash = 0;
   for (let i = 0; i < hash.length; i++) {
-    numericHash = hash.charCodeAt(i) + ((numericHash << 5) - numericHash);
+    numericHash =
+      hash.charCodeAt(i) + ((numericHash << 5) - numericHash);
   }
-  
-  let color = '#';
+
+  let color = "#";
   for (let i = 0; i < 3; i++) {
-    const value = (numericHash >> (i * 8)) & 0xFF;
-    color += ('00' + value.toString(16)).substr(-2);
+    const value = (numericHash >> (i * 8)) & 0xff;
+    color += ("00" + value.toString(16)).substr(-2);
   }
-  
+
   return color;
 }
 
 // Function to get initials from name (fallback for when Gravatar fails to load)
 function getInitials(name) {
-  return name.split(' ')
-    .map(part => part.charAt(0))
-    .join('')
+  return name
+    .split(" ")
+    .map((part) => part.charAt(0))
+    .join("")
     .toUpperCase()
     .substring(0, 2);
 }
 ---
 
 <section class="container theme-grid">
-  <h2 class="section-title emfont-MaokenAssortedSansTC">夏令營籌備團隊</h2>
-  
-  {teams.map((team) => (
-    <div class="team-section">
-      <h3 class="team-title emfont-MaokenAssortedSansTC">{team.name}</h3>
-      <div class="team-members">
-        {team.members.map((member) => (
-          <div class="member-card">
-            <div 
-              class="member-avatar" 
-              style={`background-color: ${hashToColor(member.emailHash)};`}
-            >
-              <img 
-                src={getGravatarUrl(member.emailHash)} 
-                alt={member.name}
-                onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
-              />
-              <span class="initials" style="display: none;">{getInitials(member.name)}</span>
+  <h2 class="section-title emfont-MaokenAssortedSansTC">
+    夏令營籌備團隊
+  </h2>
+
+  {
+    teams.map((team) => (
+      <div class="team-section">
+        <h3 class="team-title emfont-MaokenAssortedSansTC">
+          {team.name}
+        </h3>
+        <div class="team-members">
+          {team.members.map((member) => (
+            <div class="member-card">
+              <div
+                class="member-avatar"
+                style={`background-color: ${hashToColor(member.emailHash)};`}
+              >
+                <Image
+                  src={getGravatarUrl(member.emailHash)}
+                  alt={member.name}
+                  loading="lazy"
+                  onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+                />
+                <span class="initials" style="display: none;">
+                  {getInitials(member.name)}
+                </span>
+              </div>
+              <p class="member-name">{member.name}</p>
             </div>
-            <p class="member-name">{member.name}</p>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
-    </div>
-  ))}
+    ))
+  }
 </section>
 
 <style>
@@ -104,7 +116,7 @@ function getInitials(name) {
     font-weight: 700;
     font-style: normal;
     line-height: 150%;
-    color: #FFF;
+    color: #fff;
     margin-bottom: 1.5rem;
   }
 
@@ -135,7 +147,7 @@ function getInitials(name) {
     overflow: hidden;
     position: relative;
   }
-  
+
   .member-avatar img {
     width: 100%;
     height: 100%;
@@ -159,7 +171,7 @@ function getInitials(name) {
     font-weight: 700;
     font-style: normal;
     line-height: 150%;
-    color: #FFF;
+    color: #fff;
     text-align: center;
     margin: 0;
   }
@@ -183,7 +195,7 @@ function getInitials(name) {
       height: 60px;
       font-size: 1.2rem;
     }
-    
+
     .member-name {
       font-size: 1.25rem;
     }
@@ -204,4 +216,4 @@ function getInitials(name) {
       font-size: 1rem;
     }
   }
-</style> 
+</style>
