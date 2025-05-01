@@ -63,6 +63,7 @@ function getInitials(name) {
                   onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
                   height={100}
                   width={100}
+                  draggable="false"
                 />
                 <span class="initials" style="display: none;">
                   {getInitials(member.name)}
@@ -150,7 +151,7 @@ function getInitials(name) {
     overflow: hidden;
     position: relative;
     transition: transform 0.3s ease;
-    cursor: pointer;
+    user-select: none;
   }
 
   .member-avatar:hover {
@@ -239,5 +240,17 @@ function getInitials(name) {
     .member-name {
       font-size: 1rem;
     }
+  }
+
+  /* 添加禁止圖片拖拽的樣式 */
+  img {
+    -webkit-user-drag: none;
+    -khtml-user-drag: none;
+    -moz-user-drag: none;
+    -o-user-drag: none;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
   }
 </style>
