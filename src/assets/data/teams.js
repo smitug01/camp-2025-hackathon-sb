@@ -26,6 +26,7 @@ export default [
       members: [
         { name: "Nelson", title: "組長", emailHash: "f71508f754ae9659d6085846e023fdf2" },
         { name: "Ricky", title: "副組長", emailHash: "d9d4323eaa5d051bb3cc75f5a8a82252" },
+        { name: "OsGa", title: "組員", emailHash: "4d9d9aa7e031eba958fd9ae26f9dacee" },
         { name: "海鷗", title: "組員", emailHash: "d7d915ce07dbf6a5968c6bdfa2b5f0e2" },
         { name: "Yuki", title: "組員", emailHash: "fbf80edc9ed4b30956a6532006dd8166" },
         { name: "Panda", title: "組員", emailHash: "24c803aa3a79c7e3de16c21efe1d8791" },
