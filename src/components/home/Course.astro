@@ -1,54 +1,258 @@
 ---
 import { getLocale } from "../../i18n";
+import { Image } from "astro:assets";
+
+// 引入圖片
+import mainCourse from "../../assets/img/index/course/Image-3.png";
+import hackathon from "../../assets/img/index/course/Image-4.png";
+import broadCourse from "../../assets/img/index/course/Image-5.png";
+import worldCafe from "../../assets/img/index/course/Image-6.png";
+import openSource from "../../assets/img/index/course/Image-7.png";
+import challenge from "../../assets/img/index/course/Image-8.png";
 
 const t = getLocale(Astro.url);
 ---
 
-<section class="container">
-  <div class="course-container">
-    <h3>{t.components.home.course.main.title}</h3>
-    <p>
-      {t.components.home.course.main.text[0]}
-    </p>
-    <p>
-      {t.components.home.course.main.text[1]}
-    </p>
-    <img src="" alt="" />
-  </div>
-  <div class="course-container">
-    <h3>Hackathon</h3>
-    <p>
-      {t.components.home.course.hackathon.text}
-    </p>
-    <img src="" alt="" />
-  </div>
-  <div class="course-container">
-    <h3>{t.components.home.course.broad.title}</h3>
-    <p>{t.components.home.course.broad.text}</p>
-    <img src="" alt="" />
-  </div>
-  <div class="course-container">
-    <h3>{t.components.home.course.cafe.title}</h3>
-    <p>
-      {t.components.home.course.cafe.text}
-    </p>
-    <img src="" alt="" />
-  </div>
-  <div class="course-container">
-    <h3>{t.components.home.course.openSource.title}</h3>
-    <p>
-      {t.components.home.course.openSource.text}
-    </p>
-    <img src="" alt="" />
-  </div>
-  <div class="course-container">
-    <h3>{t.components.home.course.challenge.title}</h3>
-    <p>
-      {t.components.home.course.challenge.text[0]}
-    </p>
-    <p>
-      {t.components.home.course.challenge.text[1]}
-    </p>
-    <img src="" alt="" />
+<section>
+  <div class="container">
+    <div class="course-container">
+      <div class="content">
+        <h3>{t.components.home.course.main.title}</h3>
+        <p>
+          {t.components.home.course.main.text[0]}
+        </p>
+        <p>
+          {t.components.home.course.main.text[1]}
+        </p>
+      </div>
+      <div class="image-wrapper">
+        <Image src={mainCourse} alt="主線課程" width="400" height="300" loading="lazy" />
+      </div>
+    </div>
+    
+    <div class="course-container">
+      <div class="content">
+        <h3>Hackathon</h3>
+        <p>
+          {t.components.home.course.hackathon.text}
+        </p>
+      </div>
+      <div class="image-wrapper">
+        <Image src={hackathon} alt="Hackathon" width="400" height="300" loading="lazy" />
+      </div>
+    </div>
+    
+    <div class="course-container">
+      <div class="content">
+        <h3>{t.components.home.course.broad.title}</h3>
+        <p>{t.components.home.course.broad.text}</p>
+      </div>
+      <div class="image-wrapper">
+        <Image src={broadCourse} alt="廣度課程" width="400" height="300" loading="lazy" />
+      </div>
+    </div>
+    
+    <div class="course-container">
+      <div class="content">
+        <h3>{t.components.home.course.cafe.title}</h3>
+        <p>
+          {t.components.home.course.cafe.text}
+        </p>
+      </div>
+      <div class="image-wrapper">
+        <Image src={worldCafe} alt="視界咖啡館" width="400" height="300" loading="lazy" />
+      </div>
+    </div>
+    
+    <div class="course-container">
+      <div class="content">
+        <h3>{t.components.home.course.openSource.title}</h3>
+        <p>
+          {t.components.home.course.openSource.text}
+        </p>
+      </div>
+      <div class="image-wrapper">
+        <Image src={openSource} alt="開源精神與社群" width="400" height="300" loading="lazy" />
+      </div>
+    </div>
+    
+    <div class="course-container">
+      <div class="content">
+        <h3>{t.components.home.course.challenge.title}</h3>
+        <p>
+          {t.components.home.course.challenge.text[0]}
+        </p>
+        <p>
+          {t.components.home.course.challenge.text[1]}
+        </p>
+      </div>
+      <div class="image-wrapper">
+        <Image src={challenge} alt="資訊技能樹" width="400" height="300" loading="lazy" />
+      </div>
+    </div>
   </div>
 </section>
+
+<style>
+  section {
+    padding: 4rem 0;
+  }
+
+  .container {
+    max-width: var(--maxWidth);
+    margin: 0 auto;
+    padding: 0 2rem;
+  }
+
+  .course-container {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    margin-bottom: 4rem;
+    padding: 2rem;
+    box-shadow: var(--shadow);
+    background-color: #f8f8f8;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  /* 主線課程特定樣式 */
+  .course-container:first-child {
+    background-color: #6C6C6C;
+    color: white;
+  }
+
+  /* Hackathon特定樣式 */
+  .course-container:nth-child(2) {
+    background-color: #DFFF60;
+    /* 將SVG路徑轉換為clip-path */
+    clip-path: polygon(
+      0% 43.7%, 
+      3.5% 0%, 
+      3.5% 26.6%, 
+      34.5% 15.3%, 
+      97.5% 26.6%, 
+      100% 59.7%, 
+      97.5% 100%, 
+      52.6% 73.4%, 
+      4.7% 81.1%, 
+      0% 43.7%
+    );
+    padding: 3rem 3rem;
+    position: relative;
+    z-index: 1;
+    margin-top: 2rem;
+    margin-bottom: 5rem;
+  }
+
+  /* Hackathon 標題樣式 */
+  .course-container:nth-child(2) h3 {
+    color: #000;
+    font-family: "MaokenAssortedSans-TC", sans-serif;
+    font-size: 48px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    margin-bottom: 1.5rem;
+  }
+
+  /* Hackathon 內文樣式 */
+  .course-container:nth-child(2) p {
+    color: #000;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 115.365%;
+    letter-spacing: 2.8px;
+  }
+
+  .course-container:nth-child(odd) {
+    flex-direction: row-reverse;
+  }
+
+  .course-container:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadowHover, 0 10px 20px rgba(0, 0, 0, 0.1));
+  }
+
+  .content {
+    flex: 1;
+  }
+
+  .image-wrapper {
+    flex: 0 0 40%;
+    border-radius: 0.5rem;
+    overflow: hidden;
+  }
+
+  .image-wrapper img {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+  }
+
+  .image-wrapper img:hover {
+    transform: scale(1.05);
+  }
+
+  h3 {
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+    color: var(--textColor, #333);
+    font-family: var(--emfont-UnboundedSans, sans-serif);
+  }
+
+  p {
+    margin-bottom: 1rem;
+    line-height: 1.6;
+  }
+
+  /* Responsive styles */
+  @media (max-width: 1024px) {
+    .course-container, 
+    .course-container:nth-child(odd) {
+      flex-direction: column;
+      text-align: center;
+    }
+
+    .image-wrapper {
+      width: 70%;
+      margin: 0 auto;
+    }
+  }
+
+  @media (max-width: 768px) {
+    section {
+      padding: 3rem 0;
+    }
+
+    .course-container {
+      padding: 1.5rem;
+      margin-bottom: 2.5rem;
+    }
+
+    h3 {
+      font-size: 1.5rem;
+    }
+
+    .image-wrapper {
+      width: 85%;
+    }
+  }
+
+  @media (max-width: 576px) {
+    .container {
+      padding: 0 1rem;
+    }
+
+    .course-container {
+      padding: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .image-wrapper {
+      width: 100%;
+    }
+  }
+</style>
