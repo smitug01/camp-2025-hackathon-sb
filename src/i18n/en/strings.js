@@ -23,7 +23,22 @@ const enStrings = {
       },
       pastEvents: {
         title: "Events we held before",
-        text: "Hour of Code is a one hour long event to introduce computer science, we hope we can not only reveal the secret behind programming, but also explain this is a knowledge that everyone can learn. We believe through this event, we can increase the amount of people that devoted into computer science field.",
+        hoc: {
+          title: "Hour of Code",
+          text: "Hour of Code is a one-hour introduction to computer science, designed to demystify coding and show that anybody can learn the basics. This initiative aims to expand participation in the field of computer science.",
+        },
+        sitcon: {
+          title: "SITCON Annual Conference",
+          text: "SITCON Annual Conference is an event autonomously organized by students who are passionate about sharing and the field of information technology. It is dedicated to popularizing and promoting information education. Through multi-track sessions, presentations, and forum discussions, it aims to exchange knowledge between the information field and talents from different backgrounds!",
+        },
+        sitconCamp: {
+          title: "SITCON Camp",
+          text: "The SITCON team believes that laying the groundwork for information education, providing a friendly and good opportunity for students interested in the field of information science to get started, and sowing the seeds of open source, is a very important and worthwhile thing to do. Through the main course, community challenges, vision café, hackathon and other activities, we enable participants to fully absorb new knowledge, gain hands-on experience, find their own interests, and eventually join us in promoting Open Source.",
+        },
+        sitconGroup: {
+          title: "SITCON Meetup",
+          text: "In addition to organizing large-scale events, SITCON also holds regular meetups to connect students from all over Taiwan who are interested in information technology-related fields. Through sharing and exchange, we hone and improve together, fostering a spirit of self-directed learning.",
+        },
       },
     },
     home: {
@@ -139,9 +154,9 @@ const enStrings = {
             "Registration Guidelines",
           ],
           targetCount:
-            "This camp aims to recruit 54 participants. A basic review of registration info will be conducted; it’s not first-come, first-served.",
+            "This camp aims to recruit 54 participants. A basic review of registration info will be conducted; it's not first-come, first-served.",
           selected:
-            "The final list of accepted participants will be announced no later than 6/8 (Sun). Stay tuned to SITCON’s social media and your email.",
+            "The final list of accepted participants will be announced no later than 6/8 (Sun). Stay tuned to SITCON's social media and your email.",
           payBeforeEnter: [
             "Accepted participants must complete the payment to finalize registration. Financial aid is available—see ",
             "Financial Aid Info",
@@ -158,8 +173,8 @@ const enStrings = {
           "A knowledge-rich summer camp created by the tech community",
         text: [
           "As computer science becomes a key discipline in the modern tech era, the SITCON team has created a summer camp that blends knowledge and hands-on experience, enabling students interested in the field of technology to easily get started and ignite a passion for the open-source spirit. Since 2014, SITCON Camp has reached its ninth edition, offering courses across a wide range of topics including open source, cybersecurity, maker projects, Python, Node.js, front-end web scraping, data visualization, Telegram bots, and more. The camp also features interactive activities like community challenges, the Vision Café, and hackathons to encourage students to get hands-on and discover their interests and strengths.",
-          "This year, SITCON Camp is themed '404 Not Found: Youth Shouldn’t Throw Errors', aiming to remind every student with dreams and curiosity that youth is full of unknowns and challenges. Getting lost or encountering errors is perfectly natural. By continuously trying and bravely pushing boundaries, everyone can find their own path through confusion. Just like coding—when problems arise, debug bravely, iterate persistently, and turn every mistake into a chance to grow, creating something meaningful and uniquely brilliant.",
-          "AI is leading a new wave in technology, and SITCON Camp 2025 is introducing AI-assisted front-end development courses for the first time. Combined with beginner-friendly back-end programming lessons, the camp will guide students in building their own web applications from scratch. Whether it’s crafting useful tools for everyday needs or unleashing imagination to create new innovations, AI can help turn ideas into reality. Through hands-on projects, students will not only understand how AI tools work but also develop interdisciplinary thinking, grasp future tech trends, and carve out a brilliant future of their own.",
+          "This year, SITCON Camp is themed '404 Not Found: Youth Shouldn't Throw Errors', aiming to remind every student with dreams and curiosity that youth is full of unknowns and challenges. Getting lost or encountering errors is perfectly natural. By continuously trying and bravely pushing boundaries, everyone can find their own path through confusion. Just like coding—when problems arise, debug bravely, iterate persistently, and turn every mistake into a chance to grow, creating something meaningful and uniquely brilliant.",
+          "AI is leading a new wave in technology, and SITCON Camp 2025 is introducing AI-assisted front-end development courses for the first time. Combined with beginner-friendly back-end programming lessons, the camp will guide students in building their own web applications from scratch. Whether it's crafting useful tools for everyday needs or unleashing imagination to create new innovations, AI can help turn ideas into reality. Through hands-on projects, students will not only understand how AI tools work but also develop interdisciplinary thinking, grasp future tech trends, and carve out a brilliant future of their own.",
         ],
       },
       pastEvent: {
