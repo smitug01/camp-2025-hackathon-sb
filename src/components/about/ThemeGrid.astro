@@ -57,12 +57,12 @@ function getInitials(name) {
                 style={`background-color: ${hashToColor(member.emailHash)};`}
               >
                 <Image
-                  src={getGravatarUrl(member.emailHash)}
+                  src={getGravatarUrl(member.emailHash, 100)}
                   alt={member.name}
                   loading="lazy"
                   onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
-                  height={80}
-                  width={80}
+                  height={100}
+                  width={100}
                 />
                 <span class="initials" style="display: none;">
                   {getInitials(member.name)}
@@ -133,11 +133,12 @@ function getInitials(name) {
     flex-direction: column;
     align-items: center;
     margin-bottom: 1rem;
+    width: 130px;
   }
 
   .member-avatar {
-    width: 80px;
-    height: 80px;
+    width: 100px;
+    height: 100px;
     border-radius: 50%;
     margin-bottom: 0.5rem;
     display: flex;
@@ -148,12 +149,24 @@ function getInitials(name) {
     font-size: 1.5rem;
     overflow: hidden;
     position: relative;
+    transition: transform 0.3s ease;
+    cursor: pointer;
+  }
+
+  .member-avatar:hover {
+    transform: scale(1.1);
+  }
+
+  .member-avatar:active {
+    transform: scale(0.95) translateY(3px);
+    transition: transform 0.1s ease;
   }
 
   .member-avatar img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    transition: transform 0.3s ease;
   }
 
   .initials {
@@ -189,12 +202,16 @@ function getInitials(name) {
 
     .team-members {
       gap: 1.5rem 1rem;
-      justify-content: center;
+      justify-content: flex-start;
+    }
+
+    .member-card {
+      width: 110px;
     }
 
     .member-avatar {
-      width: 60px;
-      height: 60px;
+      width: 80px;
+      height: 80px;
       font-size: 1.2rem;
     }
 
@@ -206,11 +223,16 @@ function getInitials(name) {
   @media (max-width: 480px) {
     .team-members {
       gap: 1.25rem 0.75rem;
+      justify-content: flex-start;
+    }
+
+    .member-card {
+      width: 100px;
     }
 
     .member-avatar {
-      width: 50px;
-      height: 50px;
+      width: 70px;
+      height: 70px;
       font-size: 1rem;
     }
 
