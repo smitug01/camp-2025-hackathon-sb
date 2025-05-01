@@ -1,25 +1,25 @@
 ---
 import { getLocale } from "../../i18n";
 import md5 from 'md5';
+import teams from '../../assets/data/teams';
 
 const t = getLocale(Astro.url);
 
-// Function to generate Gravatar URL from email
-function getGravatarUrl(email, size = 80) {
-  const hash = md5(email.trim().toLowerCase());
-  return `https://www.gravatar.com/avatar/${hash}?s=${size}&d=identicon`;
+// Function to generate Gravatar URL from email hash
+function getGravatarUrl(emailHash, size = 80) {
+  return `https://www.gravatar.com/avatar/${emailHash}?s=${size}&d=identicon`;
 }
 
-// Function to generate a color based on name (fallback for when Gravatar fails to load)
-function stringToColor(str) {
-  let hash = 0;
-  for (let i = 0; i < str.length; i++) {
-    hash = str.charCodeAt(i) + ((hash << 5) - hash);
+// Function to generate a color based on hash (fallback for when Gravatar fails to load)
+function hashToColor(hash) {
+  let numericHash = 0;
+  for (let i = 0; i < hash.length; i++) {
+    numericHash = hash.charCodeAt(i) + ((numericHash << 5) - numericHash);
   }
   
   let color = '#';
   for (let i = 0; i < 3; i++) {
-    const value = (hash >> (i * 8)) & 0xFF;
+    const value = (numericHash >> (i * 8)) & 0xFF;
     color += ('00' + value.toString(16)).substr(-2);
   }
   
@@ -34,132 +34,6 @@ function getInitials(name) {
     .toUpperCase()
     .substring(0, 2);
 }
-
-// Define team structure
-const teams = [
-  {
-    name: "總召組",
-    members: [
-      { name: "康喔", title: "總召", email: "hi@kangjw.me" },
-      { name: "柴柴", title: "副召", email: "jxu49220@gmail.com" }
-    ]
-  },
-  {
-    name: "行政組",
-    members: [
-      { name: "Windless", title: "組長", email: "hi@windless.me" },
-      { name: "柴柴", title: "票務", email: "jxu49220@gmail.com" }
-    ]
-  },
-  {
-    name: "財務組",
-    members: [
-      { name: "Arnoldsky", title: "組長", email: "cboyu528@gmail.com" },
-      { name: "Leaf", title: "出納", email: "jing838383@gmail.com" },
-      { name: "阿公", title: "組員", email: "agong961021@gmail.com" }
-    ]
-  },
-  {
-    name: "課活組",
-    members: [
-      { name: "Nelson", title: "組長", email: "hi@nelsongx.com" },
-      { name: "Ricky", title: "副組長", email: "sumily20@gmail.com" },
-      { name: "海鷗", title: "組員", email: "kyle941010@gmail.com" },
-      { name: "Yuki", title: "組員", email: "bendoris0509@gmail.com" },
-      { name: "Panda", title: "組員", email: "wu.messi.wu@gmail.com" },
-      { name: "Yoru", title: "組員", email: "ben.hrc57@gmail.com" },
-      { name: "Kevin", title: "組員", email: "fatcattw2039@gmail.com" },
-      { name: "EHDW", title: "組員", email: "panpeter0813@gmail.com" },
-      { name: "亨", title: "組員", email: "hi@hans0805.me" }
-    ]
-  },
-  {
-    name: "庶務組",
-    members: [
-      { name: "Fearnot", title: "組長", email: "kenin221@gmail.com" },
-      { name: "皮蛋", title: "副組長", email: "happyh960422@gmail.com" },
-      { name: "yimang", title: "組員", email: "lucasbbtung@gmail.com" },
-      { name: "Lindy", title: "組員", email: "lindy.wu.0806@gmail.com" }
-    ]
-  },
-  {
-    name: "紀錄組",
-    members: [
-      { name: "OnCloud", title: "組長", email: "anonymousaaaa41414141@gmail.com" },
-      { name: "竺原", title: "組員", email: "neiljiang064580@gmail.com" },
-      { name: "pU", title: "組員", email: "lightbulb20070504@gmail.com" },
-      { name: "柴柴", title: "組員", email: "jxu49220@gmail.com" },
-      { name: "康喔", title: "組員", email: "hi@kangjw.me" }
-    ]
-  },
-  {
-    name: "隊輔組",
-    members: [
-      { name: "OsGa", title: "組長", email: "oscarhuang950324@gmail.com" },
-      { name: "咪路", title: "副組長", email: "mysteryperson520@gmail.com" },
-      { name: "小婕", title: "組員", email: "yuiwuuu@gmail.com" },
-      { name: "諾諾", title: "組員", email: "Jasminederid@gmail.com" },
-      { name: "滷味", title: "組員", email: "ainini0408@gmail.com" },
-      { name: "77", title: "組員", email: "qiqihuang0831@gmail.com" },
-      { name: "ffting", title: "組員", email: "Ting7820249@gmail.com" },
-      { name: "好冷吶", title: "組員", email: "helenaliu9788@gmail.com" },
-      { name: "萊姆", title: "組員", email: "slimu.cs@gmail.com" },
-      { name: "阿玉", title: "組員", email: "p228866543@gmail.com" },
-      { name: "末夜", title: "組員", email: "miguo1008@gmail.com" },
-      { name: "Ak", title: "組員", email: "andrew.mutien@gmail.com" },
-      { name: "蓋蓋", title: "組員", email: "sky9109@gmail.com" },
-      { name: "小徐", title: "組員", email: "a896458882@gmail.com" },
-      { name: "xiung", title: "組員", email: "steven19790906@gmail.com" },
-      { name: "Yuto", title: "組員", email: "wayne71112@gmail.com" },
-      { name: "Leo", title: "組員", email: "leo2012.c@gmail.com" },
-      { name: "Sam", title: "組員", email: "lzspriv@gmail.com" },
-      { name: "Wolf Yuan", title: "組員", email: "wolf@wolf-yuan.dev" },
-      { name: "康康", title: "組員", email: "jameskang0714@gmail.com" }
-    ]
-  },
-  {
-    name: "編輯組",
-    members: [
-      { name: "橘子", title: "組長", email: "tiffanylai.1103@gmail.com" },
-      { name: "阿六", title: "副組長", email: "hyslchs@gmail.com" },
-      { name: "Yuan", title: "組員", email: "yuan.ncse.tw@gmail.com" },
-      { name: "13", title: "組員", email: "aquarius105942@gmail.com" },
-      { name: "甲魚", title: "組員", email: "rinu.0929w@gmail.com" },
-      { name: "宸", title: "組員", email: "s1251053@gm.ncue.edu.tw" },
-      { name: "Mina", title: "組員", email: "mina.mj.chen@gmail.com" },
-      { name: "庭", title: "組員", email: "shenkaiting00@gmail.com" }
-    ]
-  },
-  {
-    name: "行銷組",
-    members: [
-      { name: "Denny Huang", title: "組長", email: "denny0223@gmail.com" }
-    ]
-  },
-  {
-    name: "資訊組",
-    members: [
-      { name: "毛哥EM", title: "組長", email: "elvismao.070512@gmail.com" },
-      { name: "Wolf Yuan", title: "組員", email: "wolf@wolf-yuan.dev" },
-      { name: "KoukeNeko", title: "組員", email: "doeshing@gmail.com" },
-      { name: "!Tony2100", title: "組員", email: "tony2561231@gmail.com" }
-    ]
-  },
-  {
-    name: "設計組",
-    members: [
-      { name: "兆翌", title: "組長", email: "michaeltseng9262@gmail.com" },
-      { name: "雞心", title: "組員", email: "chengjoyce2005@gmail.com" },
-      { name: "Henry", title: "組員", email: "heutemx@gmail.com" },
-      { name: "花椰", title: "組員", email: "zxcv50533@gmail.com" },
-      { name: "開根號", title: "組員", email: "b6q9i1@gmail.com" },
-      { name: "章魚", title: "組員", email: "yutongzhang290@gmail.com" },
-      { name: "秋刀魚", title: "組員", email: "st8102130@gmail.com" },
-      { name: "kiki", title: "組員", email: "411335036@gms.ndhu.edu.tw" },
-      { name: "毛哥EM", title: "組員", email: "elvismao.070512@gmail.com" }
-    ]
-  }
-];
 ---
 
 <section class="container theme-grid">
@@ -173,10 +47,10 @@ const teams = [
           <div class="member-card">
             <div 
               class="member-avatar" 
-              style={`background-color: ${stringToColor(member.email)};`}
+              style={`background-color: ${hashToColor(member.emailHash)};`}
             >
               <img 
-                src={getGravatarUrl(member.email)} 
+                src={getGravatarUrl(member.emailHash)} 
                 alt={member.name}
                 onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
               />
