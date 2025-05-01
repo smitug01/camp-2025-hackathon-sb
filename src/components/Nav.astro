@@ -24,7 +24,7 @@ const t = getLocale(Astro.url),
       <li><a href="/">{t.components.nav.signup}</a></li>
       <li><a href="/">{t.components.nav.record}</a></li>
       <li><a href="/">{t.components.nav.previous}</a></li>
-      <li><a href="/">{t.components.nav.coc}</a></li>
+      <li><a href={l("/coc")}>{t.components.nav.coc}</a></li>
       <li><a href={l("/about")}>{t.components.nav.team}</a></li>
       <li>
         <a

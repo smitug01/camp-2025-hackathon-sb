@@ -41,6 +41,37 @@ const enStrings = {
         },
       },
     },
+    coc: {
+      hero: {
+        title: "Code of Conduct",
+      },
+      content: {
+        intro: [
+          "SITCON aims to create a stage for students while providing a friendly and open environment for every community member. We believe that everyone participating in community activities deserves to be respected, and we strive to provide the safest environment possible, allowing each friend participating in SITCON to recognize individual differences, support each other in the community, and encourage everyone to express their unique colors of life.",
+          "Therefore, if we have the honor to meet you in the SITCON community, regardless of whether you participate as an attendee, sponsor, staff member, or speaker, we hope you will abide by the following code of conduct:"
+        ],
+        guidelines: [
+          "Respect every participant and keep others' feelings in mind",
+          "Avoid using language and gestures that are insulting, discriminatory, or potentially harassing",
+          "Care for the community partners around you and appropriately ask if they need assistance",
+          "Seek support and assistance from staff when encountering danger or finding something wrong",
+          "Make friends at the annual meeting and cherish the time spent together!"
+        ],
+        notTolerated: {
+          intro: "The following behaviors are not tolerated by the community:",
+          list: [
+            "Provocation or offense based on gender, sexual orientation, race, appearance, religion, age, physical condition, or personal identity",
+            "Any form of sexual harassment, verbal and physical bullying",
+            "Public expression, display, or screening of comments, images, or videos containing insult, discrimination, hatred, violence, or sexual implications",
+            "Unreasonably interfering with the normal progress of the agenda or activities, ignoring the restraint of staff or attendees",
+            "Interfering with or attacking venue networks, recording packets without consent, or distributing private information",
+            "Illegal behavior"
+          ]
+        },
+        enforcement: "To ensure the safety of each participant, we will adhere to the above rules. For participants who violate the code of conduct, we will take necessary and reasonable measures to intervene, including but not limited to asking participants to leave the venue, removing them from relevant lists or marking them as unwelcome, or transferring them to police authorities when necessary. If you or others encounter the above situations or have any other concerns, please immediately seek assistance from SITCON staff.",
+        conclusion: "We sincerely invite friends who come to SITCON to fulfill the above commitments together, making SITCON a friendlier and warmer place; allowing each participant to grow together in community exchanges and find confidence in human interactions—this is the true spirit of the student community that we cherish."
+      }
+    },
     home: {
       about: {
         aboutSitcon: "About SITCON",

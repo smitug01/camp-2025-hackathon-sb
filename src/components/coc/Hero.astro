@@ -1,0 +1,90 @@
+---
+import { getLocale } from "../../i18n";
+
+const t = getLocale(Astro.url);
+
+// TODO: Confirm with the design team if we can remove the subtitle
+---
+
+<section class="container hero">
+  <div class="hero-content">
+    <h1 class="main-title">{t.components.coc.hero.title}</h1>
+    <div class="decoration-line"></div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    padding-top: 8rem;
+    padding-bottom: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  .main-title {
+    color: #fff;
+    font-family: Inter;
+    font-size: 96px;
+    font-weight: 700;
+    line-height: 150%;
+    width: fit-content;
+    margin-bottom: 0.5rem;
+  }
+
+  .subtitle {
+    color: #fff;
+    font-family: Inter;
+    font-size: 48px;
+    font-weight: 700;
+    line-height: 150%;
+    width: 368px;
+    margin-bottom: 1rem;
+  }
+
+  .decoration-line {
+    width: 0;
+    height: 4px;
+    background-color: white;
+    margin: 2rem 0;
+    animation: expandLine 1.5s ease-out forwards;
+    transform-origin: left;
+  }
+
+  @keyframes expandLine {
+    0% {
+      width: 0;
+    }
+    100% {
+      width: 1200px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .main-title {
+      font-size: 60px;
+      width: auto;
+      line-height: 1.3;
+    }
+
+    .subtitle {
+      font-size: 36px;
+      width: auto;
+      line-height: 1.3;
+    }
+
+    .decoration-line {
+      animation: expandLineSmall 1.5s ease-out forwards;
+    }
+
+    @keyframes expandLineSmall {
+      0% {
+        width: 0;
+      }
+      100% {
+        width: 100%;
+      }
+    }
+  }
+</style>
