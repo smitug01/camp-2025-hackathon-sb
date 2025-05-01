@@ -1,4 +1,5 @@
 ---
+import { Image } from "astro:assets";
 import hourOfCodeImage from "../../assets/img/about/events/hour_of_code.webp";
 import { getLocale } from "../../i18n";
 
@@ -6,19 +7,23 @@ const t = getLocale(Astro.url);
 ---
 
 <section class="container past-events">
-  <h2 class="section-title emfont-MaokenAssortedSansTC">{t.components.about.pastEvents.title}</h2>
+  <h2 class="section-title emfont-MaokenAssortedSansTC">
+    {t.components.about.pastEvents.title}
+  </h2>
   <div class="events-container">
     <div class="event-card">
       <div class="event-content">
         <div class="event-description">
-          <h3 class="event-title">{t.components.about.pastEvents.hoc.title}</h3>
+          <h3 class="event-title">
+            {t.components.about.pastEvents.hoc.title}
+          </h3>
           <p class="event-text">
             {t.components.about.pastEvents.hoc.text}
           </p>
         </div>
         <div class="event-image">
-          <img
-            src={hourOfCodeImage.src}
+          <Image
+            src={hourOfCodeImage}
             alt="Hour of Code 活動照片 / Hour of Code event pictures"
           />
         </div>
@@ -27,58 +32,66 @@ const t = getLocale(Astro.url);
       <div class="background-container-white"></div>
     </div>
     <div class="event-card">
-        <div class="event-content">
-          <div class="event-description">
-            <h3 class="event-title">{t.components.about.pastEvents.sitcon.title}</h3>
-            <p class="event-text">
-              {t.components.about.pastEvents.sitcon.text}
-            </p>
-          </div>
-          <div class="event-image">
-            <img
-              src={hourOfCodeImage.src}
-              alt="SITCON 年會活動照片 / SITCON Annual Conference pictures"
-            />
-          </div>
+      <div class="event-content">
+        <div class="event-description">
+          <h3 class="event-title">
+            {t.components.about.pastEvents.sitcon.title}
+          </h3>
+          <p class="event-text">
+            {t.components.about.pastEvents.sitcon.text}
+          </p>
         </div>
-        <div class="background-container"></div>
-        <div class="background-container-white"></div>
+        <div class="event-image">
+          <Image
+            src={hourOfCodeImage}
+            alt="SITCON 年會活動照片 / SITCON Annual Conference pictures"
+            loading="lazy"
+          />
+        </div>
+      </div>
+      <div class="background-container"></div>
+      <div class="background-container-white"></div>
     </div>
     <div class="event-card">
-        <div class="event-content">
-          <div class="event-description">
-            <h3 class="event-title">{t.components.about.pastEvents.sitconCamp.title}</h3>
-            <p class="event-text">
-              {t.components.about.pastEvents.sitconCamp.text}
-            </p>
-          </div>
-          <div class="event-image">
-            <img
-              src={hourOfCodeImage.src}
-              alt="SITCON 夏令營活動照片 / SITCON Camp pictures"
-            />
-          </div>
+      <div class="event-content">
+        <div class="event-description">
+          <h3 class="event-title">
+            {t.components.about.pastEvents.sitconCamp.title}
+          </h3>
+          <p class="event-text">
+            {t.components.about.pastEvents.sitconCamp.text}
+          </p>
         </div>
-        <div class="background-container"></div>
-        <div class="background-container-white"></div>
+        <div class="event-image">
+          <Image
+            src={hourOfCodeImage}
+            alt="SITCON 夏令營活動照片 / SITCON Camp pictures"
+            loading="lazy"
+          />
+        </div>
+      </div>
+      <div class="background-container"></div>
+      <div class="background-container-white"></div>
     </div>
     <div class="event-card">
-        <div class="event-content">
-          <div class="event-description">
-            <h3 class="event-title">{t.components.about.pastEvents.sitconGroup.title}</h3>
-            <p class="event-text">
-              {t.components.about.pastEvents.sitconGroup.text}
-            </p>
-          </div>
-          <div class="event-image">
-            <img
-              src={hourOfCodeImage.src}
-              alt="SITCON 定期聚活動照片 / SITCON Meetup pictures"
-            />
-          </div>
+      <div class="event-content">
+        <div class="event-description">
+          <h3 class="event-title">
+            {t.components.about.pastEvents.sitconGroup.title}
+          </h3>
+          <p class="event-text">
+            {t.components.about.pastEvents.sitconGroup.text}
+          </p>
         </div>
-        <div class="background-container"></div>
-        <div class="background-container-white"></div>
+        <div class="event-image">
+          <Image
+            src={hourOfCodeImage}
+            alt="SITCON 定期聚活動照片 / SITCON Meetup pictures"
+          />
+        </div>
+      </div>
+      <div class="background-container"></div>
+      <div class="background-container-white"></div>
     </div>
   </div>
 </section>
@@ -139,7 +152,7 @@ const t = getLocale(Astro.url);
     position: absolute;
     width: 100%;
     height: 384px;
-    background-color: #FFF200;
+    background-color: #fff200;
     clip-path: polygon(
       15px 0,
       calc(100% - 15px) 55px,
@@ -159,12 +172,7 @@ const t = getLocale(Astro.url);
     width: 93%;
     height: 307px;
     background-color: white;
-    clip-path: polygon(
-      0 0,
-      100% 0,
-      100% 100%,
-      0 100%
-    );
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
     z-index: -1;
     top: 0;
     left: 0;
@@ -253,12 +261,7 @@ const t = getLocale(Astro.url);
     .background-container {
       height: 100%;
       width: 100%;
-      clip-path: polygon(
-        1% 1%,
-        99% 3%,
-        98% 99%,
-        0% 97%
-      );
+      clip-path: polygon(1% 1%, 99% 3%, 98% 99%, 0% 97%);
     }
 
     .background-container-white {

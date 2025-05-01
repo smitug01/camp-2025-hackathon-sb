@@ -3,6 +3,8 @@ import ocfLogo from "../../assets/img/sponsors/ocf.png";
 import nycuCsClubLogo from "../../assets/img/sponsors/nycuCsClub.png";
 import nycuCsLogo from "../../assets/img/sponsors/nycuCs.png";
 import itsaLogo from "../../assets/img/sponsors/itsa.png";
+import sitconLogo from "../../assets/img/sponsors/sitcon.svg";
+import { Image } from "astro:assets";
 import { getLocale } from "../../i18n";
 
 const t = getLocale(Astro.url);
@@ -13,10 +15,7 @@ const t = getLocale(Astro.url);
   <div class="host-container">
     <div class="host-item">
       <div class="host-logo">
-        <img
-          src="https://sitcon.org/branding/assets/logos/withname.svg"
-          alt="SITCON logo"
-        />
+        <Image src={sitconLogo} alt="SITCON logo" loading="lazy" />
       </div>
       <div class="host-name">
         {t.components.home.host.hosts.sitcon}
@@ -24,15 +23,20 @@ const t = getLocale(Astro.url);
     </div>
     <div class="host-item">
       <div class="host-logo">
-        <img src={ocfLogo.src} alt="開放文化基金會 logo" />
+        <Image
+          src={ocfLogo}
+          alt="開放文化基金會 logo"
+          loading="lazy"
+        />
       </div>
       <div class="host-name">{t.components.home.host.hosts.ocf}</div>
     </div>
     <div class="host-item">
       <div class="host-logo nctu-cs-club">
-        <img
-          src={nycuCsClubLogo.src}
+        <Image
+          src={nycuCsClubLogo}
           alt="陽明交通大學資訊工程系學會 logo"
+          loading="lazy"
         />
       </div>
       <div class="host-name">
@@ -41,7 +45,11 @@ const t = getLocale(Astro.url);
     </div>
     <div class="host-item">
       <div class="host-logo">
-        <img src={nycuCsLogo.src} alt="陽明交通大學資訊工程系 logo" />
+        <Image
+          src={nycuCsLogo}
+          alt="陽明交通大學資訊工程系 logo"
+          loading="lazy"
+        />
       </div>
       <div class="host-name">
         {t.components.home.host.hosts.nycuCs}
@@ -52,7 +60,7 @@ const t = getLocale(Astro.url);
   <div class="host-container">
     <div class="host-item">
       <div class="host-logo">
-        <img src={itsaLogo.src} alt="ITSA logo" />
+        <Image src={itsaLogo} alt="ITSA logo" loading="lazy" />
       </div>
       <div class="host-name">{t.components.home.host.hosts.itsa}</div>
     </div>
