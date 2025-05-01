@@ -9,7 +9,13 @@ const t = getLocale(Astro.url);
 <section class="container">
   <div class="feedback-wrapper">
     <div class="feedback">
-      <Image src={image} alt="學員照片" class="image" width="70" />
+      <Image
+        src={image}
+        alt="學員照片"
+        class="image"
+        width="70"
+        loading="lazy"
+      />
       <div class="feedback-content">
         <h3>
           {t.components.home.feedback.title}<span
@@ -22,7 +28,13 @@ const t = getLocale(Astro.url);
       </div>
     </div>
     <div class="feedback">
-      <Image src={image} alt="學員照片" class="image" width="70" />
+      <Image
+        src={image}
+        alt="學員照片"
+        class="image"
+        width="70"
+        loading="lazy"
+      />
       <div class="feedback-content">
         <h3>
           {t.components.home.feedback.title}<span

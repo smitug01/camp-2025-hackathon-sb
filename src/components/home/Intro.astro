@@ -23,7 +23,13 @@ const t = getLocale(Astro.url);
     </p>
   </div>
   <div class="image-container">
-    <Image src={image} alt="課程照片" class="image" width="400" />
+    <Image
+      src={image}
+      alt="課程照片"
+      class="image"
+      width="400"
+      loading="lazy"
+    />
   </div>
 </section>
 

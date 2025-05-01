@@ -11,7 +11,12 @@ const t = getLocale(Astro.url),
 <nav>
   <div class="nav-container">
     <a href={l("/")} class="logo-link">
-      <Image src={logo} alt="SITCON Camp 2025" id="logo" />
+      <Image
+        src={logo}
+        alt="SITCON Camp 2025"
+        id="logo"
+        loading="eager"
+      />
     </a>
 
     <!-- Hamburger menu for mobile -->
