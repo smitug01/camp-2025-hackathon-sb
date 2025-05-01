@@ -5,7 +5,8 @@ import { getLocale } from "../../i18n";
 import heroBackground from "../../assets/img/hero/hero-background.svg";
 import notFoundBackground from "../../assets/img/hero/404.svg";
 import boom from "../../assets/img/hero/boom.svg";
-import cat from "../../assets/img/hero/cat.svg";
+import clip from "../../assets/img/hero/clip.svg";
+import cat from "../../assets/img/hero/cat-todo.svg";
 import cloud from "../../assets/img/hero/cloud.svg";
 import light from "../../assets/img/hero/light.svg";
 import lightning from "../../assets/img/hero/lightning.svg";
@@ -13,21 +14,19 @@ import lightning2 from "../../assets/img/hero/lightning2.svg";
 import lightning3 from "../../assets/img/hero/lightning3.svg";
 import lightning4 from "../../assets/img/hero/lightning4.svg";
 import logo from "../../assets/img/hero/logo.webp";
-import wave from "../../assets/img/hero/wave.svg";
+import wave from "../../assets/img/hero/wave-todo.svg";
+
 
 const t = getLocale(Astro.url);
 ---
-
-��
 
 <header>
   <div class="hero">
     <Image class="notFound" src={notFoundBackground} alt="" />
     <Image class="boom" src={boom} alt="" />
-    <div class="clip">
-      <Image class="cat" src={cat} alt="" />
-      <Image class="wave" src={wave} alt="" />
-    </div>
+    <div class="clip"></div>
+    <Image class="wave" src={wave} alt="" />
+    <Image class="cat" src={cat} alt="" />
     <Image class="light" src={light} alt="" />
     <Image class="cloud" src={cloud} alt="" />
     <Image class="logo logo2" src={logo} alt="" />
@@ -36,6 +35,7 @@ const t = getLocale(Astro.url);
     <Image class="lightning2" src={lightning2} alt="" />
     <Image class="lightning3" src={lightning3} alt="" />
     <Image class="lightning4" src={lightning4} alt="" />
+
   </div>
   <div class="info">
     <div>
@@ -57,7 +57,7 @@ const t = getLocale(Astro.url);
 
 <style
   define:vars={{
-    boomUrl: `url(${boom.src}#myClip)`,
+    boomUrl: `url(${clip.src}#clip)`,
   }}
 >
   header {
@@ -103,16 +103,22 @@ const t = getLocale(Astro.url);
     margin: auto;
     position: relative;
   }
-  .hero img {
+  .hero img,
+  .clip {
     position: absolute;
     display: block;
     width: calc(var(--size) * 95vw);
     height: auto;
   }
   @media (min-aspect-ratio: 4/3) {
-    .hero img {
+    .hero img,
+    .clip {
       height: calc(var(--size) * (90vh - 9rem));
       width: auto;
+    }
+    .hero .logo {
+      height: auto;
+      width: calc(var(--size) * 95vw);
     }
   }
 
@@ -131,22 +137,27 @@ const t = getLocale(Astro.url);
     margin: auto;
   }
 
-  .boom,
-  .clip {
+  .boom,.cat,.wave
+  /* .clip  */ {
     top: 50%;
     left: 50%;
     --size: 0.9;
     transform: translate(-50%, -50%);
     aspect-ratio: 930 / 636;
   }
-  .clip {
-    width: 930px;
-    height: 636px;
+  /* .clip {
     position: absolute;
     clip-path: var(--boomUrl);
-    transform: translate(-50%, -50%) scale(1);
-    display: none;
-  }
+    aspect-ratio: 1 / 1;
+    background-color: red;
+  } */
+
+  /* .wave {
+    top: 68%;
+    left: 50%;
+    --size: 0.45;
+    transform: translate(-30%, -50%);
+  } */
 
   .cloud {
     top: 47%;
@@ -154,50 +165,45 @@ const t = getLocale(Astro.url);
     --size: 0.2;
   }
 
-  .cat {
-    top: 50%;
-    left: 50%;
-    --size: 0.6;
-    transform: translate(-70%, -60%);
-  }
-
-  .logo{
+  .logo {
+    --size: 1;
     top: 35%;
     left: 50%;
-    --size: 0.25;
     transform: translate(-50%, -50%);
+    aspect-ratio: 2000 / 433;
   }
-  .logo2{
-    scale: .99;
-    filter:brightness(0) invert(1);
+
+  .logo2 {
+    scale: 0.99;
+    filter: brightness(0) invert(1);
   }
 
   .lightning {
-    top:55%;
+    top: 55%;
     left: 34%;
     --size: 0.1;
     transform: translate(-100%, -100%);
   }
   .lightning2 {
-    top:55%;
+    top: 55%;
     left: 44%;
     --size: 0.1;
     transform: translate(-100%, -100%);
   }
   .lightning3 {
-    top:52%;
+    top: 52%;
     left: 54%;
     --size: 0.05;
     transform: translate(0, -100%);
   }
   .lightning4 {
-    top:54%;
+    top: 54%;
     left: 64%;
     --size: 0.07;
     transform: translate(0, -100%);
   }
 
-  .light{
+  .light {
     top: 60%;
     left: 50%;
     --size: 0.37;

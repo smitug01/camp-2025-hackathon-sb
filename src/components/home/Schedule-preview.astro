@@ -5,7 +5,7 @@ const t = getLocale(Astro.url);
 ---
 
 <section class="container">
-  <h2 class="emfont-UnboundedSans">{t.components.home.schedulePreview.title}</h2>
+  <h2 class="emfont-UnboundedSans" id="schedule">{t.components.home.schedulePreview.title}</h2>
   <div class="schedule-preview">
     {t.components.home.schedulePreview.courses.map((k)=>{
       return (<div class="course">{k}</div>)
