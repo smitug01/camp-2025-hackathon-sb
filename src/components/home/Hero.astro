@@ -1,28 +1,41 @@
 ---
 import { Image } from "astro:assets";
-import heroBackground from "../../assets/img/hero-background.svg";
-import notFoundBackground from "../../assets/img/404.svg";
 import { Icon } from "astro-icon/components";
 import { getLocale } from "../../i18n";
-
-import boom from "../../assets/img/boom.svg";
-import cat from "../../assets/img/cat.svg";
-import cloud from "../../assets/img/cloud.svg";
-import light from "../../assets/img/light.svg";
-import lightning from "../../assets/img/lightning.svg";
-import lightning2 from "../../assets/img/lightning2.svg";
-import lightning3 from "../../assets/img/lightning3.svg";
-import lightning4 from "../../assets/img/lightning4.svg";
-import logo from "../../assets/img/logo.svg";
-import wave from "../../assets/img/wave.svg";
+import heroBackground from "../../assets/img/hero/hero-background.svg";
+import notFoundBackground from "../../assets/img/hero/404.svg";
+import boom from "../../assets/img/hero/boom.svg";
+import cat from "../../assets/img/hero/cat.svg";
+import cloud from "../../assets/img/hero/cloud.svg";
+import light from "../../assets/img/hero/light.svg";
+import lightning from "../../assets/img/hero/lightning.svg";
+import lightning2 from "../../assets/img/hero/lightning2.svg";
+import lightning3 from "../../assets/img/hero/lightning3.svg";
+import lightning4 from "../../assets/img/hero/lightning4.svg";
+import logo from "../../assets/img/hero/logo.webp";
+import wave from "../../assets/img/hero/wave.svg";
 
 const t = getLocale(Astro.url);
 ---
 
+��
+
 <header>
-  <div class="visual">
-    <div class="boom"></div>
-    <div class="title"></div>
+  <div class="hero">
+    <Image class="notFound" src={notFoundBackground} alt="" />
+    <Image class="boom" src={boom} alt="" />
+    <div class="clip">
+      <Image class="cat" src={cat} alt="" />
+      <Image class="wave" src={wave} alt="" />
+    </div>
+    <Image class="light" src={light} alt="" />
+    <Image class="cloud" src={cloud} alt="" />
+    <Image class="logo logo2" src={logo} alt="" />
+    <Image class="logo" src={logo} alt="" />
+    <Image class="lightning" src={lightning} alt="" />
+    <Image class="lightning2" src={lightning2} alt="" />
+    <Image class="lightning3" src={lightning3} alt="" />
+    <Image class="lightning4" src={lightning4} alt="" />
   </div>
   <div class="info">
     <div>
@@ -44,17 +57,16 @@ const t = getLocale(Astro.url);
 
 <style
   define:vars={{
-    notFoundBackgroundUrl: `url(${notFoundBackground.src})`,
+    boomUrl: `url(${boom.src}#myClip)`,
   }}
 >
   header {
-    padding-top: 6rem;
+    padding-top: 5.5rem;
     min-height: 100vh;
     position: relative;
   }
 
   .paint {
-    width: 100%;
     position: absolute;
     z-index: -1;
     top: 0;
@@ -62,23 +74,19 @@ const t = getLocale(Astro.url);
   }
 
   .paint img {
-    width: 100%;
-    filter: blur(20px);
-  }
-
-  .visual {
-    height: 70vh;
-    width: 100%;
-    background: var(--notFoundBackgroundUrl) no-repeat center
-      center/contain;
-    margin-bottom: 1rem;
+    height: 100vh;
+    filter: blur(20vw);
+    margin: auto;
+    display: block;
   }
 
   .info {
+    margin-top: 2rem;
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
     gap: 2rem;
+    font-size: 1.5rem;
   }
 
   .info > div {
@@ -89,5 +97,110 @@ const t = getLocale(Astro.url);
 
   .info img {
     width: 1.5rem;
+  }
+  .hero {
+    width: fit-content;
+    margin: auto;
+    position: relative;
+  }
+  .hero img {
+    position: absolute;
+    display: block;
+    width: calc(var(--size) * 95vw);
+    height: auto;
+  }
+  @media (min-aspect-ratio: 4/3) {
+    .hero img {
+      height: calc(var(--size) * (90vh - 9rem));
+      width: auto;
+    }
+  }
+
+  @media (max-aspect-ratio: 5/6) {
+    header {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding-bottom: 20vh;
+    }
+  }
+
+  .hero .notFound {
+    position: static;
+    --size: 1;
+    margin: auto;
+  }
+
+  .boom,
+  .clip {
+    top: 50%;
+    left: 50%;
+    --size: 0.9;
+    transform: translate(-50%, -50%);
+    aspect-ratio: 930 / 636;
+  }
+  .clip {
+    width: 930px;
+    height: 636px;
+    position: absolute;
+    clip-path: var(--boomUrl);
+    transform: translate(-50%, -50%) scale(1);
+    display: none;
+  }
+
+  .cloud {
+    top: 47%;
+    left: 42%;
+    --size: 0.2;
+  }
+
+  .cat {
+    top: 50%;
+    left: 50%;
+    --size: 0.6;
+    transform: translate(-70%, -60%);
+  }
+
+  .logo{
+    top: 35%;
+    left: 50%;
+    --size: 0.25;
+    transform: translate(-50%, -50%);
+  }
+  .logo2{
+    scale: .99;
+    filter:brightness(0) invert(1);
+  }
+
+  .lightning {
+    top:55%;
+    left: 34%;
+    --size: 0.1;
+    transform: translate(-100%, -100%);
+  }
+  .lightning2 {
+    top:55%;
+    left: 44%;
+    --size: 0.1;
+    transform: translate(-100%, -100%);
+  }
+  .lightning3 {
+    top:52%;
+    left: 54%;
+    --size: 0.05;
+    transform: translate(0, -100%);
+  }
+  .lightning4 {
+    top:54%;
+    left: 64%;
+    --size: 0.07;
+    transform: translate(0, -100%);
+  }
+
+  .light{
+    top: 60%;
+    left: 50%;
+    --size: 0.37;
+    transform: translate(-48%, -100%);
   }
 </style>
