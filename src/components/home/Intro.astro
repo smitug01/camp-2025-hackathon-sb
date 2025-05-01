@@ -56,6 +56,8 @@ const t = getLocale(Astro.url);
   img {
     transform: rotate(0.774deg);
     border-radius: 1.5rem 0rem;
+    max-width: 100%;
+    height: auto;
   }
 
   .image-container::before {
@@ -74,5 +76,59 @@ const t = getLocale(Astro.url);
 
   p {
     margin-bottom: 1rem;
+  }
+
+  /* Responsive styles */
+  @media (max-width: 1200px) {
+    section {
+      flex-direction: column;
+      align-items: center;
+      gap: 2rem;
+    }
+
+    .image-container {
+      margin: 1.5rem auto;
+      width: 70%;
+      max-width: 400px;
+    }
+  }
+
+  @media (max-width: 992px) {
+    section {
+      padding: 2.5rem 1.5rem;
+    }
+    
+    h2 + div {
+      font-size: 1.75rem;
+    }
+
+    .image-container {
+      width: 80%;
+    }
+  }
+
+  @media (max-width: 768px) {
+    section {
+      text-align: center;
+    }
+
+    .image-container {
+      width: 90%;
+    }
+  }
+
+  @media (max-width: 576px) {
+    section {
+      padding: 2rem 1rem;
+    }
+    
+    h2 + div {
+      font-size: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .image-container {
+      width: 100%;
+    }
   }
 </style>
