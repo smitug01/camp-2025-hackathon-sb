@@ -61,6 +61,8 @@ function getInitials(name) {
                   alt={member.name}
                   loading="lazy"
                   onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+                  height={80}
+                  width={80}
                 />
                 <span class="initials" style="display: none;">
                   {getInitials(member.name)}

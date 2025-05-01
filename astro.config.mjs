@@ -12,6 +12,9 @@ export default defineConfig({
   build: {
     format: "file",
   },
+  image: {
+    domains: ["www.gravatar.com"],
+  },
   integrations: [
     i18n({
       locales: { zh: "zh-Hant", en: "en-US" },
