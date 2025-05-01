@@ -162,12 +162,12 @@ const teams = [
 ];
 ---
 
-<section class="theme-grid-container">
-  <h2 class="section-title">夏令營籌備團隊</h2>
+<section class="container theme-grid">
+  <h2 class="section-title emfont-MaokenAssortedSansTC">夏令營籌備團隊</h2>
   
   {teams.map((team) => (
     <div class="team-section">
-      <h3 class="team-title">{team.name}</h3>
+      <h3 class="team-title emfont-MaokenAssortedSansTC">{team.name}</h3>
       <div class="team-members">
         {team.members.map((member) => (
           <div class="member-card">
@@ -191,23 +191,39 @@ const teams = [
 </section>
 
 <style>
-  .theme-grid-container {
-    width: 100%;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 2rem;
+  .theme-grid {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+    position: relative;
+  }
+
+  .theme-grid::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100vw;
+    height: 100%;
     background-color: #4096ff;
-    color: white;
+    z-index: -1;
   }
 
   .section-title {
-    font-size: 2rem;
+    color: #fff;
+    font-size: 3rem;
     font-weight: 700;
-    margin-bottom: 2rem;
+    line-height: 150%;
+    margin-bottom: 3rem;
   }
 
   .team-section {
-    margin-bottom: 2rem;
+    margin-bottom: 3rem;
+    width: 100%;
   }
 
   .team-title {
@@ -222,7 +238,7 @@ const teams = [
   .team-members {
     display: flex;
     flex-wrap: wrap;
-    gap: 1.5rem;
+    gap: 2rem 1.5rem;
   }
 
   .member-card {
@@ -276,12 +292,17 @@ const teams = [
   }
 
   @media (max-width: 768px) {
-    .theme-grid-container {
-      padding: 1rem;
+    .section-title {
+      font-size: 2.25rem;
+    }
+
+    .team-title {
+      font-size: 1.75rem;
     }
 
     .team-members {
-      gap: 1rem;
+      gap: 1.5rem 1rem;
+      justify-content: center;
     }
 
     .member-avatar {
@@ -293,9 +314,21 @@ const teams = [
     .member-name {
       font-size: 1.25rem;
     }
+  }
 
-    .team-title {
-      font-size: 1.75rem;
+  @media (max-width: 480px) {
+    .team-members {
+      gap: 1.25rem 0.75rem;
+    }
+
+    .member-avatar {
+      width: 50px;
+      height: 50px;
+      font-size: 1rem;
+    }
+
+    .member-name {
+      font-size: 1rem;
     }
   }
 </style> 
