@@ -155,17 +155,32 @@ const t = getLocale(Astro.url);
     .event-card {
       width: 100%;
       height: auto;
+      min-height: 450px;
     }
 
     .event-content {
-      flex-direction: column;
+      flex-direction: column-reverse;
       padding: 30px;
       justify-content: center;
     }
 
+    .event-description {
+      flex: 1;
+      width: 100%;
+    }
+
     .event-image {
-      max-width: 100%;
-      margin-top: 1.5rem;
+      width: 100%;
+      height: auto;
+      margin-bottom: 1.5rem;
+      margin-top: 0;
+    }
+
+    .background-container,
+    .background-container-white {
+      height: 100%;
+      width: 100%;
+      transform: none;
     }
 
     .event-title {
