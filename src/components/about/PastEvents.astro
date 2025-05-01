@@ -23,16 +23,8 @@ const t = getLocale(Astro.url);
           />
         </div>
       </div>
-      <img
-        src="/2025/assets/img/bg/RoundedRectangle-white.svg"
-        alt=""
-        class="background-svg-white"
-      />
-      <img
-        src="/2025/assets/img/bg/RoundedRectangle.svg"
-        alt=""
-        class="background-svg"
-      />
+      <div class="background-container"></div>
+      <div class="background-container-white"></div>
     </div>
   </div>
 </section>
@@ -89,30 +81,33 @@ const t = getLocale(Astro.url);
     padding: 55px;
   }
 
-  .background-svg-white {
+  .background-container {
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    margin: auto;
-    width: 1100px;
-    height: 295px;
-    z-index: -1;
-    object-fit: contain;
-  }
-
-  .background-svg {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    margin: auto;
     width: 1200px;
     height: 384px;
+    background-color: #FFF200;
+    clip-path: polygon(15.1309px 0.203735px, 1208.97px 55.33px, 1176.43px 383.91px, -17.41px 328.78px);
     z-index: -2;
-    object-fit: contain;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+  }
+
+  .background-container-white {
+    position: absolute;
+    width: 1119px;
+    height: 307px;
+    background-color: white;
+    clip-path: inset(0 0 0 0);
+    z-index: -1;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+    transform: translateY(-20px);
   }
 
   .event-description {
