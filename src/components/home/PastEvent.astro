@@ -1,27 +1,160 @@
 ---
 import { getLocale } from "../../i18n";
+import { Image } from "astro:assets";
 
 const t = getLocale(Astro.url);
+
+import camp from "../../assets/img/about/events/camp.webp";
+import hackathon from "../../assets/img/about/events/Hackathon.webp";
+import hourOfCode from "../../assets/img/about/events/hour_of_code.webp";
+import annualMeeting from "../../assets/img/about/events/年會.webp";
+import regularMeeting from "../../assets/img/about/events/定期聚.webp";
+import mainCourse from "../../assets/img/about/events/主線課程.webp";
+import broadCourse from "../../assets/img/about/events/廣度課程.webp";
+import skillTree from "../../assets/img/about/events/資訊技能樹.webp";
+import openSource from "../../assets/img/about/events/開源精神與社群.webp";
+
+const pastEventImages = [
+  { src: camp,          alt: "Camp" },
+  { src: hackathon,     alt: "Hackathon" },
+  { src: hourOfCode,    alt: "Hour of Code" },
+  { src: annualMeeting, alt: "年會" },
+  { src: regularMeeting,alt: "定期聚" },
+  { src: mainCourse,    alt: "主線課程" },
+  { src: broadCourse,   alt: "廣度課程" },
+  { src: skillTree,     alt: "資訊技能樹" },
+  { src: openSource,    alt: "開源精神與社群" },
+];
+
+const reversedEventImages = [...pastEventImages].reverse();
 ---
 
-<section class="container">
-  <div class="header-container">
-    <h2 class="emfont-UnboundedSans" id="pastEvent">
+<section class="past-event-section" id="pastEvent">
+  <div class="container header-container">
+    <h2 class="emfont-UnboundedSans">
       {t.components.home.pastEvent.title}
     </h2>
     <div class="button-group">
-      <a href="" class="btn">{t.components.home.pastEvent.video}</a>
-      <a href="" class="btn">{t.components.home.pastEvent.picture}</a>
+      <a href="#" class="btn">
+        {t.components.home.pastEvent.video}
+      </a>
+      <a href="#" class="btn">
+        {t.components.home.pastEvent.picture}
+      </a>
+    </div>
+  </div>
+
+  <div class="past-events-container">
+    <div class="slider-container">
+      <div class="slider slide-left">
+        <div class="film-strip-line top"></div>
+        <div class="film-strip-line bottom"></div>
+        {pastEventImages.map((img) => (
+          <div class="slide-item" data-original="true" data-image-id={img.alt}>
+            <Image src={img.src} alt={img.alt} width={240} height={160} />
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <div class="slider-container">
+      <div class="slider slide-right">
+        <div class="film-strip-line top"></div>
+        <div class="film-strip-line bottom"></div>
+        {reversedEventImages.map((img) => (
+          <div class="slide-item" data-original="true" data-image-id={img.alt}>
+            <Image src={img.src} alt={img.alt} width={240} height={160} />
+          </div>
+        ))}
+      </div>
     </div>
   </div>
 </section>
 
+<script is:inline>
+(function () {
+  "use strict";
+
+  const MIN_RATIO = 2;
+  const DEBOUNCE_MS = 150;
+
+  function fillSlider(slider) {
+    const viewport = window.innerWidth;
+    const targetWidth = viewport * MIN_RATIO;
+
+    slider
+      .querySelectorAll('.slide-item[data-original="false"]')
+      .forEach((n) => n.remove());
+
+    // 取得原始圖片
+    const originals = Array.from(slider.querySelectorAll('.slide-item[data-original="true"]'));
+    const totalOriginals = originals.length;
+    
+    if (totalOriginals === 0) return;
+
+    // 計算寬度
+    const singleItemWidth = originals[0].offsetWidth + 
+                          parseInt(window.getComputedStyle(originals[0]).marginLeft) + 
+                          parseInt(window.getComputedStyle(originals[0]).marginRight);
+    const repeatsNeeded = Math.ceil(targetWidth / (singleItemWidth * totalOriginals));
+    
+    // 複製圖片 保持順序
+    for (let i = 0; i < repeatsNeeded; i++) {
+      originals.forEach(item => {
+        const clone = item.cloneNode(true);
+        clone.setAttribute("data-original", "false");
+        slider.appendChild(clone);
+      });
+    }
+  }
+
+  function restartAnimation(slider) {
+    slider.style.animation = "none";
+    slider.offsetHeight; // 強制重繪
+    slider.style.animation = "";
+  }
+
+  function refreshAllSliders() {
+    document.querySelectorAll(".slider").forEach((slider) => {
+      fillSlider(slider);
+      restartAnimation(slider);
+    });
+  }
+
+  window.addEventListener("load", refreshAllSliders);
+
+  // 偵測視窗resize
+  var resizeTimer = null;
+  window.addEventListener("resize", () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(refreshAllSliders, DEBOUNCE_MS);
+  });
+})();
+</script>
+
 <style>
+  :root {
+    --dash-length: 40px;
+    --dash-gap: 40px;
+  }
+
+  .past-event-section {
+    width: 100%;
+    overflow: hidden;
+  }
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+  }
+
   .header-container {
     display: flex;
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
+    margin-bottom: 2rem;
   }
 
   .button-group {
@@ -35,10 +168,94 @@ const t = getLocale(Astro.url);
     border-radius: 4px;
     text-decoration: none;
     color: inherit;
-    transition: all 0.3s ease;
+    transition: 0.3s ease;
   }
-
   .btn:hover {
     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+  }
+
+  .past-events-container {
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+    overflow: hidden;
+    width: 100vw;
+    position: relative;
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw;
+    margin-right: -50vw;
+    padding: 4rem 0;
+  }
+
+  .slider-container {
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+    padding: 25px 0;
+    background-color: #000;
+  }
+
+  .slider {
+    display: flex;
+    width: max-content;
+    position: relative;
+    padding: 45px 0;
+  }
+
+  .film-strip-line {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 12px;
+    background-image: repeating-linear-gradient(
+      to right,
+      white 0 var(--dash-length),
+      transparent var(--dash-length) calc(var(--dash-length) + var(--dash-gap))
+    );
+    z-index: 2;
+    pointer-events: none;
+  }
+  .film-strip-line.top    { top: 0; }
+  .film-strip-line.bottom { bottom: 0; }
+
+  /* ===== 無縫輪播動畫 ===== */
+  .slide-left  { animation: scrollLeft 30s linear infinite;  animation-delay: -15s; }
+  .slide-right { animation: scrollRight 30s linear infinite; animation-delay: -15s; }
+  .slider:hover { animation-play-state: paused; }
+
+  .slide-item {
+    flex-shrink: 0;
+    width: 240px;
+    height: 160px;
+    margin: 0 1.5rem;
+    border-radius: 6px;
+    overflow: hidden;
+    position: relative;
+  }
+  .slide-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  @keyframes scrollLeft {
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(-33.333%); }
+  }
+  @keyframes scrollRight {
+    0%   { transform: translateX(-33.333%); }
+    100% { transform: translateX(0); }
+  }
+
+  @supports (mask-image: url("")) or (-webkit-mask-image: url("")) {
+    .film-strip-line {
+      background-color: white;
+      background-image: none;
+      mask-image: linear-gradient(to right, black var(--dash-length), transparent var(--dash-length));
+      mask-size: calc(var(--dash-length) + var(--dash-gap)) 100%;
+      -webkit-mask-image: linear-gradient(to right, black var(--dash-length), transparent var(--dash-length));
+      -webkit-mask-size: calc(var(--dash-length) + var(--dash-gap)) 100%;
+    }
   }
 </style>
