@@ -1,8 +1,8 @@
 ---
 import { getLocale, linkTransformer } from "../../i18n";
 import { Icon } from "astro-icon/components";
-const t = getLocale(Astro.url),
-  l = linkTransformer(Astro.url);
+const t = getLocale(Astro.url);
+const l = linkTransformer(Astro.url);
 import { Image } from "astro:assets";
 import cat from "../../assets/img/cat-cutted.webp";
 ---
