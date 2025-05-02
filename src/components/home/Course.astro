@@ -16,7 +16,9 @@ const t = getLocale(Astro.url);
 <section class="container">
   <div class="course-container">
     <div class="content">
-      <h3 class="emfont-NotoSansTC-700">{t.components.home.course.main.title}</h3>
+      <h3 class="emfont-NotoSansTC-700">
+        {t.components.home.course.main.title}
+      </h3>
       <p>
         {t.components.home.course.main.text[0]}
       </p>
@@ -53,7 +55,9 @@ const t = getLocale(Astro.url);
 
   <div class="course-container">
     <div class="content">
-      <h3 class="emfont-NotoSansTC-700">{t.components.home.course.broad.title}</h3>
+      <h3 class="emfont-NotoSansTC-700">
+        {t.components.home.course.broad.title}
+      </h3>
       <p>{t.components.home.course.broad.text}</p>
     </div>
 
@@ -68,7 +72,9 @@ const t = getLocale(Astro.url);
 
   <div class="course-container">
     <div class="content">
-      <h3 class="emfont-NotoSansTC-700">{t.components.home.course.cafe.title}</h3>
+      <h3 class="emfont-NotoSansTC-700">
+        {t.components.home.course.cafe.title}
+      </h3>
       <p>
         {t.components.home.course.cafe.text}
       </p>
@@ -85,7 +91,9 @@ const t = getLocale(Astro.url);
 
   <div class="course-container">
     <div class="content">
-      <h3 class="emfont-NotoSansTC-700">{t.components.home.course.openSource.title}</h3>
+      <h3 class="emfont-NotoSansTC-700">
+        {t.components.home.course.openSource.title}
+      </h3>
       <p>
         {t.components.home.course.openSource.text}
       </p>
@@ -102,7 +110,9 @@ const t = getLocale(Astro.url);
 
   <div class="course-container">
     <div class="content">
-      <h3 class="emfont-NotoSansTC-700">{t.components.home.course.challenge.title}</h3>
+      <h3 class="emfont-NotoSansTC-700">
+        {t.components.home.course.challenge.title}
+      </h3>
       <p>
         {t.components.home.course.challenge.text[0]}
       </p>
@@ -129,7 +139,7 @@ const t = getLocale(Astro.url);
     display: flex;
     align-items: center;
     gap: 2rem;
-    padding: 2rem;
+    padding: 3rem;
     color: #000;
     position: relative;
     margin-bottom: 1rem;
@@ -170,6 +180,10 @@ const t = getLocale(Astro.url);
     --extra-height: 3;
   }
 
+  .course-container:nth-child(2) img {
+    transform: rotate(-3deg);
+  }
+
   .course-container:nth-child(2)::before {
     background-color: #dfff60;
     width: 107.5%;
@@ -190,6 +204,10 @@ const t = getLocale(Astro.url);
 
   .course-container:nth-child(3) {
     z-index: 1;
+  }
+
+  .course-container:nth-child(3) img {
+    transform: rotate(3deg) translateY(1rem)
   }
 
   .course-container:nth-child(3)::after {
@@ -266,7 +284,11 @@ const t = getLocale(Astro.url);
     top: calc(50% - 7px);
   }
 
-  .course-container:nth-child(odd) {
+  .course-container:nth-child(6) img {
+    transform: translateY(16px);
+  }
+
+  .course-container:nth-child(even) {
     flex-direction: row-reverse;
   }
 
@@ -280,11 +302,13 @@ const t = getLocale(Astro.url);
     width: 300px;
     height: auto;
     background-color: #fff;
+    border-radius: 1rem;
   }
 
   h3 {
     font-size: 1.8rem;
     margin-bottom: 1rem;
+    font-weight: 700;
   }
 
   @media (max-width: 900px) {
@@ -293,7 +317,7 @@ const t = getLocale(Astro.url);
       align-items: center;
     }
 
-    .course-container:nth-child(odd) {
+    .course-container:nth-child(even) {
       flex-direction: column;
     }
 

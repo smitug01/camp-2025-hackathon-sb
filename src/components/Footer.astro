@@ -20,13 +20,13 @@ const t = getLocale(Astro.url);
   <div class="footer-container">
     <!-- Left section: Organization info and contact details -->
     <div class="footer-left">
-      <h3>
+      <h3 class="emfont-NotoSansTC-700">
         學生計算機年會<br />
         Students' Information Technology<br />
         Conference
       </h3>
       <div class="contact">
-        <h3>{t.components.footer.contact.title}</h3>
+        <h3 class="emfont-NotoSansTC-700">{t.components.footer.contact.title}</h3>
         <p>
           {t.components.footer.contact.cooperation}
           <a href="mailto:contact@sitcon.org">contact@sitcon.org</a>
@@ -39,7 +39,7 @@ const t = getLocale(Astro.url);
     </div>
     <div class="footer-right">
       <div class="social-media">
-        <h3>{t.components.footer.contact.social}</h3>
+        <h3 class="emfont-NotoSansTC-700">{t.components.footer.contact.social}</h3>
         <div class="social-icons">
           <a
             href="https://www.facebook.com/SITCONtw/"
@@ -99,7 +99,7 @@ const t = getLocale(Astro.url);
       </div>
       <!-- Previous websites section with year links -->
       <div class="previous-websites">
-        <h3>{t.components.footer.contact.previous}</h3>
+        <h3 class="emfont-NotoSansTC-700">{t.components.footer.contact.previous}</h3>
         <div class="year-links">
           <a
             href="https://sitcon.camp/2024"
@@ -174,7 +174,6 @@ const t = getLocale(Astro.url);
     );
   }
 
-  /* Container with max width and centered content */
   .footer-container {
     max-width: var(--maxWidth, 1200px);
     margin: 0 auto;
@@ -184,26 +183,22 @@ const t = getLocale(Astro.url);
     gap: 2rem;
   }
 
-  /* Heading styles for all h3 elements */
   h3 {
     font-size: 1.5rem;
-    font-weight: 700;
     margin-bottom: 1rem;
+    font-weight: 700;
   }
 
-  /* Left column styles */
   .footer-left {
     display: flex;
     flex-direction: column;
     gap: 2rem;
   }
 
-  /* Contact section paragraph spacing */
   .contact p {
     margin-bottom: 0.5rem;
   }
 
-  /* Link styles with hover effects */
   a {
     color: var(--text-white, #e7fbff);
     text-decoration: none;
@@ -215,21 +210,18 @@ const t = getLocale(Astro.url);
     text-decoration: underline;
   }
 
-  /* Right column styles */
   .footer-right {
     display: flex;
     flex-direction: column;
     gap: 2rem;
   }
 
-  /* Social media icons container */
   .social-icons {
     display: flex;
     gap: 1rem;
     flex-wrap: wrap;
   }
 
-  /* Individual social icon styles with hover animation */
   .social-icon {
     display: block;
     transition: transform 0.2s ease;
@@ -239,14 +231,12 @@ const t = getLocale(Astro.url);
     transform: scale(1.1);
   }
 
-  /* Previous websites links container */
   .year-links {
     display: flex;
     gap: 1.25rem;
     flex-wrap: wrap;
   }
 
-  /* Year link styles */
   .year-link {
     font-size: 1.25rem;
     text-decoration: underline;
@@ -256,7 +246,6 @@ const t = getLocale(Astro.url);
     text-decoration: none;
   }
 
-  /* Responsive design for mobile devices */
   @media (max-width: 768px) {
     footer {
       padding-top: 4rem;
