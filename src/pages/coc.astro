@@ -1,10 +1,47 @@
 ---
+import { getLocale } from "../i18n";
+import Header from "../components/Header.astro";
+const t = getLocale(Astro.url);
 import Layout from "../layouts/index.astro";
-import CocHero from "../components/coc/Hero.astro";
-import CocContent from "../components/coc/Content.astro";
 ---
 
-<Layout title="行為準則 SITCON Camp 2025" description="SITCON Camp 2025 的行為準則，期望每位參與者都能共同遵守">
-  <CocHero />
-  <CocContent />
+<Layout
+  title="行為準則 SITCON Camp 2025"
+  description="SITCON Camp 2025 的行為準則，期望每位參與者都能共同遵守"
+>
+  <section class="container content">
+    <Header title={t.components.coc.hero.title} />
+    <div>
+      <p>{t.components.coc.content.intro[0]}</p>
+      <p>{t.components.coc.content.intro[1]}</p>
+      <ul>
+        {
+          t.components.coc.content.guidelines.map((guideline) => (
+            <li class="content-list-item">{guideline}</li>
+          ))
+        }
+      </ul>
+      <p>{t.components.coc.content.notTolerated.intro}</p>
+      <ul>
+        {
+          t.components.coc.content.notTolerated.list.map((item) => (
+            <li class="content-list-item">{item}</li>
+          ))
+        }
+      </ul>
+      <p>{t.components.coc.content.enforcement}</p>
+      <p>{t.components.coc.content.conclusion}</p>
+  </section>
+
+  <style>
+    p{
+      margin-bottom: 1rem;
+    }
+
+    ul{
+    padding-left: 2rem;
+    line-height: 2;
+    margin-bottom: 1rem;
+  }
+  </style>
 </Layout>

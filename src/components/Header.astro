@@ -1,5 +1,30 @@
 ---
 const { title } = Astro.props;
-
-// 有 h1 跟橫線的，不是首頁的 Hero
 ---
+
+<h1 class="emfont-MaokenAssortedSansTC">{title}</h1>
+
+<style>
+  h1 {
+    padding-top: 8rem;
+    padding-bottom: 3rem;
+    font-size: min(4rem, 13vw);
+  }
+
+  h1::after {
+    content: "";
+    display: block;
+    width: 0;
+    height: 4px;
+    background-color: white;
+    animation: expandLine 1.5s ease-out forwards;
+    transform-origin: left;
+    margin-top: 1rem;
+  }
+
+  @keyframes expandLine {
+    to {
+      width: 100%;
+    }
+  }
+</style>

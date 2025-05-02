@@ -22,7 +22,7 @@ import cat from "../../assets/img/cat-cutted.webp";
         <div class="image">
           <Icon
             name="material-symbols:calendar-today-rounded"
-            size={50}
+            size={40}
           />
         </div>
       </div>
@@ -40,7 +40,7 @@ import cat from "../../assets/img/cat-cutted.webp";
       <div class="info">
         <h3>{t.components.home.info.place.title}</h3>
         <div class="content">
-          {t.components.home.info.signup.text}
+          {t.components.home.info.place.text}
         </div>
         <div class="image">
           <Icon name="material-symbols:navigation" size={50} />
@@ -53,7 +53,9 @@ import cat from "../../assets/img/cat-cutted.webp";
           <div class="people">
             {t.components.home.info.price.early.title}
           </div>
-          <img src="" alt="" class="icon" />
+          <div class="friends">
+            <Icon name="material-symbols:accessibility" size={40} />
+          </div>
           <div class="price">
             {t.components.home.info.price.early.price}
           </div>
@@ -62,7 +64,9 @@ import cat from "../../assets/img/cat-cutted.webp";
           <div class="people">
             {t.components.home.info.price.personal.title}
           </div>
-          <img src="" alt="" class="icon" />
+          <div class="friends">
+            <Icon name="material-symbols:man-2" size={40} />
+          </div>
           <div class="price">
             {t.components.home.info.price.personal.price}
           </div>
@@ -71,7 +75,13 @@ import cat from "../../assets/img/cat-cutted.webp";
           <div class="people">
             {t.components.home.info.price.dual.title}
           </div>
-          <img src="" alt="" class="icon" />
+          <div class="friends">
+            <Icon
+              name="material-symbols:sports-martial-arts"
+              size={40}
+            />
+            <Icon name="material-symbols:man-2" size={40} />
+          </div>
           <div class="price">
             {t.components.home.info.price.dual.price}
           </div>
@@ -80,7 +90,14 @@ import cat from "../../assets/img/cat-cutted.webp";
           <div class="people">
             {t.components.home.info.price.tri.title}
           </div>
-          <img src="" alt="" class="icon" />
+          <div class="friends">
+            <Icon
+              name="material-symbols:sports-martial-arts"
+              size={40}
+            />
+            <Icon name="material-symbols:man-2" size={40} />
+            <Icon name="material-symbols:hail" size={40} />
+          </div>
           <div class="price">
             {t.components.home.info.price.tri.price}
           </div>
@@ -89,7 +106,15 @@ import cat from "../../assets/img/cat-cutted.webp";
           <div class="people">
             {t.components.home.info.price.quad.title}
           </div>
-          <img src="" alt="" class="icon" />
+          <div class="friends">
+            <Icon
+              name="material-symbols:sports-martial-arts"
+              size={40}
+            />
+            <Icon name="material-symbols:hail" size={40} />
+            <Icon name="material-symbols:man-2" size={40} />
+            <Icon name="material-symbols:directions-walk" size={40} />
+          </div>
           <div class="price">
             {t.components.home.info.price.quad.price}
           </div>
@@ -102,10 +127,9 @@ import cat from "../../assets/img/cat-cutted.webp";
     </div>
     <div class="calendar">
       <div>{t.components.home.info.calendar.title}</div>
-      <a href=""
-        ><img src="" alt="" />{
-          t.components.home.info.calendar.text
-        }</a
+      <a href="">
+        <Icon name="material-symbols:calendar-add-on" size={32} />
+        {t.components.home.info.calendar.text}</a
       >
     </div>
     <div class="reminder">
@@ -146,19 +170,29 @@ import cat from "../../assets/img/cat-cutted.webp";
 </section>
 
 <style>
+  h2 {
+    margin-bottom: 2rem;
+  }
   section {
     background-color: #4b61f5;
+  }
+  span {
+    font-size: 0.6em;
+    display: block;
+    margin-top: 0.5rem;
   }
 
   .info-container {
     display: flex;
+    flex-wrap: wrap;
     gap: 3rem;
     color: #000;
-    margin-bottom: 7rem;
+    margin-bottom: 5rem;
   }
 
   .info {
-    background-color: #fff200;
+    background-color: #fef43b;
+    flex: 1;
     padding: 2rem 2rem 4rem;
     border-radius: 0 2rem 0 0;
     position: relative;
@@ -183,7 +217,6 @@ import cat from "../../assets/img/cat-cutted.webp";
     color: #fff;
     width: 6rem;
     height: 6rem;
-    font-size: 3rem;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -207,7 +240,7 @@ import cat from "../../assets/img/cat-cutted.webp";
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 1rem;
+    gap: 2rem;
     padding: 2rem 0;
     font-size: 1.7rem;
     border-bottom: 1px solid #736d6d;
@@ -219,21 +252,40 @@ import cat from "../../assets/img/cat-cutted.webp";
   .people {
     color: #43a7ff;
   }
-
-  .price {
-    margin-left: 10rem;
+  .friends {
+    flex: 1;
+    text-align: center;
   }
-
   .calendar {
-    margin: 5rem 0;
+    margin: 2.5rem 0;
     color: #fff;
     font-size: 1.5rem;
     background-color: #4115b7;
     display: flex;
     justify-content: space-between;
-    padding: 2rem;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    padding:1rem;
+    padding-left: 2rem;
     border-radius: 0.5rem;
   }
+
+  .calendar a {
+    color: #fff;
+    background-color: #7e0cff;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    padding: .5rem 1.5rem;
+    border-radius: 0.5rem;
+  }
+
+  .calendar a:hover {
+    background-color: #8922ff;
+  }
+
 
   .reminder {
     line-height: 2;
@@ -246,7 +298,7 @@ import cat from "../../assets/img/cat-cutted.webp";
     display: block;
     width: 15rem;
     height: auto;
-    transform: translateY(10%);
+    transform: translateY(3rem);
     z-index: 1;
     position: relative;
   }
@@ -254,9 +306,79 @@ import cat from "../../assets/img/cat-cutted.webp";
     border-radius: 0.9375rem;
     border: 8px solid #43a7ff;
     background: #fff;
-    padding: 2rem 4rem;
-    color: #43A7FF;
+    padding: 1rem 4rem;
+    color: #43a7ff;
     z-index: 2;
     position: relative;
+    display: block;
+    font-size: 2rem;
+    text-decoration: none;
+  }
+
+  .signUp a:hover {
+    background: #ecfbff;
+  }
+
+
+  ol{
+    padding-left: 2rem;
+  }
+
+  @media (max-width: 900px) {
+    .info-container {
+      flex-direction: column;
+      align-items: center;
+      gap:5rem;
+    }
+    .info-container2 {
+      flex-direction: column;
+      align-items: center;
+    }
+    .info {
+      padding: 2rem;
+    }
+    .info .content{
+      font-size: 2rem;
+    }
+    .image {
+      width: 4rem;
+      height: 4rem;
+      bottom: -3rem;
+      right: -3rem;
+    }
+    .image svg {
+      width: 2rem;
+      height: 2rem;
+    }
+
+    .price-box{
+      padding: 0 2rem;
+    }
+
+    .price-container{
+      padding: 1rem 0;
+    }
+    .price-container svg{
+      width: 1.5rem;
+      height: 1.5rem;
+    }
+    .info-container2{
+      gap: 0;
+    }
+
+    .signUp img {
+      width: 10rem;
+    }
+
+    .signUp a {
+      padding: 0.5rem 2rem;
+      
+      font-size: 1.75rem;
+    }
+
+    .calendar{
+      font-size: 1.25rem;
+    }
+    
   }
 </style>

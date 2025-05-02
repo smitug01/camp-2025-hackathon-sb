@@ -25,11 +25,16 @@ const t = getLocale(Astro.url),
     </div>
 
     <ul class="nav-links">
-      <li><a href="#info">{t.components.nav.signup}</a></li>
-      <li><a href="#schedule">{t.components.nav.record}</a></li>
-      <li><a href="#pastEvent">{t.components.nav.previous}</a></li>
+      <li><a href={l("#info")} ">{t.components.nav.signup}</a></li>
+      <li>
+        <a href={l("#schedule")} ">{t.components.nav.record}</a>
+      </li>
+      <li>
+        <a href={l("#pastEvent")} ">{t.components.nav.previous}</a>
+      </li>
       <li><a href={l("/coc")}>{t.components.nav.coc}</a></li>
       <li><a href={l("/about")}>{t.components.nav.team}</a></li>
+      <li><a href="">{t.components.home.info.price.signupNow}</a></li>
       <li>
         <a href={l("/", true)}
           >{extractLocale(Astro.url) === "en" ? "中文" : "EN"}</a
@@ -129,7 +134,7 @@ const t = getLocale(Astro.url),
   }
 
   /* Responsive styles for mobile */
-  @media (max-width: 768px) {
+  @media (max-width: 800px) {
     .hamburger-menu {
       display: flex;
       flex-direction: column;

@@ -16,7 +16,6 @@ import lightning4 from "../../assets/img/hero/lightning4.svg";
 import logo from "../../assets/img/hero/logo.webp";
 import wave from "../../assets/img/hero/wave-todo.svg";
 
-
 const t = getLocale(Astro.url);
 ---
 
@@ -35,7 +34,6 @@ const t = getLocale(Astro.url);
     <Image class="lightning2" src={lightning2} alt="" />
     <Image class="lightning3" src={lightning3} alt="" />
     <Image class="lightning4" src={lightning4} alt="" />
-
   </div>
   <div class="info">
     <div>
@@ -120,6 +118,9 @@ const t = getLocale(Astro.url);
       height: auto;
       width: calc(var(--size) * 95vw);
     }
+    .logo {
+      --size: 0.45;
+    }
   }
 
   @media (max-aspect-ratio: 5/6) {
@@ -166,11 +167,10 @@ const t = getLocale(Astro.url);
   }
 
   .logo {
-    --size: 1;
+    --size: .9;
     top: 35%;
     left: 50%;
     transform: translate(-50%, -50%);
-    aspect-ratio: 2000 / 433;
   }
 
   .logo2 {

@@ -53,6 +53,13 @@ const t = getLocale(Astro.url);
     box-shadow: var(--shadow);
   }
 
+  @media (max-width: 768px) {
+    .about::before {
+      transform: skewX(-3deg); 
+    }
+    
+  }
+
   h3 {
     font-weight: bold;
     font-size: 38px;

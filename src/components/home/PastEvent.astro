@@ -29,16 +29,16 @@ const pastEventImages = [
 const reversedEventImages = [...pastEventImages].reverse();
 ---
 
-<section class="past-event-section" id="pastEvent">
+<section class="past-event-section">
   <div class="container header-container">
-    <h2 class="emfont-UnboundedSans">
+    <h2 class="emfont-UnboundedSans" id="pastEvent">
       {t.components.home.pastEvent.title}
     </h2>
     <div class="button-group">
-      <a href="#" class="btn">
+      <a href="https://www.youtube.com/watch?v=b7r7DiEWsvA" class="btn" target="_blank">
         {t.components.home.pastEvent.video}
       </a>
-      <a href="#" class="btn">
+      <a href="https://www.flickr.com/photos/sitcon/albums/72177720319187414/" class="btn" target="_blank">
         {t.components.home.pastEvent.picture}
       </a>
     </div>
@@ -168,10 +168,10 @@ const reversedEventImages = [...pastEventImages].reverse();
     border-radius: 4px;
     text-decoration: none;
     color: inherit;
-    transition: 0.3s ease;
+    transition: 0.3s ease-out
   }
   .btn:hover {
-    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+    background-color: #3d6aff;
   }
 
   .past-events-container {
@@ -200,7 +200,7 @@ const reversedEventImages = [...pastEventImages].reverse();
     display: flex;
     width: max-content;
     position: relative;
-    padding: 45px 0;
+    padding: 40px 0;
   }
 
   .film-strip-line {

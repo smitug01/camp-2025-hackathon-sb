@@ -154,7 +154,6 @@ const t = getLocale(Astro.url);
     position: relative;
     padding: 5rem 0 2rem;
   }
-
   /* Background using clip-path instead of SVG */
   .footer-bg {
     position: absolute;
@@ -165,13 +164,13 @@ const t = getLocale(Astro.url);
     z-index: -1;
     background-color: #023249;
     clip-path: polygon(
-      105.279px 0,
-      0 114px,
+      7vw 0,
+      0 10vw,
       0 100%,
       100% 100%,
-      100% 95px,
-      calc(100% - 195.5px) 0,
-      105.279px 0
+      100% 5vw,
+      90vw 0,
+      10vw 0
     );
   }
 
@@ -260,17 +259,13 @@ const t = getLocale(Astro.url);
   /* Responsive design for mobile devices */
   @media (max-width: 768px) {
     footer {
-      padding-top: 3rem;
-    }
-
-    .footer-bg {
-      clip-path: none;
+      padding-top: 4rem;
     }
 
     .footer-container {
-      flex-direction: column;
-      max-width: 430px;
-      padding: 0 0.5rem;
+      display: block;
+      padding: 0 2rem;
+      margin: 0;
     }
 
     h3 {
@@ -287,6 +282,9 @@ const t = getLocale(Astro.url);
 
     .year-link {
       font-size: 1.1rem;
+    }
+    .contact {
+      margin-bottom: 2rem;
     }
   }
 </style>

@@ -1,95 +1,40 @@
 ---
 import { getLocale } from "../../i18n";
-
+import Header from "../Header.astro";
 const t = getLocale(Astro.url);
 ---
 
 <section class="container content">
-  <h2 class="section-title emfont-MaokenAssortedSansTC">
+  <Header title={t.components.about.hero.title} />
+  <h2 class="emfont-MaokenAssortedSansTC">
     {t.components.about.content.aboutSitcon}
   </h2>
-  <div class="content-section">
-    <p class="content-paragraph">
-      {t.components.about.content.sitconIs}
-    </p>
-    <p class="content-paragraph">
-      {t.components.about.content.sitconNotOnly}
-    </p>
-    <p class="content-paragraph">
-      {t.components.about.content.sitconInterested[0]}
-      <a href="#" class="link"
-        >{t.components.about.content.sitconInterested[1]}</a
-      >
-      {t.components.about.content.sitconInterested[2]}
-      <a href="#" class="link"
-        >{t.components.about.content.sitconInterested[3]}</a
-      >
-      {t.components.about.content.sitconInterested[4]}
-    </p>
-  </div>
+  <p>{t.components.about.content.sitconIs}</p>
+  <p>{t.components.about.content.sitconNotOnly}</p>
+  <p>
+    {t.components.about.content.sitconInterested[0]}
+    <a href="#" class="link"
+      >{t.components.about.content.sitconInterested[1]}</a
+    >
+    {t.components.about.content.sitconInterested[2]}
+    <a href="#" class="link"
+      >{t.components.about.content.sitconInterested[3]}</a
+    >
+    {t.components.about.content.sitconInterested[4]}
+  </p>
+  <style>
+    h2 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    a {
+      transition: opacity 0.2s ease;
+    }
+
+    a:hover {
+      opacity: 0.8;
+    }
+  </style>
 </section>
-
-<style>
-  .content {
-    padding-top: 2rem;
-    padding-bottom: 2rem;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    text-align: left;
-  }
-
-  .section-title {
-    color: #fff;
-    font-size: 48px;
-    font-weight: 700;
-    line-height: 150%; /* 72px */
-    width: 314px;
-    margin-bottom: 1.5rem;
-  }
-
-  .content-section {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    width: 100%;
-  }
-
-  .content-paragraph {
-    color: #fff;
-    font-size: 32px;
-    font-weight: 500;
-    line-height: 150%; /* 48px */
-    margin-bottom: 1.5rem;
-    text-align: left;
-  }
-
-  .link {
-    color: #fff;
-    font-size: 32px;
-    font-weight: 500;
-    line-height: 150%;
-    text-decoration-line: underline;
-    text-decoration-style: solid;
-    text-decoration-skip-ink: auto;
-    text-decoration-thickness: auto;
-    text-underline-offset: auto;
-    text-underline-position: from-font;
-  }
-
-  .link:hover {
-    opacity: 0.8;
-  }
-
-  @media (max-width: 768px) {
-    .section-title {
-      font-size: 36px;
-      width: auto;
-    }
-
-    .content-paragraph,
-    .link {
-      font-size: 24px;
-    }
-  }
-</style>
