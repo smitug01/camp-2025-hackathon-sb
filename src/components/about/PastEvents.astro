@@ -79,11 +79,19 @@ const t = getLocale(Astro.url);
     h2 {
       font-size: 2.5rem;
       margin-bottom: 3rem;
+      text-align: center;
     }
 
     h3{
       font-size: 2rem;
       margin-bottom: 1rem;
+    }
+
+    .container.past-events {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
     }
 
     .event {
@@ -94,7 +102,7 @@ const t = getLocale(Astro.url);
       background-color: #FFF;
       color: #000;
       max-width: 980px;
-      margin: auto;
+      width: 100%;
       padding: 2rem;
       margin-bottom: 3.5rem;
     }
@@ -127,11 +135,18 @@ const t = getLocale(Astro.url);
         flex-direction: column;
         align-items: center;
         text-align: center;
-      margin-bottom: 1.5rem;
+        margin-bottom: 1.5rem;
+        width: 85%;
+        max-width: 500px;
+        padding: 1.5rem;
       }
       .event::before {
         width: calc(100% + 4rem);
-        height:  calc(100% + 2rem);
+        height: calc(100% + 2rem);
+      }
+      
+      img {
+        width: 250px;
       }
     }
   </style>
