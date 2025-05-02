@@ -144,6 +144,7 @@ const t = getLocale(Astro.url);
     z-index: 1;
     margin-top: 0;
     margin-bottom: 0;
+    width: 1304px;
   }
 
   /* Hackathon 標題樣式 */
@@ -199,6 +200,52 @@ const t = getLocale(Astro.url);
     margin-top: 0;
     margin-bottom: 0;
     height: 360px;
+    max-width: 100%;
+  }
+
+  /* 開源精神與社群特定樣式 */
+  .course-container:nth-child(5) {
+    background-color: #2FBCD8;
+    /* 將SVG路徑轉換為clip-path */
+    clip-path: polygon(
+      0% 95.9%,    /* 0 460.5 */
+      1.8% 0%,     /* 22.009 0 */
+      2.45% 23.6%, /* 30.0123 113.5 */
+      52.2% 27%,   /* 638.761 129.5 */
+      100% 20.7%,  /* 1224 99.5 */
+      100% 100%,   /* 1224 480 */
+      52.2% 89.4%, /* 638.761 429 */
+      0% 95.9%     /* 0 460.5 */
+    );
+    padding: 3rem 2.5rem;
+    position: relative;
+    z-index: 1;
+    margin-top: 0;
+    margin-bottom: 0;
+    height: 480px;
+    max-width: 100%;
+  }
+
+  /* 資訊技能樹特定樣式 */
+  .course-container:nth-child(6) {
+    background-color: #2659CE;
+    /* 將SVG路徑轉換為clip-path */
+    clip-path: polygon(
+      0% 95.8%,    /* 0 461 */
+      1.8% 0.1%,   /* 22 0.5 */
+      1.8% 23.4%,  /* 22 112.5 */
+      52.2% 27%,   /* 638.5 130 */
+      100% 20.8%,  /* 1223.5 100 */
+      100% 99.9%,  /* 1223.5 480.5 */
+      52.2% 92.6%, /* 638.5 445.5 */
+      0% 95.8%     /* 0 461 */
+    );
+    padding: 3rem 2.5rem;
+    position: relative;
+    z-index: 1;
+    margin-top: 0;
+    margin-bottom: 0;
+    height: 481px;
     max-width: 100%;
   }
 
