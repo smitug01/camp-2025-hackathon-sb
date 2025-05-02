@@ -1,6 +1,12 @@
 import "https://font.emtech.cc/emfont.js";
 
-emfont.init();
+document.addEventListener(
+  "astro:page-load",
+  () => {
+    emfont.init();
+  },
+  { once: true },
+);
 
 const ad = () =>
   console.log(
