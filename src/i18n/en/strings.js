@@ -19,10 +19,10 @@ const enStrings = {
         ],
       },
       hero: {
-        title: "Organizer team",
+        title: "Organizing Team",
       },
       pastEvents: {
-        title: "Events we held before",
+        title: "Past Events",
         hoc: {
           title: "Hour of Code",
           text: "Hour of Code is a one-hour introduction to computer science, designed to demystify coding and show that anybody can learn the basics. This initiative aims to expand participation in the field of computer science.",
@@ -134,12 +134,12 @@ const enStrings = {
       host: {
         organize: "Co-Organizer",
         // TODO: Confirm this translation
-        sponsor: "Co-Sponsor",
+        sponsor: "Supporting Organization",
         hosts: {
           sitcon: "SITCON",
           ocf: "Open culture foundation",
-          nycuCsClub: "NYCU Computer Science Club",
-          nycuCs: "NYCU Computer Science",
+          nycuCsClub: "Computer Science Student Association, NYCU",
+          nycuCs: "Department of Computer Science, NYCU",
           // TODO: Get translation about this project
           // Cannot figure out what English means in the official website
           itsa: "ITSA 教育部智慧創新關鍵人才躍升計畫",
