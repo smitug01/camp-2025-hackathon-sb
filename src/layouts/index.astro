@@ -62,7 +62,11 @@ const customTransition = {
     <meta name="twitter:card" content="summary_large_image" />
 
     <link rel="icon" href="https://sitcon.camp/2025/favicon.ico" />
-
+    <link
+      rel="preconnect"
+      href="https://www.googletagmanager.com"
+      crossorigin
+    />
     <style
       is:global
       define:vars={{
@@ -90,7 +94,7 @@ const customTransition = {
       }
 
       h2 {
-        font-size: clamp(2rem,4rem, 9vw);
+        font-size: clamp(2rem, 4rem, 9vw);
         font-weight: 700;
         font-weight: 400;
         scroll-margin-top: 7rem;
@@ -127,7 +131,6 @@ const customTransition = {
         }
       }
     </style>
-
     <ClientRouter />
   </head>
   <body
@@ -138,5 +141,36 @@ const customTransition = {
     <slot />
     <Footer transition:persist={true} />
     <script src="../scripts/main.js"></script>
+    <script>
+      window.addEventListener("load", function () {
+        // Google Tag Manager
+        (function (w, d, s, l, i) {
+          w[l] = w[l] || [];
+          w[l].push({
+            "gtm.start": new Date().getTime(),
+            event: "gtm.js",
+          });
+          var f = d.getElementsByTagName(s)[0],
+            j = d.createElement(s),
+            dl = l != "dataLayer" ? "&l=" + l : "";
+          j.async = true;
+          j.src =
+            "https://www.googletagmanager.com/gtm.js?id=" + i + dl;
+          f.parentNode.insertBefore(j, f);
+        })(window, document, "script", "dataLayer", "GTM-NKHHNVV");
+
+        // Add noscript iframe dynamically
+        var noscript = document.createElement("noscript");
+        var iframe = document.createElement("iframe");
+        iframe.src =
+          "https://www.googletagmanager.com/ns.html?id=GTM-NKHHNVV";
+        iframe.height = "0";
+        iframe.width = "0";
+        iframe.style.display = "none";
+        iframe.style.visibility = "hidden";
+        noscript.appendChild(iframe);
+        document.body.appendChild(noscript);
+      });
+    </script>
   </body>
 </html>
