@@ -22,7 +22,7 @@ const t = getLocale(Astro.url);
             >{t.components.home.feedback.feedbacks[0].name}</span
           >
         </h3>
-        <p class="emfont-XiaoLai">
+        <p class="emfont-LXGWWenKaiTC">
           {t.components.home.feedback.feedbacks[0].text}
         </p>
       </div>
@@ -41,7 +41,7 @@ const t = getLocale(Astro.url);
             >{t.components.home.feedback.feedbacks[1].name}</span
           >
         </h3>
-        <p class="emfont-XiaoLai">
+        <p class="emfont-LXGWWenKaiTC">
           {t.components.home.feedback.feedbacks[1].text}
         </p>
       </div>
@@ -96,12 +96,12 @@ const t = getLocale(Astro.url);
       line-height: 1.8;
     }
     @media (max-width: 50rem) {
-    .feedback {
-      flex-direction: column;
+      .feedback {
+        flex-direction: column;
+      }
+      .container {
+        padding: 0 1rem 1rem;
+      }
     }
-    .container{
-      padding: 0 1rem 1rem;
-    }
-  }
   </style>
 </section>
