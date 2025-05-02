@@ -14,7 +14,9 @@ import cat from "../../assets/img/cat-cutted.webp";
     </h2>
     <div class="info-container">
       <div class="info">
-        <h3>{t.components.home.info.event.title}</h3>
+        <h3 class="emfont-NotoSansTC-700">
+          {t.components.home.info.event.title}
+        </h3>
         <div class="content">
           {t.components.home.info.event.text[0]}<span
             >{t.components.home.info.event.text[1]}</span
@@ -28,7 +30,9 @@ import cat from "../../assets/img/cat-cutted.webp";
         </div>
       </div>
       <div class="info">
-        <h3>{t.components.home.info.signup.title}</h3>
+        <h3 class="emfont-NotoSansTC-700">
+          {t.components.home.info.signup.title}
+        </h3>
         <div class="content">
           {t.components.home.info.signup.text[0]}<span
             >{t.components.home.info.signup.text[1]}</span
@@ -39,7 +43,9 @@ import cat from "../../assets/img/cat-cutted.webp";
         </div>
       </div>
       <div class="info">
-        <h3>{t.components.home.info.place.title}</h3>
+        <h3 class="emfont-NotoSansTC-700">
+          {t.components.home.info.place.title}
+        </h3>
         <div class="content">
           {t.components.home.info.place.text}
         </div>
@@ -137,7 +143,7 @@ import cat from "../../assets/img/cat-cutted.webp";
     </div>
     <div class="reminder">
       <h3>{t.components.home.info.reminder.title}</h3>
-      <ol class="emfont-LXGWMarkerGothic">
+      <ol class="emfont-NotoSansTC">
         <li>{t.components.home.info.reminder.overFive}</li>
         <li>{t.components.home.info.reminder.beforeOneNight}</li>
         <li>
@@ -177,7 +183,7 @@ import cat from "../../assets/img/cat-cutted.webp";
     margin-bottom: 2rem;
   }
   section {
-    background-color: #4b61f5;
+    background-color: #374de5;
   }
   span {
     font-size: 0.6em;
@@ -204,7 +210,7 @@ import cat from "../../assets/img/cat-cutted.webp";
   .info h3 {
     font-size: 1.25rem;
     margin-bottom: 1rem;
-    font-weight: 400;
+    font-weight: bold;
   }
 
   .info .content {
@@ -323,6 +329,14 @@ import cat from "../../assets/img/cat-cutted.webp";
 
   ol {
     padding-left: 2rem;
+  }
+
+  ol a {
+    transition: opacity 0.2s ease;
+  }
+
+  ol a:hover {
+    opacity: 0.8;
   }
 
   @media (max-width: 900px) {
