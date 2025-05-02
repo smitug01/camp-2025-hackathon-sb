@@ -10,14 +10,14 @@ const t = getLocale(Astro.url);
     <p>
       {t.components.home.about.sitconIs}
     </p>
-    <a href="">{t.common.learnMore}</a>
+    <a href={l("/about")}>{t.common.learnMore}</a>
   </div>
   <div class="about">
     <h3>Code of Conduct</h3>
     <p>
       {t.components.home.about.cocText}
     </p>
-    <a href="">{t.common.learnMore}</a>
+    <a href={l("/coc")}>{t.common.learnMore}</a>
   </div>
 </section>
 

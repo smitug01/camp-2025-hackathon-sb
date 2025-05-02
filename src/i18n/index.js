@@ -16,10 +16,16 @@ export const linkTransformer = (url) => {
   const currentLocale = extractLocale(url);
 
   return (path, reverseLocale = false) => {
-    return (
+    const basePath =
       (currentLocale === "en") !== reverseLocale
-        ? posix.join("/2025", "/en", path)
-        : posix.join("/2025", path)
-    ).replace(/\/+$/, "");
+        ? "/2025/en"
+        : "/2025";
+
+    if (path.startsWith("#") || path.startsWith("/#")) {
+      // 是純錨點，直接接上去
+      return basePath + path.replace(/^\//, "");
+    }
+
+    return posix.join(basePath, path).replace(/\/+$/, "");
   };
 };
