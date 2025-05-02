@@ -95,5 +95,13 @@ const t = getLocale(Astro.url);
       font-weight: bold;
       line-height: 1.8;
     }
+    @media (max-width: 50rem) {
+    .feedback {
+      flex-direction: column;
+    }
+    .container{
+      padding: 0 1rem 1rem;
+    }
+  }
   </style>
 </section>

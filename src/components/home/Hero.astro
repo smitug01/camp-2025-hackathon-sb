@@ -23,10 +23,9 @@ const t = getLocale(Astro.url);
   <div class="hero">
     <Image class="notFound" src={notFoundBackground} alt="" />
     <Image class="boom" src={boom} alt="" />
+    <Image class="light" src={light} alt="" />
     <div class="clip"></div>
     <Image class="wave" src={wave} alt="" />
-    <Image class="cat" src={cat} alt="" />
-    <Image class="light" src={light} alt="" />
     <Image class="cloud" src={cloud} alt="" />
     <Image class="logo logo2" src={logo} alt="" />
     <Image class="logo" src={logo} alt="" />
@@ -34,6 +33,7 @@ const t = getLocale(Astro.url);
     <Image class="lightning2" src={lightning2} alt="" />
     <Image class="lightning3" src={lightning3} alt="" />
     <Image class="lightning4" src={lightning4} alt="" />
+    <Image class="cat" src={cat} alt="" />
   </div>
   <div class="info">
     <div>
@@ -62,6 +62,12 @@ const t = getLocale(Astro.url);
     padding-top: 5.5rem;
     min-height: 100vh;
     position: relative;
+  }
+
+  .hero img {
+    animation: zoom 1s ease-in-out forwards;
+    transform-origin: left;
+    scale: 0;
   }
 
   .paint {
@@ -135,7 +141,9 @@ const t = getLocale(Astro.url);
   .hero .notFound {
     position: static;
     --size: 1;
+    scale: 1;
     margin: auto;
+    animation: fadeIn 1s ease-in-out forwards;
   }
 
   .boom,.cat,.wave
@@ -159,54 +167,110 @@ const t = getLocale(Astro.url);
     --size: 0.45;
     transform: translate(-30%, -50%);
   } */
-
-  .cloud {
+  .hero .cloud {
     top: 47%;
     left: 42%;
     --size: 0.2;
+    animation-delay: 0.5s;
   }
-
-  .logo {
-    --size: .9;
+  .hero .logo {
+    --size: 0.9;
     top: 35%;
     left: 50%;
     transform: translate(-50%, -50%);
   }
-
-  .logo2 {
+  .hero .logo2 {
     scale: 0.99;
     filter: brightness(0) invert(1);
+    animation: smallZoom 1s ease-in-out forwards;
   }
 
-  .lightning {
+  @keyframes smallZoom {
+    0% {
+      scale: 0;
+    }
+    50% {
+      scale: 1.2;
+    }
+    100% {
+      scale: 0.99;
+    }
+  }
+  .hero .lightning,
+  .hero .lightning2,
+  .hero .lightning3,
+  .hero .lightning4 {
+    animation-delay: 1.2s;
+    scale: 1;
+    animation:
+      /* zoom 1s ease-in-out forwards; */
+      infinitiZoom 1s ease-in-out infinite alternate;
+    /* animation-composition: accumulate; */
+  }
+
+  @keyframes infinitiZoom {
+    0% {
+      scale: 1.1;
+    }
+    100% {
+      scale: 0.8;
+    }
+  }
+  .hero .lightning {
     top: 55%;
     left: 34%;
     --size: 0.1;
     transform: translate(-100%, -100%);
+    transform-origin: bottom right;
   }
-  .lightning2 {
+  .hero .lightning2 {
     top: 55%;
     left: 44%;
     --size: 0.1;
     transform: translate(-100%, -100%);
+    transform-origin: bottom right;
   }
-  .lightning3 {
+  .hero .lightning3 {
     top: 52%;
     left: 54%;
     --size: 0.05;
     transform: translate(0, -100%);
+    transform-origin: bottom left;
   }
-  .lightning4 {
+  .hero .lightning4 {
     top: 54%;
     left: 64%;
     --size: 0.07;
     transform: translate(0, -100%);
+    transform-origin: bottom left;
   }
 
-  .light {
+  .hero .light {
     top: 60%;
     left: 50%;
     --size: 0.37;
     transform: translate(-48%, -100%);
+    animation-delay: 0.5s;
+  }
+
+  @keyframes zoom {
+    0% {
+      scale: 0;
+    }
+    50% {
+      scale: 1.2;
+    }
+    100% {
+      scale: 1;
+    }
+  }
+
+  @keyframes fadeIn {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
   }
 </style>

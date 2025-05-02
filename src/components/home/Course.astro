@@ -122,23 +122,58 @@ const t = getLocale(Astro.url);
 </section>
 
 <style>
+  .container {
+    margin-bottom: 8rem;
+  }
   .course-container {
     display: flex;
     align-items: center;
     gap: 2rem;
     padding: 2rem;
+    color: #000;
+    position: relative;
+    margin-bottom: 1rem;
+    z-index: 3;
+  }
+  .course-container > * {
+    z-index: 3;
+  }
+  .course-container::before,
+  .course-container::after {
+    display: block;
+    content: "";
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    z-index: 2;
+    --extra-height: 3;
+    height: calc(100% + var(--extra-height) * 1rem);
+    /* --box-width: calc(min(100vw, 1200px) - 4rem); */
+  }
+  .course-container::before {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
   }
 
-  /* 主線課程特定樣式 */
+  .course-container::after {
+    left: 0;
+  }
   .course-container:first-child {
-    /* background-color: #6c6c6c; */
+    background-color: #6c6c6c;
     color: white;
   }
 
-  /* Hackathon特定樣式 */
+  .course-container:first-child:after {
+    background-color: #6c6c6c;
+    top: 0;
+    --extra-height: 3;
+  }
+
   .course-container:nth-child(2)::before {
     background-color: #dfff60;
-    /* 將SVG路徑轉換為clip-path */
+    width: 107.5%;
+    --extra-height: 11;
     clip-path: polygon(
       0% 43.7%,
       3.5% 0%,
@@ -151,53 +186,68 @@ const t = getLocale(Astro.url);
       4.7% 81.1%,
       0% 43.7%
     );
-    padding: 3rem 3rem;
-    position: relative;
+  }
+
+  .course-container:nth-child(3) {
     z-index: 1;
-    margin-top: 0;
-    margin-bottom: 0;
-    width: 1304px;
   }
 
-  /* 廣度課程特定樣式 */
-  .course-container:nth-child(3)::before {
-    background-color: #ffffff;
-    width: 1200px;
-    height: 473px;
-    max-width: 100%;
-    display: flex;
-    align-items: center;
-    position: relative;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    margin-left: auto;
-    margin-right: auto;
-    margin-top: 0;
-    margin-bottom: 0;
+  .course-container:nth-child(3)::after {
+    background-color: #fff;
+    bottom: -2;
+    --extra-height: 7;
+  }
+  .course-container:nth-child(4) {
+    z-index: 4;
   }
 
-  /* 視界咖啡館特定樣式 */
-  .course-container:nth-child(4)::before {
+  .course-container:nth-child(4)::before,
+  .course-container:nth-child(4)::after {
+    width: 108%;
+    --extra-height: 3;
     background-color: #f8a349;
-    /* 將SVG路徑轉換為clip-path */
     clip-path: polygon(
       5.9% 100%,
       /* 76 360 */ 0% 8.5%,
       /* 0 30.5 */ 98% 0.1%,
       /* 1256.5 0.5 */ 100% 100% /* 1282 360 */
     );
-    padding: 3rem 2.5rem;
-    position: relative;
-    z-index: 1;
-    margin-top: 0;
-    margin-bottom: 0;
-    height: 360px;
-    max-width: 100%;
+    z-index: 3;
   }
 
-  /* 開源精神與社群特定樣式 */
-  .course-container:nth-child(5)::before {
-    background-color: #2fbcd8;
-    /* 將SVG路徑轉換為clip-path */
+  .course-container:nth-child(4)::after {
+    background-color: #a45e14;
+    transform: translate(-50%, -50%);
+    top: calc(50% - 5px);
+    left: calc(50% + 5px);
+    z-index: 2;
+  }
+
+  .course-container:nth-child(5) {
+    color: #fff;
+  }
+  .course-container:nth-child(5)::after {
+    background-color: #525252;
+    bottom: -2rem;
+    height: 170%;
+    z-index: 1;
+  }
+  .course-container:nth-child(6) {
+    color: #fff;
+  }
+  .course-container:nth-child(6) > * {
+    z-index: 4;
+  }
+
+  .course-container:nth-child(6)::before,
+  .course-container:nth-child(6)::after {
+    --extra-height: 16;
+    width: 104%;
+    z-index: 3;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #2659ce;
     clip-path: polygon(
       0% 95.9%,
       /* 0 460.5 */ 1.8% 0%,
@@ -208,36 +258,12 @@ const t = getLocale(Astro.url);
       /* 1224 480 */ 52.2% 89.4%,
       /* 638.761 429 */ 0% 95.9% /* 0 460.5 */
     );
-    padding: 3rem 2.5rem;
-    position: relative;
-    z-index: 1;
-    margin-top: 0;
-    margin-bottom: 0;
-    height: 480px;
-    max-width: 100%;
   }
 
-  /* 資訊技能樹特定樣式 */
   .course-container:nth-child(6)::before {
-    background-color: #2659ce;
-    /* 將SVG路徑轉換為clip-path */
-    clip-path: polygon(
-      0% 95.8%,
-      /* 0 461 */ 1.8% 0.1%,
-      /* 22 0.5 */ 1.8% 23.4%,
-      /* 22 112.5 */ 52.2% 27%,
-      /* 638.5 130 */ 100% 20.8%,
-      /* 1223.5 100 */ 100% 99.9%,
-      /* 1223.5 480.5 */ 52.2% 92.6%,
-      /* 638.5 445.5 */ 0% 95.8% /* 0 461 */
-    );
-    padding: 3rem 2.5rem;
-    position: relative;
-    z-index: 1;
-    margin-top: 0;
-    margin-bottom: 0;
-    height: 481px;
-    max-width: 100%;
+    background-color: #2fbcd8;
+    z-index: 2;
+    top: calc(50% - 7px);
   }
 
   .course-container:nth-child(odd) {
@@ -249,19 +275,19 @@ const t = getLocale(Astro.url);
   }
 
   img {
-    flex: 0 0 40%;
-    border-radius: 0.5rem;
     display: block;
     object-fit: cover;
+    width: 300px;
+    height: auto;
+    background-color: #fff;
   }
 
   h3 {
     font-size: 1.8rem;
     margin-bottom: 1rem;
-    color: var(--textColor, #333);
   }
 
-  @media (max-width: 768px) {
+  @media (max-width: 900px) {
     .course-container {
       flex-direction: column;
       align-items: center;
@@ -269,6 +295,25 @@ const t = getLocale(Astro.url);
 
     .course-container:nth-child(odd) {
       flex-direction: column;
+    }
+
+    .course-container:nth-child(2) {
+      background-color: #dfff60;
+      margin-bottom: 0;
+    }
+    .course-container:nth-child(3) {
+      background-color: #fff;
+    }
+
+    .course-container:nth-child(6) {
+      background-color: #2659ce;
+    }
+    .course-container:nth-child(6)::before,
+    .course-container:nth-child(6)::after {
+      width: 100%;
+    }
+    .course-container:nth-child(6)::before {
+      top: 53%;
     }
   }
 </style>

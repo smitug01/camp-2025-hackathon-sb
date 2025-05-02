@@ -34,7 +34,7 @@ const t = getLocale(Astro.url),
       </li>
       <li><a href={l("/coc")}>{t.components.nav.coc}</a></li>
       <li><a href={l("/about")}>{t.components.nav.team}</a></li>
-      <li><a href="">{t.components.home.info.price.signupNow}</a></li>
+      <li><a href="https://sitcon.kktix.cc/events/sitcon-camp2025">{t.components.home.info.price.signupNow}</a></li>
       <li>
         <a href={l("/", true)}
           >{extractLocale(Astro.url) === "en" ? "中文" : "EN"}</a
@@ -134,7 +134,7 @@ const t = getLocale(Astro.url),
   }
 
   /* Responsive styles for mobile */
-  @media (max-width: 800px) {
+  @media (max-width: 900px) {
     .hamburger-menu {
       display: flex;
       flex-direction: column;
