@@ -38,7 +38,11 @@ const allImages = [...images, ...marquee];
   </div>
   <div class="marquee">
     <div class="marquee-image">
-      {allImages.map((image) => <img src={image.src} loading="lazy" />)}
+      {
+        allImages.map((image) => (
+          <img src={image.src} loading="lazy" />
+        ))
+      }
     </div>
   </div>
   <div class="marquee marquee2">
@@ -52,6 +56,9 @@ const allImages = [...images, ...marquee];
     --dash-gap: 40px;
   }
 
+  section {
+    overflow: hidden;
+  }
   .header-container {
     display: flex;
     justify-content: space-between;
@@ -73,6 +80,14 @@ const allImages = [...images, ...marquee];
     text-decoration: none;
     color: inherit;
     transition: 0.3s ease-out;
+    display: block;
+    width: fit-content;
+  }
+
+  @media (max-width: 32rem) {
+    .button-group {
+     flex-direction: column;
+    }
   }
   .btn:hover {
     background-color: #3d6aff;
