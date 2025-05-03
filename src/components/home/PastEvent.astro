@@ -11,6 +11,7 @@ const marquee = await Astro.glob("../../assets/img/marquee/*").then(
     return files.map((file) => file.default);
   },
 );
+const allImages = [...images, ...marquee];
 ---
 
 <section class="past-event-section">
@@ -37,7 +38,7 @@ const marquee = await Astro.glob("../../assets/img/marquee/*").then(
   </div>
   <div class="marquee">
     <div class="marquee-image">
-      {images.map((image) => <img src={image.src} loading="lazy" />)}
+      {allImages.map((image) => <img src={image.src} loading="lazy" />)}
     </div>
   </div>
   <div class="marquee marquee2">
@@ -85,7 +86,7 @@ const marquee = await Astro.glob("../../assets/img/marquee/*").then(
   .marquee-image {
     display: flex;
     gap: 2rem;
-    animation: marquee 30s linear infinite;
+    animation: marquee 50s linear infinite;
     background-color: var(--black);
     padding: 2.5rem 0 2.5rem 2rem;
     --offset: 0.9rem;
