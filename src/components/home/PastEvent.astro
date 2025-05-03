@@ -1,32 +1,16 @@
 ---
 import { getLocale } from "../../i18n";
-import { Image } from "astro:assets";
-
 const t = getLocale(Astro.url);
-
-import camp from "../../assets/img/about/events/camp.webp";
-import hackathon from "../../assets/img/about/events/Hackathon.webp";
-import hourOfCode from "../../assets/img/about/events/hour_of_code.webp";
-import annualMeeting from "../../assets/img/about/events/年會.webp";
-import regularMeeting from "../../assets/img/about/events/定期聚.webp";
-import mainCourse from "../../assets/img/about/events/主線課程.webp";
-import broadCourse from "../../assets/img/about/events/廣度課程.webp";
-import skillTree from "../../assets/img/about/events/資訊技能樹.webp";
-import openSource from "../../assets/img/about/events/開源精神與社群.webp";
-
-const pastEventImages = [
-  { src: camp,          alt: "Camp" },
-  { src: hackathon,     alt: "Hackathon" },
-  { src: hourOfCode,    alt: "Hour of Code" },
-  { src: annualMeeting, alt: "年會" },
-  { src: regularMeeting,alt: "定期聚" },
-  { src: mainCourse,    alt: "主線課程" },
-  { src: broadCourse,   alt: "廣度課程" },
-  { src: skillTree,     alt: "資訊技能樹" },
-  { src: openSource,    alt: "開源精神與社群" },
-];
-
-const reversedEventImages = [...pastEventImages].reverse();
+const images = await Astro.glob(
+  "../../assets/img/about/events/*",
+).then((files) => {
+  return files.map((file) => file.default);
+});
+const marquee = await Astro.glob("../../assets/img/marquee/*").then(
+  (files) => {
+    return files.map((file) => file.default);
+  },
+);
 ---
 
 <section class="past-event-section">
@@ -35,102 +19,31 @@ const reversedEventImages = [...pastEventImages].reverse();
       {t.components.home.pastEvent.title}
     </h2>
     <div class="button-group">
-      <a href="https://www.youtube.com/watch?v=b7r7DiEWsvA" class="btn" target="_blank">
+      <a
+        href="https://www.youtube.com/watch?v=b7r7DiEWsvA"
+        class="btn"
+        target="_blank"
+      >
         {t.components.home.pastEvent.video}
       </a>
-      <a href="https://www.flickr.com/photos/sitcon/albums/72177720319187414/" class="btn" target="_blank">
+      <a
+        href="https://www.flickr.com/photos/sitcon/albums/72177720319187414/"
+        class="btn"
+        target="_blank"
+      >
         {t.components.home.pastEvent.picture}
       </a>
     </div>
   </div>
-
-  <div class="past-events-container">
-    <div class="slider-container">
-      <div class="slider slide-left">
-        <div class="film-strip-line top"></div>
-        <div class="film-strip-line bottom"></div>
-        {pastEventImages.map((img) => (
-          <div class="slide-item" data-original="true" data-image-id={img.alt}>
-            <Image src={img.src} alt={img.alt} width={240} height={160} />
-          </div>
-        ))}
-      </div>
-    </div>
-
-    <div class="slider-container">
-      <div class="slider slide-right">
-        <div class="film-strip-line top"></div>
-        <div class="film-strip-line bottom"></div>
-        {reversedEventImages.map((img) => (
-          <div class="slide-item" data-original="true" data-image-id={img.alt}>
-            <Image src={img.src} alt={img.alt} width={240} height={160} />
-          </div>
-        ))}
-      </div>
+  <div class="marquee">
+    <div class="marquee-image">
+      {images.map((image) => <img src={image.src} loading="lazy" />)}
     </div>
   </div>
+  <div class="marquee marquee2">
+    <img src="" alt="" />
+  </div>
 </section>
-
-<script is:inline>
-(function () {
-  "use strict";
-
-  const MIN_RATIO = 2;
-  const DEBOUNCE_MS = 150;
-
-  function fillSlider(slider) {
-    const viewport = window.innerWidth;
-    const targetWidth = viewport * MIN_RATIO;
-
-    slider
-      .querySelectorAll('.slide-item[data-original="false"]')
-      .forEach((n) => n.remove());
-
-    // 取得原始圖片
-    const originals = Array.from(slider.querySelectorAll('.slide-item[data-original="true"]'));
-    const totalOriginals = originals.length;
-    
-    if (totalOriginals === 0) return;
-
-    // 計算寬度
-    const singleItemWidth = originals[0].offsetWidth + 
-                          parseInt(window.getComputedStyle(originals[0]).marginLeft) + 
-                          parseInt(window.getComputedStyle(originals[0]).marginRight);
-    const repeatsNeeded = Math.ceil(targetWidth / (singleItemWidth * totalOriginals));
-    
-    // 複製圖片 保持順序
-    for (let i = 0; i < repeatsNeeded; i++) {
-      originals.forEach(item => {
-        const clone = item.cloneNode(true);
-        clone.setAttribute("data-original", "false");
-        slider.appendChild(clone);
-      });
-    }
-  }
-
-  function restartAnimation(slider) {
-    slider.style.animation = "none";
-    slider.offsetHeight; // 強制重繪
-    slider.style.animation = "";
-  }
-
-  function refreshAllSliders() {
-    document.querySelectorAll(".slider").forEach((slider) => {
-      fillSlider(slider);
-      restartAnimation(slider);
-    });
-  }
-
-  window.addEventListener("load", refreshAllSliders);
-
-  // 偵測視窗resize
-  var resizeTimer = null;
-  window.addEventListener("resize", () => {
-    clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(refreshAllSliders, DEBOUNCE_MS);
-  });
-})();
-</script>
 
 <style>
   :root {
@@ -138,24 +51,13 @@ const reversedEventImages = [...pastEventImages].reverse();
     --dash-gap: 40px;
   }
 
-  .past-event-section {
-    width: 100%;
-    overflow: hidden;
-  }
-
-  .container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 1rem;
-  }
-
   .header-container {
     display: flex;
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
-    margin-bottom: 2rem;
-    gap:1rem;
+    padding-bottom: 2rem;
+    gap: 1rem;
   }
 
   .button-group {
@@ -169,94 +71,83 @@ const reversedEventImages = [...pastEventImages].reverse();
     border-radius: 4px;
     text-decoration: none;
     color: inherit;
-    transition: 0.3s ease-out
+    transition: 0.3s ease-out;
   }
   .btn:hover {
     background-color: #3d6aff;
   }
 
-  .past-events-container {
+  img {
+    height: 150px;
+    border-radius: 0.5rem;
+  }
+
+  .marquee-image {
     display: flex;
-    flex-direction: column;
-    gap: 3rem;
-    overflow: hidden;
-    width: 100vw;
-    position: relative;
-    left: 50%;
-    right: 50%;
-    margin-left: -50vw;
-    margin-right: -50vw;
-    padding: 4rem 0;
+    gap: 2rem;
+    animation: marquee 30s linear infinite;
+    background-color: var(--black);
+    padding: 2.5rem 0 2.5rem 2rem;
+    --offset: 0.9rem;
+    --dash-height: 0.6rem;
+    --black: #0a1922;
+    background:
+      linear-gradient(
+        to bottom,
+        var(--black) var(--offset),
+        transparent var(--offset),
+        transparent calc(var(--offset) + var(--dash-height)),
+        var(--black) calc(var(--offset) + var(--dash-height)),
+        var(--black) calc(100% - var(--offset) - var(--dash-height)),
+        transparent calc(100% - var(--offset) - var(--dash-height)),
+        transparent calc(100% - var(--offset)),
+        var(--black) calc(100% - var(--offset))
+      ),
+      linear-gradient(to right, #fff 1.9rem, var(--black) 1.9rem);
+    background-size: 4.5rem 100%;
   }
 
-  .slider-container {
-    width: 100%;
-    overflow: hidden;
-    position: relative;
-    padding: 25px 0;
-    background-color: #000;
+  .marquee:hover .marquee-image {
+    animation-play-state: paused;
   }
 
-  .slider {
+  .marquee {
     display: flex;
     width: max-content;
-    position: relative;
-    padding: 40px 0;
+    margin-bottom: 2rem;
+  }
+  .marquee2 .marquee-image {
+    animation-direction: reverse;
   }
 
-  .film-strip-line {
-    position: absolute;
-    left: 0;
-    width: 100%;
-    height: 12px;
-    background-image: repeating-linear-gradient(
-      to right,
-      white 0 var(--dash-length),
-      transparent var(--dash-length) calc(var(--dash-length) + var(--dash-gap))
-    );
-    z-index: 2;
-    pointer-events: none;
-  }
-  .film-strip-line.top    { top: 0; }
-  .film-strip-line.bottom { bottom: 0; }
-
-  /* ===== 無縫輪播動畫 ===== */
-  .slide-left  { animation: scrollLeft 30s linear infinite;  animation-delay: -15s; }
-  .slide-right { animation: scrollRight 30s linear infinite; animation-delay: -15s; }
-  .slider:hover { animation-play-state: paused; }
-
-  .slide-item {
-    flex-shrink: 0;
-    width: 240px;
-    height: 160px;
-    margin: 0 1.5rem;
-    border-radius: 6px;
-    overflow: hidden;
-    position: relative;
-  }
-  .slide-item img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-
-  @keyframes scrollLeft {
-    0%   { transform: translateX(0); }
-    100% { transform: translateX(-33.333%); }
-  }
-  @keyframes scrollRight {
-    0%   { transform: translateX(-33.333%); }
-    100% { transform: translateX(0); }
-  }
-
-  @supports (mask-image: url("")) or (-webkit-mask-image: url("")) {
-    .film-strip-line {
-      background-color: white;
-      background-image: none;
-      mask-image: linear-gradient(to right, black var(--dash-length), transparent var(--dash-length));
-      mask-size: calc(var(--dash-length) + var(--dash-gap)) 100%;
-      -webkit-mask-image: linear-gradient(to right, black var(--dash-length), transparent var(--dash-length));
-      -webkit-mask-size: calc(var(--dash-length) + var(--dash-gap)) 100%;
+  @keyframes marquee {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-100%);
     }
   }
 </style>
+
+<script is:inline>
+  const marquee = document.querySelector(".marquee");
+  const marquee2 = document.querySelector(".marquee2");
+  const marqueeImage = document.querySelector(".marquee-image");
+  const marqueeContent = marquee.innerHTML;
+  const marqueeSet = () => {
+    const content = marqueeContent.repeat(
+      Math.ceil(
+        Math.max(window.innerWidth / marqueeImage.offsetWidth, 2),
+      ),
+    );
+    marquee.innerHTML = content;
+    marquee2.innerHTML = content;
+  };
+  window.onload = () => {
+    marqueeSet();
+  };
+  window.addEventListener("resize", () => {
+    marqueeSet();
+  });
+</script>

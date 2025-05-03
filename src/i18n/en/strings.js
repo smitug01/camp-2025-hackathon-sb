@@ -129,7 +129,7 @@ const enStrings = {
       },
       hero: {
         schoolName:
-          "National Yang Ming Chiao Tung University, Guangfu Campus",
+          "NYCU Guangfu Campus",
       },
       host: {
         organize: "Co-Organizer",
