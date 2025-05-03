@@ -82,11 +82,14 @@ const customTransition = {
         box-sizing: border-box;
       }
 
+      html {
+        scroll-behavior: smooth;
+      }
+
       body {
         background-color: var(--backgroundColor);
         color: var(--foregroundColor);
         font-size: 1.25rem;
-        scroll-behavior: smooth;
         overflow-x: hidden;
         font-family: system-ui;
       }
@@ -95,7 +98,8 @@ const customTransition = {
         color: inherit;
       }
 
-      h1, h2,
+      h1,
+      h2,
       h3 {
         font-weight: 400;
       }
