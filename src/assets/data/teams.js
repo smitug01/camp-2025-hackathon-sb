@@ -96,7 +96,8 @@ export default [
     {
       name: "行銷組",
       members: [
-        { name: "Denny Huang", title: "組長", emailHash: "9c08215f31eb6005a25be6521bf47b0a" }
+        { name: "Denny Huang", title: "組長", emailHash: "9c08215f31eb6005a25be6521bf47b0a" },
+        { name: "康喔", title: "組員", emailHash: "018e4b6c4242d321d467d3294b30c240" },
       ]
     },
     {
