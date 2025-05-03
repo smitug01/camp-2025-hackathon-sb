@@ -25,16 +25,19 @@ const l = linkTransformer(Astro.url);
     </div>
 
     <ul class="nav-links">
-      <li><a href={l("#info")} ">{t.components.nav.signup}</a></li>
+      <li><a href={l("#info")}>{t.components.nav.signup}</a></li>
       <li>
-        <a href={l("#schedule")} ">{t.components.nav.record}</a>
+        <a href={l("#schedule")}>{t.components.nav.record}</a>
       </li>
       <li>
-        <a href={l("#pastEvent")} ">{t.components.nav.previous}</a>
+        <a href={l("#pastEvent")}>{t.components.nav.previous}</a>
       </li>
       <li><a href={l("/coc")}>{t.components.nav.coc}</a></li>
       <li><a href={l("/about")}>{t.components.nav.team}</a></li>
-      <li><a href="https://sitcon.kktix.cc/events/sitcon-camp2025">{t.components.home.info.price.signupNow}</a></li>
+      <li>
+        <a href="https://sitcon.kktix.cc/events/sitcon-camp2025"
+          >{t.components.home.info.price.signupNow}</a>
+      </li>
       <li>
         <a href={l("/", true)}
           >{extractLocale(Astro.url) === "en" ? "中文" : "EN"}</a
