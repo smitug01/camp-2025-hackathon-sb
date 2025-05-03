@@ -36,7 +36,8 @@ const l = linkTransformer(Astro.url);
       <li><a href={l("/about")}>{t.components.nav.team}</a></li>
       <li>
         <a href="https://sitcon.kktix.cc/events/sitcon-camp2025"
-          >{t.components.home.info.price.signupNow}</a>
+          >{t.components.home.info.price.signupNow}</a
+        >
       </li>
       <li>
         <a href={l("/", true)}
@@ -180,7 +181,7 @@ const l = linkTransformer(Astro.url);
 
 <script>
   // JavaScript to toggle mobile menu
-  document.addEventListener("DOMContentLoaded", () => {
+  document.addEventListener("astro:page-load", () => {
     const hamburgerMenu = document.querySelector(".hamburger-menu");
     const navLinks = document.querySelector(".nav-links");
     const navItems = document.querySelectorAll(".nav-links li");
