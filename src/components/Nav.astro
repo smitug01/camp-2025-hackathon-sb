@@ -57,6 +57,14 @@ const l = linkTransformer(Astro.url);
     z-index: 10;
   }
 
+  /* Add no-scroll class to prevent body scrolling */
+  :global(body.no-scroll) {
+    overflow: hidden;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+  }
+
   .nav-container {
     display: flex;
     max-width: 1400px;
@@ -188,6 +196,7 @@ const l = linkTransformer(Astro.url);
     const navLinks = document.querySelector(".nav-links");
     const navItems = document.querySelectorAll(".nav-links li");
     const navAnchors = document.querySelectorAll(".nav-links a");
+    const body = document.body;
 
     // Add index for staggered animation
     navItems.forEach((item, index) => {
@@ -201,6 +210,13 @@ const l = linkTransformer(Astro.url);
       e.stopPropagation(); // Prevent click from bubbling to document
       hamburgerMenu.classList.toggle("active");
       navLinks?.classList.toggle("active");
+      
+      // Toggle body scroll lock
+      if (navLinks?.classList.contains("active")) {
+        body.classList.add("no-scroll");
+      } else {
+        body.classList.remove("no-scroll");
+      }
     });
 
     // Prevent navigation anchors from causing menu close when clicked
@@ -214,6 +230,7 @@ const l = linkTransformer(Astro.url);
     navLinks?.addEventListener("click", () => {
       hamburgerMenu?.classList.remove("active");
       navLinks.classList.remove("active");
+      body.classList.remove("no-scroll");
     });
 
     // Close menu when clicking outside
@@ -225,6 +242,7 @@ const l = linkTransformer(Astro.url);
       ) {
         hamburgerMenu?.classList.remove("active");
         navLinks?.classList.remove("active");
+        body.classList.remove("no-scroll");
       }
     });
   });
