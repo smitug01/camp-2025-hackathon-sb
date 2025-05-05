@@ -164,6 +164,7 @@ const t = getLocale(Astro.url);
     flex-wrap: wrap;
     gap: 2rem;
     font-size: 1.5rem;
+    padding-inline: 1rem;
   }
 
   .info > div {
@@ -206,14 +207,6 @@ const t = getLocale(Astro.url);
     .hero .logo {
       width: calc(100vw - 1.5rem);
     }
-
-    .hero .notFound {
-      height: 60vh;
-      max-width: unset;
-      transform: translateX(
-        min(0px, calc((100vw - 1089 * 70vh / 740) / 2))
-      );
-    }
   }
 
   @media (max-aspect-ratio: 5/6) {
@@ -221,7 +214,11 @@ const t = getLocale(Astro.url);
       display: flex;
       flex-direction: column;
       justify-content: center;
-      padding-bottom: 20vh;
+      padding-bottom: 10vh;
+    }
+
+    .hero .notFound {
+      visibility: hidden;
     }
   }
 
