@@ -45,7 +45,9 @@ const customTransition = {
       name="viewport"
       content="width=device-width, initial-scale=1.0"
     />
-    <meta name="theme-color" content="#009DF3" />
+    <meta name="theme-color" content="#0048da" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="#0048da" />
     <title>{Astro.props.title}</title>
     <meta name="description" content={Astro.props.description} />
     <meta property="og:title" content={Astro.props.title} />
@@ -61,6 +63,7 @@ const customTransition = {
     <meta name="twitter:image" content={ogImage.src} />
     <meta name="twitter:card" content="summary_large_image" />
 
+    <meta name="msapplication-TileColor" content="#0048da" />
     <link rel="icon" href="https://sitcon.camp/2025/favicon.ico" />
     <link
       rel="preconnect"
@@ -170,12 +173,12 @@ const customTransition = {
             event: "gtm.js",
           });
           var f = d.getElementsByTagName(s)[0],
-            j = d.createElement(s),
+            j = d.createElement(s) as HTMLScriptElement,
             dl = l != "dataLayer" ? "&l=" + l : "";
           j.async = true;
           j.src =
             "https://www.googletagmanager.com/gtm.js?id=" + i + dl;
-          f.parentNode.insertBefore(j, f);
+          f?.parentNode?.insertBefore(j, f);
         })(window, document, "script", "dataLayer", "GTM-NKHHNVV");
 
         // Add noscript iframe dynamically
