@@ -181,29 +181,38 @@ const t = getLocale(Astro.url);
     margin: auto;
     position: relative;
     user-select: none;
+    max-width: 100%;
   }
 
   .hero img,
   .clip {
     position: absolute;
     display: block;
-    width: calc(var(--size) * 95vw);
-    height: auto;
+    height: calc(var(--size) * (90vh - 9rem));
+    width: auto;
     pointer-events: none;
   }
 
-  @media (min-aspect-ratio: 4/3) {
-    .hero img,
-    .clip {
-      height: calc(var(--size) * (90vh - 9rem));
-      width: auto;
-    }
+  .hero .logo {
+    height: auto;
+    width: calc(var(--size) * 95vw);
+  }
+
+  .logo {
+    --size: 0.45;
+  }
+
+  @media (max-aspect-ratio: 4/3) {
     .hero .logo {
-      height: auto;
-      width: calc(var(--size) * 95vw);
+      width: calc(100vw - 1.5rem);
     }
-    .logo {
-      --size: 0.45;
+
+    .hero .notFound {
+      height: 60vh;
+      max-width: unset;
+      transform: translateX(
+        min(0px, calc((100vw - 1089 * 70vh / 740) / 2))
+      );
     }
   }
 
@@ -242,7 +251,7 @@ const t = getLocale(Astro.url);
     --size: 1;
     scale: 1;
     margin: auto;
-    animation: fadeIn 1s ease-in-out forwards;
+    animation: fadeIn 0.5s ease-in-out forwards;
   }
 
   .hero.loaded .cat {
@@ -289,6 +298,7 @@ const t = getLocale(Astro.url);
     transform: translate(-50%, -50%);
     aspect-ratio: 930 / 636;
     overflow: hidden;
+    transform-origin: top left;
   }
 
   .fake-clip {
@@ -422,7 +432,7 @@ const t = getLocale(Astro.url);
       scale: 1.2;
     }
     100% {
-      scale: 0.99;
+      scale: 0.96;
     }
   }
 
