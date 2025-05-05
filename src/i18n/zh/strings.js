@@ -1,6 +1,7 @@
 const zhStrings = {
   common: {
     learnMore: "了解更多",
+    backToHome: "回到首頁",
   },
   components: {
     about: {

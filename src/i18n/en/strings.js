@@ -1,6 +1,7 @@
 const enStrings = {
   common: {
     learnMore: "Learn more",
+    backToHome: "Back to Home",
   },
   components: {
     about: {

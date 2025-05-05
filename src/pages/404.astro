@@ -1,0 +1,42 @@
+---
+import Layout from "../layouts/index.astro";
+import { Image } from "astro:assets";
+import notFound from "../assets/img/hero/404.svg";
+const t = getLocale(Astro.url);
+const l = linkTransformer(Astro.url);
+import { getLocale, linkTransformer } from "../i18n";
+---
+
+<Layout title="404 Not Found" description="404 Not Found">
+  <section class="container content">
+    <Image src={notFound} alt="404 Not Found" />
+    <a href={l("/")}> {t.common.backToHome} </a>
+  </section>
+  <style>
+    img {
+      width: min(100%, 500px);
+      height: auto;
+      margin: auto;
+      display: block;
+      margin-top: 1rem;
+    }
+    a {
+      display: block;
+      margin: auto;
+      width: fit-content;
+      margin-top: 1rem;
+      padding: 1rem 2rem;
+      text-align: center;
+      font-size: 1.2rem;
+      font-weight: 500;
+      color: #fff;
+      text-decoration: none;
+      background-color: #0048da;
+      transition: color 0.3s ease;
+    }
+
+    a:hover {
+      background-color: #0038b0;
+    }
+  </style>
+</Layout>
