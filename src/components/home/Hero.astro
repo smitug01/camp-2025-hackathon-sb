@@ -5,8 +5,8 @@ import { getLocale } from "../../i18n";
 import heroBackground from "../../assets/img/hero/hero-background.svg";
 import notFoundBackground from "../../assets/img/hero/404.svg";
 import boom from "../../assets/img/hero/boom.svg";
-import clip from "../../assets/img/hero/clip.svg";
-import cat from "../../assets/img/hero/cat-todo.svg";
+//import clip from "../../assets/img/hero/clip.svg";
+import cat from "../../assets/img/hero/cat.svg";
 import cloud from "../../assets/img/hero/cloud.svg";
 import light from "../../assets/img/hero/light.svg";
 import lightning from "../../assets/img/hero/lightning.svg";
@@ -14,7 +14,8 @@ import lightning2 from "../../assets/img/hero/lightning2.svg";
 import lightning3 from "../../assets/img/hero/lightning3.svg";
 import lightning4 from "../../assets/img/hero/lightning4.svg";
 import logo from "../../assets/img/hero/logo.webp";
-import wave from "../../assets/img/hero/wave-todo.svg";
+import wave from "../../assets/img/hero/wave.svg";
+import bubble from "../../assets/img/bubble/bubble-小石.svg";
 
 const t = getLocale(Astro.url);
 ---
@@ -22,18 +23,24 @@ const t = getLocale(Astro.url);
 <header>
   <div class="hero">
     <Image class="notFound" src={notFoundBackground} alt="" />
-    <Image class="boom" src={boom} alt="" />
-    <Image class="light" src={light} alt="" />
-    <div class="clip"></div>
-    <Image class="wave" src={wave} alt="" />
-    <Image class="cloud" src={cloud} alt="" />
+    <div class="clip">
+      <Image class="fake-clip" src={boom} alt="" />
+      <Image class="light" src={light} alt="" />
+      <Image class="wave" src={wave} alt="" />
+      <Image class="cloud" src={cloud} alt="" />
+      <div class="dragCat">
+        <Image class="cat" src={cat} alt="" />
+      </div>
+    </div>
     <Image class="logo logo2" src={logo} alt="" />
     <Image class="logo" src={logo} alt="" />
     <Image class="lightning" src={lightning} alt="" />
     <Image class="lightning2" src={lightning2} alt="" />
     <Image class="lightning3" src={lightning3} alt="" />
     <Image class="lightning4" src={lightning4} alt="" />
-    <Image class="cat" src={cat} alt="" />
+    <div class="dragBubble">
+      <Image class="bubble" src={bubble} alt="" draggable="false" />
+    </div>
   </div>
   <div class="info emfont-MaokenAssortedSansTC">
     <div>
@@ -53,35 +60,101 @@ const t = getLocale(Astro.url);
   </div>
 </header>
 
+<svg class="svg">
+  <clipPath id="clip" clipPathUnits="objectBoundingBox"
+    ><path
+      d="M0.053,0.296 C0.052,0.296,0.052,0.297,0.053,0.299 L0.136,0.341 C0.108,0.396,0.094,0.43,0.077,0.481 C0.058,0.533,0.047,0.563,0.047,0.563 C0.04,0.578,0.039,0.587,0.044,0.607 C0.046,0.625,0.048,0.635,0.053,0.652 L0.001,0.692 C0,0.693,0,0.694,0.001,0.695 L0.096,0.626 L0.401,0.962 L0.385,0.995 C0.384,0.997,0.385,0.997,0.388,0.996 L0.436,0.903 C0.438,0.9,0.44,0.9,0.442,0.901 L0.683,0.943 L0.684,0.998 C0.685,1,0.686,1,0.686,0.998 L0.685,0.9 L0.834,0.778 L0.956,0.939 C0.958,0.94,0.96,0.939,0.958,0.936 L0.814,0.747 C0.812,0.743,0.811,0.74,0.813,0.736 C0.859,0.648,0.886,0.548,0.878,0.486 C0.878,0.474,0.88,0.47,0.889,0.466 L0.999,0.397 C1,0.395,1,0.395,0.998,0.394 L0.959,0.418 L0.951,0.394 C0.957,0.373,0.958,0.361,0.957,0.342 C0.954,0.329,0.954,0.321,0.957,0.308 C0.958,0.303,0.957,0.302,0.955,0.301 L0.837,0.298 C0.824,0.297,0.822,0.294,0.822,0.286 C0.844,0.225,0.87,0.149,0.865,0.119 L0.948,0.037 C0.948,0.035,0.948,0.034,0.946,0.034 L0.809,0.17 C0.806,0.171,0.805,0.171,0.803,0.169 C0.782,0.142,0.77,0.127,0.755,0.124 C0.703,0.116,0.677,0.112,0.626,0.123 C0.598,0.13,0.585,0.129,0.565,0.119 C0.554,0.113,0.549,0.109,0.547,0.102 L0.543,0.001 C0.542,-0.001,0.541,0,0.54,0.001 L0.541,0.034 L0.46,0.104 C0.454,0.109,0.451,0.109,0.445,0.102 L0.403,0.053 C0.402,0.053,0.402,0.053,0.401,0.055 C0.401,0.056,0.401,0.056,0.402,0.057 C0.361,0.084,0.342,0.099,0.304,0.123 L0.287,0.042 C0.285,0.041,0.284,0.04,0.284,0.042 L0.316,0.195 C0.319,0.205,0.318,0.208,0.315,0.212 L0.173,0.354 C0.117,0.326,0.096,0.316,0.053,0.296"
+    ></path></clipPath
+  >
+</svg>
+<script is:inline>
+  const clip = document.querySelector(".fake-clip");
+  clip.addEventListener("load", () => {
+    document.querySelector(".hero").classList.add("loaded");
+  });
+  const box = document.querySelectorAll(".dragCat, .dragBubble");
+  let currentBox = null;
+  let isDragging = false;
+  let startX, startY;
+  let offsetX = 0,
+    offsetY = 0;
+
+  box.forEach((box) => {
+    box.addEventListener("mousedown", (e) => {
+      isDragging = true;
+      currentBox = e.target;
+      startX = e.clientX - offsetX;
+      startY = e.clientY - offsetY;
+      box.style.cursor = "grabbing";
+    });
+  });
+
+  document.addEventListener("mousemove", (e) => {
+    if (!isDragging) return;
+    offsetX = e.clientX - startX;
+    offsetY = e.clientY - startY;
+    currentBox.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
+  });
+
+  document.addEventListener("mouseup", () => {
+    if (!isDragging) return;
+    isDragging = false;
+    currentBox.style.cursor = "grab";
+    currentBox.style.transition = "transform 0.3s ease";
+    currentBox.style.transform = "translate(0px, 0px)";
+    let pendingBox = currentBox;
+    setTimeout(() => {
+      pendingBox.style.transition = "";
+      offsetX = 0;
+      offsetY = 0;
+    }, 300);
+  });
+
+  // mobile support for dragCat
+  document.addEventListener("touchstart", (e) => {
+    for (const box of box) {
+      const bubbleRect = box.getBoundingClientRect();
+      const touchX = e.touches[0].clientX;
+      const touchY = e.touches[0].clientY;
+      if (
+        touchX >= bubbleRect.left &&
+        touchX <= bubbleRect.right &&
+        touchY >= bubbleRect.top &&
+        touchY <= bubbleRect.bottom
+      ) {
+        isDragging = true;
+        startX = e.touches[0].clientX - offsetX;
+        startY = e.touches[0].clientY - offsetY;
+        box.style.cursor = "grabbing";
+      }
+    }
+  });
+
+  document.addEventListener("touchmove", (e) => {
+    if (!isDragging) return;
+    offsetX = e.touches[0].clientX - startX;
+    offsetY = e.touches[0].clientY - startY;
+    box.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
+  });
+
+  document.addEventListener("touchend", () => {
+    if (!isDragging) return;
+    isDragging = false;
+    currentBox.style.cursor = "grab";
+    currentBox.style.transition = "transform 0.3s ease";
+    currentBox.style.transform = "translate(0px, 0px)";
+  });
+</script>
+
 <style
   define:vars={{
-    boomUrl: `url(${clip.src}#clip)`,
+    boomUrl: `url(${boom.src})`,
   }}
 >
   header {
     padding-top: 5.5rem;
     min-height: 100vh;
     position: relative;
-  }
-
-  .hero img {
-    animation: zoom 1s ease-in-out forwards;
-    transform-origin: left;
-    scale: 0;
-  }
-
-  .paint {
-    position: absolute;
-    z-index: -1;
-    top: 0;
-    left: 0;
-  }
-
-  .paint img {
-    height: 100vh;
-    filter: blur(20vw);
-    margin: auto;
-    display: block;
   }
 
   .info {
@@ -102,18 +175,23 @@ const t = getLocale(Astro.url);
   .info img {
     width: 1.5rem;
   }
+
   .hero {
     width: fit-content;
     margin: auto;
     position: relative;
+    user-select: none;
   }
+
   .hero img,
   .clip {
     position: absolute;
     display: block;
     width: calc(var(--size) * 95vw);
     height: auto;
+    pointer-events: none;
   }
+
   @media (min-aspect-ratio: 4/3) {
     .hero img,
     .clip {
@@ -138,6 +216,27 @@ const t = getLocale(Astro.url);
     }
   }
 
+  .logo .cloud {
+    transform-origin: left;
+    scale: 0;
+  }
+
+  .hero.loaded .logo,
+  .hero.loaded .cloud,
+  .clip {
+    animation: zoom 1s ease-out forwards;
+    transform-origin: left;
+    scale: 0;
+  }
+
+  .hero.loaded .logo2 {
+    animation: smallZoom 0.3s ease-in-out forwards;
+  }
+
+  .hero.loaded .logo {
+    animation-delay: 0.5s;
+  }
+
   .hero .notFound {
     position: static;
     --size: 1;
@@ -146,76 +245,108 @@ const t = getLocale(Astro.url);
     animation: fadeIn 1s ease-in-out forwards;
   }
 
-  .boom,.cat,.wave
-  /* .clip  */ {
+  .hero.loaded .cat {
+    --size: 0.65;
+    transform-origin: bottom;
+  }
+
+  .hero.loaded .cat,
+  .hero.loaded .bubble {
+    scale: 1;
+    animation: vibrate 1s ease-in-out infinite alternate;
+    cursor: grab;
+    position: static;
+  }
+
+  .dragCat {
+    position: absolute;
+    top: 47%;
+    left: 42%;
+    pointer-events: all;
+  }
+
+  .dragBubble {
+    position: absolute;
+    top: 62%;
+    left: 15%;
+    pointer-events: all;
+  }
+
+  .hero .bubble {
+    --size: 0.18;
+    scale: 0;
+    transition: scale 1s ease-in-out;
+  }
+
+  .clip {
+    position: absolute;
+    clip-path: url(#clip);
+    background: var(--boomUrl) 0 0 / cover;
+    clip-path: url(#clip);
     top: 50%;
     left: 50%;
     --size: 0.9;
     transform: translate(-50%, -50%);
     aspect-ratio: 930 / 636;
+    overflow: hidden;
   }
-  /* .clip {
-    position: absolute;
-    clip-path: var(--boomUrl);
-    aspect-ratio: 1 / 1;
-    background-color: red;
-  } */
 
-  /* .wave {
-    top: 68%;
+  .fake-clip {
+    --size: 0.9;
+  }
+
+  .svg {
+    width: 0;
+    height: 0;
+  }
+
+  .hero .wave {
+    top: 63%;
     left: 50%;
-    --size: 0.45;
-    transform: translate(-30%, -50%);
-  } */
+    transform: translate(-50%, -50%) rotate(180deg) scale(0);
+    --size: 0.56;
+    transition: transform 3s ease-in-out;
+  }
+
+  .hero.loaded .wave {
+    scale: 1;
+    transform: translate(-50%, -50%) rotate(0deg) scale(1);
+    transform-origin: center;
+  }
+
   .hero .cloud {
     top: 47%;
     left: 42%;
     --size: 0.2;
-    animation-delay: 0.5s;
   }
+
   .hero .logo {
     --size: 0.9;
     top: 35%;
     left: 50%;
     transform: translate(-50%, -50%);
   }
+
   .hero .logo2 {
-    scale: 0.99;
     filter: brightness(0) invert(1);
-    animation: smallZoom 1s ease-in-out forwards;
   }
 
-  @keyframes smallZoom {
-    0% {
-      scale: 0;
-    }
-    50% {
-      scale: 1.2;
-    }
-    100% {
-      scale: 0.99;
-    }
-  }
   .hero .lightning,
   .hero .lightning2,
   .hero .lightning3,
   .hero .lightning4 {
-    animation-delay: 1.2s;
-    scale: 1;
-    animation:
-      /* zoom 1s ease-in-out forwards; */
-      infinitiZoom 1s ease-in-out infinite alternate;
-    /* animation-composition: accumulate; */
+    scale: 0;
+    transition: scale 1s ease-in-out;
   }
 
-  @keyframes infinitiZoom {
-    0% {
-      scale: 1.1;
-    }
-    100% {
-      scale: 0.8;
-    }
+  .hero.loaded .lightning,
+  .hero.loaded .lightning2,
+  .hero.loaded .lightning3,
+  .hero.loaded .lightning4 {
+    scale: 1;
+    animation: infinitiZoom 1s ease-in-out infinite alternate;
   }
+
   .hero .lightning {
     top: 55%;
     left: 34%;
@@ -272,5 +403,49 @@ const t = getLocale(Astro.url);
     100% {
       opacity: 1;
     }
+  }
+
+  @keyframes vibrate {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(-10deg);
+    }
+  }
+
+  @keyframes smallZoom {
+    0% {
+      scale: 0;
+    }
+    50% {
+      scale: 1.2;
+    }
+    100% {
+      scale: 0.99;
+    }
+  }
+
+  @keyframes infinitiZoom {
+    0% {
+      scale: 1.1;
+    }
+    100% {
+      scale: 0.8;
+    }
+  }
+
+  .paint {
+    position: absolute;
+    z-index: -1;
+    top: 0;
+    left: 0;
+  }
+
+  .paint img {
+    height: 100vh;
+    filter: blur(10vw);
+    margin: auto;
+    display: block;
   }
 </style>
