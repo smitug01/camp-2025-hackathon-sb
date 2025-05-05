@@ -2,7 +2,6 @@
 import { Image } from "astro:assets";
 import { Icon } from "astro-icon/components";
 import { getLocale } from "../../i18n";
-import heroBackground from "../../assets/img/hero/hero-background.svg";
 import notFoundBackground from "../../assets/img/hero/404.svg";
 import boom from "../../assets/img/hero/boom.svg";
 //import clip from "../../assets/img/hero/clip.svg";
@@ -54,9 +53,6 @@ const t = getLocale(Astro.url);
       <Icon name="material-symbols:location-on-rounded" size={24} />
       <div>{t.components.home.hero.schoolName}</div>
     </div>
-  </div>
-  <div class="paint">
-    <Image src={heroBackground} alt="" />
   </div>
 </header>
 
@@ -441,19 +437,5 @@ const t = getLocale(Astro.url);
     100% {
       scale: 0.8;
     }
-  }
-
-  .paint {
-    position: absolute;
-    z-index: -1;
-    top: 0;
-    left: 0;
-  }
-
-  .paint img {
-    height: 100vh;
-    filter: blur(10vw);
-    margin: auto;
-    display: block;
   }
 </style>

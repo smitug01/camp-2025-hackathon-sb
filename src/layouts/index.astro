@@ -123,6 +123,15 @@ const customTransition = {
         margin: auto;
       }
 
+      #backgroundPainter {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        z-index: -1;
+      }
+
       @keyframes transitionFadeIn {
         from {
           opacity: 0;
@@ -147,6 +156,7 @@ const customTransition = {
     transition:animate={customTransition}
   >
     <Nav transition:persist={true} />
+    <canvas id="backgroundPainter"></canvas>
     <slot />
     <Footer transition:persist={true} />
     <script src="../scripts/main.js"></script>
