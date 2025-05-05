@@ -6,8 +6,8 @@ import Layout from "../layouts/index.astro";
 ---
 
 <Layout
-  title="行為準則 SITCON Camp 2025"
-  description="SITCON Camp 2025 的行為準則，期望每位參與者都能共同遵守"
+  title="行為準則 - SITCON 夏令營 2025"
+  description="SITCON 夏令營 2025 行為準則。"
 >
   <section class="container content">
     <Header title={t.components.coc.hero.title} />
@@ -31,17 +31,18 @@ import Layout from "../layouts/index.astro";
       </ul>
       <p>{t.components.coc.content.enforcement}</p>
       <p>{t.components.coc.content.conclusion}</p>
+    </div>
+
+    <style>
+      p {
+        margin-bottom: 1rem;
+      }
+
+      ul {
+        padding-left: 2rem;
+        line-height: 2;
+        margin-bottom: 1rem;
+      }
+    </style>
   </section>
-
-  <style>
-    p{
-      margin-bottom: 1rem;
-    }
-
-    ul{
-    padding-left: 2rem;
-    line-height: 2;
-    margin-bottom: 1rem;
-  }
-  </style>
 </Layout>
