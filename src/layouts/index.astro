@@ -3,6 +3,7 @@ import Footer from "../components/Footer.astro";
 import Nav from "../components/Nav.astro";
 import ogImage from "../assets/img/og.webp";
 import { ClientRouter } from "astro:transitions";
+import icon from "../assets/img/icon.png";
 
 interface Props {
   title: string;
@@ -35,6 +36,9 @@ const customTransition = {
     },
   },
 };
+
+// Generate absolute URLs for icons
+const iconUrl = new URL(icon.src, Astro.url.origin).href;
 ---
 
 <html lang="zh-Hant" transition:animate="none">
@@ -64,7 +68,16 @@ const customTransition = {
     <meta name="twitter:card" content="summary_large_image" />
 
     <meta name="msapplication-TileColor" content="#0048da" />
-    <link rel="icon" href="https://sitcon.camp/2025/favicon.ico" />
+    <link rel="preload" as="image" href={iconUrl} />
+    <link rel="shortcut icon" href={iconUrl} />
+    <link rel="icon" type="image/png" href={iconUrl} />
+    <link rel="apple-touch-icon" href={iconUrl} />
+    <link rel="apple-touch-icon-precomposed" href={iconUrl} />
+    <link rel="apple-touch-icon" sizes="152x152" href={iconUrl} />
+    <link rel="apple-touch-icon" sizes="180x180" href={iconUrl} />
+    <link rel="apple-touch-icon" sizes="167x167" href={iconUrl} />
+    <link rel="mask-icon" href={iconUrl} color="#0048da" />
+    <meta name="apple-mobile-web-app-title" content="SITCON Camp" />
     <link
       rel="preconnect"
       href="https://www.googletagmanager.com"
