@@ -54,6 +54,11 @@ const l = linkTransformer(Astro.url);
     z-index: -1;
     box-shadow: var(--shadow);
   }
+  @media (max-width: 900px) {
+    .about {
+      padding: 2rem;
+    }
+  }
 
   @media (max-width: 768px) {
     .about::before {
@@ -64,6 +69,7 @@ const l = linkTransformer(Astro.url);
   h3 {
     font-size: 38px;
     margin-bottom: 23px;
+    line-height: 1.3;
   }
 
   p {
