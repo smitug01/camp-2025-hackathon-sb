@@ -29,11 +29,11 @@ const t = getLocale(Astro.url);
         <h3 class="emfont-NotoSansTC-700">{t.components.footer.contact.title}</h3>
         <p>
           {t.components.footer.contact.cooperation}
-          <a href="mailto:contact@sitcon.org">contact@sitcon.org</a>
+          <a href="mailto:contact@sitcon.org" aria-label="Contact SITCON for cooperation">contact@sitcon.org</a>
         </p>
         <p>
           {t.components.footer.contact.signup}
-          <a href="mailto:ask@sitcon.camp">ask@sitcon.camp</a>
+          <a href="mailto:ask@sitcon.camp" aria-label="Contact SITCON Camp for signup">ask@sitcon.camp</a>
         </p>
       </div>
     </div>
@@ -45,6 +45,7 @@ const t = getLocale(Astro.url);
             href="https://www.facebook.com/SITCONtw/"
             target="_blank"
             class="social-icon"
+            aria-label="Visit SITCON's Facebook page"
           >
             <Icon name="simple-icons:facebook" size={28} />
           </a>
@@ -52,94 +53,102 @@ const t = getLocale(Astro.url);
             href="https://www.instagram.com/sitcon.tw/"
             target="_blank"
             class="social-icon"
+            aria-label="Visit SITCON's Instagram page"
           >
             <Icon name="simple-icons:instagram" size={28} />
           </a>
-          <!-- Flickr -->
           <a
             href="https://www.flickr.com/photos/sitcon"
             target="_blank"
             class="social-icon"
+            aria-label="Visit SITCON's Flickr page"
           >
             <Icon name="simple-icons:flickr" size={28} />
           </a>
-          <!-- Telegram -->
           <a
             href="https://telegram.me/SITCONgeneral"
             target="_blank"
             class="social-icon"
+            aria-label="Join SITCON's Telegram channel"
           >
             <Icon name="simple-icons:telegram" size={28} />
           </a>
-          <!-- Twitter/X -->
           <a
             href="https://x.com/sitcontw"
             target="_blank"
             class="social-icon"
+            aria-label="Visit SITCON's X (Twitter) page"
           >
             <Icon name="simple-icons:x" size={28} />
           </a>
-          <!-- YouTube -->
           <a
             href="https://www.youtube.com/c/SITCONArchive"
             target="_blank"
             class="social-icon"
+            aria-label="Visit SITCON's YouTube channel"
           >
             <Icon name="simple-icons:youtube" size={28} />
           </a>
-          <!-- Plurk -->
           <a
             href="https://www.plurk.com/SITCON"
             target="_blank"
             class="social-icon"
+            aria-label="Visit SITCON's Plurk page"
           >
             <Icon name="simple-icons:plurk" size={28} />
           </a>
         </div>
       </div>
-      <!-- Previous websites section with year links -->
       <div class="previous-websites">
         <h3 class="emfont-NotoSansTC-700">{t.components.footer.contact.previous}</h3>
         <div class="year-links">
           <a
             href="https://sitcon.camp/2024"
             target="_blank"
-            class="year-link">2024</a
+            class="year-link"
+            aria-label="Visit SITCON Camp 2024 website">2024</a
           >
           <a
             href="https://sitcon.camp/2023"
             target="_blank"
-            class="year-link">2023</a
+            class="year-link"
+            aria-label="Visit SITCON Camp 2023 website">2023</a
           >
           <a
             href="https://sitcon.camp/2021"
             target="_blank"
-            class="year-link">2021</a
+            class="year-link"
+            aria-label="Visit SITCON Camp 2021 website">2021</a
           >
           <a
             href="https://sitcon.camp/2019"
             target="_blank"
-            class="year-link">2019</a
+            class="year-link"
+            aria-label="Visit SITCON Camp 2019 website">2019</a
           >
           <a
             href="https://sitcon.camp/2017"
             target="_blank"
-            class="year-link">2017</a
+            class="year-link"
+            aria-label="Visit SITCON Camp 2017 website">2017</a
           >
           <a
             href="https://sitcon.camp/2016"
             target="_blank"
-            class="year-link">2016</a
+            class="year-link"
+            aria-label="Visit SITCON Camp 2016 website">2016</a
           >
           <a
             href="https://sitcon.camp/2015"
             target="_blank"
-            class="year-link">2015</a
+            class="year-link"
+            aria-label="Visit SITCON Camp 2015 website">2015</a
           >
           <a
             href="https://sitcon.camp/2014"
             target="_blank"
-            class="year-link">2014</a
+            class="year-link"
+            aria-label="Visit SITCON Camp 2014 website">2014</a
           >
         </div>
       </div>

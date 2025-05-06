@@ -21,22 +21,57 @@ const t = getLocale(Astro.url);
 
 <header>
   <div class="hero">
-    <Image class="notFound" src={notFoundBackground} alt="" />
+    <Image
+      class="notFound"
+      src={notFoundBackground}
+      alt=""
+      fetchpriority="high"
+    />
     <div class="clip">
-      <Image class="fake-clip" src={boom} alt="" />
+      <Image
+        class="fake-clip"
+        src={boom}
+        alt=""
+        fetchpriority="high"
+      />
       <Image class="light" src={light} alt="" />
-      <Image class="wave" src={wave} alt="" />
-      <Image class="cloud" src={cloud} alt="" />
+      <Image class="wave" src={wave} alt="" fetchpriority="high" />
+      <Image class="cloud" src={cloud} alt="" fetchpriority="high" />
       <div class="dragCat">
-        <Image class="cat" src={cat} alt="" />
+        <Image class="cat" src={cat} alt="" fetchpriority="high" />
       </div>
     </div>
-    <Image class="logo logo2" src={logo} alt="" />
-    <Image class="logo" src={logo} alt="" />
-    <Image class="lightning" src={lightning} alt="" />
-    <Image class="lightning2" src={lightning2} alt="" />
-    <Image class="lightning3" src={lightning3} alt="" />
-    <Image class="lightning4" src={lightning4} alt="" />
+    <Image
+      class="logo logo2"
+      src={logo}
+      alt=""
+      fetchpriority="high"
+    />
+    <Image class="logo" src={logo} alt="" fetchpriority="high" />
+    <Image
+      class="lightning"
+      src={lightning}
+      alt=""
+      fetchpriority="high"
+    />
+    <Image
+      class="lightning2"
+      src={lightning2}
+      alt=""
+      fetchpriority="high"
+    />
+    <Image
+      class="lightning3"
+      src={lightning3}
+      alt=""
+      fetchpriority="high"
+    />
+    <Image
+      class="lightning4"
+      src={lightning4}
+      alt=""
+      fetchpriority="high"
+    />
     <div class="dragBubble">
       <Image class="bubble" src={bubble} alt="" draggable="false" />
     </div>
