@@ -35,8 +35,9 @@ const l = linkTransformer(Astro.url);
       <li><a href={l("/coc")}>{t.components.nav.coc}</a></li>
       <li><a href={l("/about")}>{t.components.nav.team}</a></li>
       <li>
-        <a href="https://sitcon.kktix.cc/events/sitcon-camp2025" target="_blank"
-          >{t.components.home.info.price.signupNow}</a
+        <a
+          href="https://sitcon.kktix.cc/events/sitcon-camp2025"
+          target="_blank">{t.components.home.info.price.signupNow}</a
         >
       </li>
       <li>
@@ -59,10 +60,11 @@ const l = linkTransformer(Astro.url);
   .nav-container {
     display: flex;
     max-width: 1400px;
-    padding: .6rem 2rem;
+    padding: 0.6rem 2rem;
     justify-content: space-between;
     align-items: center;
     margin: auto;
+    gap: 2rem;
   }
 
   .logo-link {

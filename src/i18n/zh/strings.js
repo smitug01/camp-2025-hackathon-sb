@@ -45,6 +45,7 @@ const zhStrings = {
     coc: {
       hero: {
         title: "行為準則",
+        text: "SITCON 社群行為準則（Code of Conduct）",
       },
       content: {
         intro: [
@@ -76,6 +77,10 @@ const zhStrings = {
       },
     },
     home: {
+      content: {
+        title: "SITCON 夏令營 2025",
+        text: "SITCON 學生計算機年會夏令營，結合知識與實作，涵蓋開源、資安、前端、AI 等多元領域，主題為「404 Not Found：青春不該 throw error」。",
+      },
       about: {
         aboutSitcon: "關於 SITCON",
         sitconIs:

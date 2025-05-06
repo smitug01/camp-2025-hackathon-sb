@@ -179,7 +179,6 @@ const t = getLocale(Astro.url);
     position: relative;
     user-select: none;
     max-width: 100%;
-    overflow: hidden;
   }
 
   .hero img,
@@ -198,6 +197,12 @@ const t = getLocale(Astro.url);
 
   .logo {
     --size: 0.45;
+  }
+
+  @media (max-width: calc((90vh - 9rem) * 1089 / 740)) {
+    .hero {
+      overflow: hidden;
+    }
   }
 
   @media (max-aspect-ratio: 4/3) {

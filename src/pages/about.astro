@@ -3,14 +3,15 @@ import Layout from "../layouts/index.astro";
 import AboutContent from "../components/about/Content.astro";
 import PastEvents from "../components/about/PastEvents.astro";
 import ThemeGrid from "../components/about/ThemeGrid.astro";
+import { getLocale } from "../i18n";
+const t = getLocale(Astro.url);
 ---
 
 <Layout
-  title="籌備團隊 - SITCON 夏令營 2025"
-  description="SITCON 學生計算機年會是由學生自發舉辦、投身學生資訊教育與推廣開源精神的社群，也是一個由學生主辦、學生擔任講者、以學生為主軸的資訊研討會，給學生們一個發表交流技術的舞台。"
+  title={`${t.components.about.hero.title} - ${t.components.home.content.title}`}
+  description={t.components.about.content.sitconIs}
 >
   <AboutContent />
   <PastEvents />
   <ThemeGrid />
 </Layout>
-

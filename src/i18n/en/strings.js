@@ -45,6 +45,7 @@ const enStrings = {
     coc: {
       hero: {
         title: "Code of Conduct",
+        text: "SITCON Code of Conduct",
       },
       content: {
         intro: [
@@ -77,6 +78,10 @@ const enStrings = {
       },
     },
     home: {
+      content: {
+        title: "SITCON Camp 2025",
+        text: "404 Not Found: Youth Shouldn't Throw Errors",
+      },
       about: {
         aboutSitcon: "About SITCON",
         sitconIs:
@@ -129,8 +134,7 @@ const enStrings = {
         ],
       },
       hero: {
-        schoolName:
-          "NYCU Guangfu Campus",
+        schoolName: "NYCU Guangfu Campus",
       },
       host: {
         organize: "Co-Organizer",
