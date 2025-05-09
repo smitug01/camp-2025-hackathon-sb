@@ -3,7 +3,9 @@ import "https://font.emtech.cc/emfont.js";
 document.addEventListener(
   "astro:page-load",
   () => {
-    emfont.init();
+    emfont.init({
+      forceMin: true,
+    });
   },
   { once: true },
 );
@@ -44,7 +46,13 @@ window.addEventListener("resize", () => {
   canvas.height = height;
 });
 
-const points = [];
+const points = [
+  {
+    x: width / 2,
+    y: height / 2,
+    time: Date.now(),
+  },
+];
 let mouse = { x: width / 2, y: height / 2 };
 
 window.addEventListener("mousemove", (e) => {
