@@ -2,7 +2,7 @@
 import { getLocale } from "../../i18n";
 import { Icon } from "astro-icon/components";
 import scheduleDataAll from "../../assets/data/schedule.json"; // Renamed to avoid conflict
-
+import person from "../../assets/img/modal/image-11.png"
 const scheduleData = scheduleDataAll as any[]; // Add type assertion and use 'scheduleData' henceforth
 
 const t = getLocale(Astro.url);
@@ -221,6 +221,7 @@ Object.keys(dayMap).forEach(dayKey => {
 <div id="courseModal" class="modal">
   <div class="modal-content">
     <span class="close">&times;</span>
+    <img src={person.src} alt="Person" class="modal-person-image" />
     <h2 id="modalTitle"></h2>
     <h3 id="modalSubtitle"></h3>
 
@@ -670,6 +671,16 @@ Object.keys(dayMap).forEach(dayKey => {
 
   .speaker-info {
     margin-bottom: 1.5rem;
+  }
+
+  .modal-person-image {
+    position: absolute;
+    right: 3.5rem;
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    object-fit: cover;
+    z-index: 5;
   }
 </style>
 
