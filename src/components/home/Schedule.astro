@@ -681,32 +681,31 @@ Object.keys(dayMap).forEach(dayKey => {
       const tableBody = document.querySelector('.schedule-table tbody');
       if (!tableBody) return;
 
-      // Get all rows, but filter out the special lunch break row
-      const dataRows = Array.from(tableBody.querySelectorAll('tr')).filter(row => !row.querySelector('td.event-break-cell'));
+      // Get all rows, including the lunch break row
+      const allRows = Array.from(tableBody.querySelectorAll('tr'));
 
-      if (dataRows.length === 0) return;
+      if (allRows.length === 0) return;
 
       let maxHeight = 0;
 
       // First pass: reset heights and measure natural height of each row
-      dataRows.forEach(row => {
+      allRows.forEach(row => {
         row.style.height = ''; // Reset height
       });
 
       // Force a reflow to ensure heights are recalculated accurately after reset
-      // Reading an offset property or calling getComputedStyle can trigger a reflow.
       if ((tableBody as HTMLElement).offsetParent !== null) { /* Reading offsetParent to help trigger reflow */}
 
-      dataRows.forEach(row => {
+      allRows.forEach(row => {
         const rowHeight = row.offsetHeight;
         if (rowHeight > maxHeight) {
           maxHeight = rowHeight;
         }
       });
 
-      // Second pass: apply the max height to all data rows
+      // Second pass: apply the max height to all rows
       if (maxHeight > 0) {
-        dataRows.forEach(row => {
+        allRows.forEach(row => {
           row.style.height = `${maxHeight}px`;
         });
       }
