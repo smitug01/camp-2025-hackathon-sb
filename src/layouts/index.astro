@@ -189,8 +189,8 @@ const iconUrl = new URL(icon.src, Astro.url.origin).href;
     <Nav transition:persist={true} />
     <div class="body-container">
       <slot />
+      <Footer transition:persist={true} />
     </div>
-    <Footer transition:persist={true} />
     <script src="../scripts/main.js"></script>
     <script src="../scripts/lava.js"></script>
     <script>
