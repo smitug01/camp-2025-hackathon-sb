@@ -20,6 +20,9 @@ importers:
       md5:
         specifier: ^2.3.0
         version: 2.3.0
+      q5:
+        specifier: ^3.0.5
+        version: 3.0.5
       sharp:
         specifier: ^0.34.1
         version: 0.34.1
@@ -1610,6 +1613,9 @@ packages:
 
   pump@3.0.2:
     resolution: {integrity: sha512-tUPXtzlGM8FE3P0ZL6DVs/3P58k9nk8/jZeQCurTJylQA8qFYzHFfhBJkuqyE0FifOsQ0uKWekiZ5g8wtr28cw==}
+
+  q5@3.0.5:
+    resolution: {integrity: sha512-y3ltTz7z/PQuVE0jv/L/SBSdyKEqFT4WwB2XccTV88CCVzIoaOw6tcVckGgbjKqy7mrLkfI8b5qlwuIb8CsSxQ==}
 
   quansync@0.2.10:
     resolution: {integrity: sha512-t41VRkMYbkHyCYmOvx/6URnN80H7k4X0lLdBMGsz+maAwrJQYB1djpV6vHrQIBE0WBSGqhtEHrK9U3DWWH8v7A==}
@@ -3846,6 +3852,8 @@ snapshots:
     dependencies:
       end-of-stream: 1.4.4
       once: 1.4.0
+
+  q5@3.0.5: {}
 
   quansync@0.2.10: {}
 

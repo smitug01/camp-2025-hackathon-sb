@@ -51,7 +51,10 @@ const iconUrl = new URL(icon.src, Astro.url.origin).href;
     />
     <meta name="theme-color" content="#0048da" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="#0048da" />
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="#0048da"
+    />
     <title>{Astro.props.title}</title>
     <meta name="description" content={Astro.props.description} />
     <meta property="og:title" content={Astro.props.title} />
@@ -164,6 +167,18 @@ const iconUrl = new URL(icon.src, Astro.url.origin).href;
           opacity: 0;
         }
       }
+      .body-container {
+        position: relative;
+        z-index: 2;
+      }
+      #q5Canvas0 {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        z-index: 1;
+      }
     </style>
     <ClientRouter />
   </head>
@@ -172,10 +187,12 @@ const iconUrl = new URL(icon.src, Astro.url.origin).href;
     transition:animate={customTransition}
   >
     <Nav transition:persist={true} />
-    <canvas id="backgroundPainter"></canvas>
-    <slot />
+    <div class="body-container">
+      <slot />
+    </div>
     <Footer transition:persist={true} />
     <script src="../scripts/main.js"></script>
+    <script src="../scripts/lava.js"></script>
     <script>
       window.addEventListener("load", function () {
         // Google Tag Manager
