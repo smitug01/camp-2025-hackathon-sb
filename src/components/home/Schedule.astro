@@ -1,0 +1,676 @@
+---
+import { getLocale } from "../../i18n";
+import { Icon } from "astro-icon/components";
+import scheduleDataAll from "../../assets/data/schedule.json"; // Renamed to avoid conflict
+
+const scheduleData = scheduleDataAll as any[]; // Add type assertion and use 'scheduleData' henceforth
+
+const t = getLocale(Astro.url);
+
+// Day mapping for rooms
+const dayMap = {
+  "Day1": "1",
+  "Day2": "2",
+  "Day3": "3",
+  "Day4": "4",
+  "Day5": "5"
+};
+
+const dayKeys = Object.keys(dayMap);
+
+// 午餐時間（12:00~13:00）
+const LUNCH_START_HOUR = 12;
+const LUNCH_END_HOUR = 13;
+
+function splitCourseIfCrossLunch(course) {
+  const start = new Date(course.start);
+  const end = new Date(course.end);
+  const lunchStart = new Date(start);
+  lunchStart.setHours(LUNCH_START_HOUR, 0, 0, 0);
+  const lunchEnd = new Date(start);
+  lunchEnd.setHours(LUNCH_END_HOUR, 0, 0, 0);
+
+  // 檢查是否跨午餐
+  if (start < lunchStart && end > lunchEnd) {
+    // 拆成午餐前、午餐後
+    return [
+      { ...course, end: lunchStart.toISOString() },
+      { ...course, start: lunchEnd.toISOString() }
+    ];
+  }
+  return [course];
+}
+
+// 產生新課程陣列，僅用 schedule.json
+let coursesForTable: any[] = []; // Initialize with explicit type any[]
+scheduleData.forEach(course => {
+  if (
+    course.id !== undefined && // Ensure id exists
+    typeof course.id === 'string' && // Ensure id is a string
+    course.room in dayMap && // Ensure the course has a valid room/dayKey
+    course.title_zh !== "午餐" && // Exclude '午餐'
+    course.title_zh !== "晚餐"    // Exclude '晚餐'
+    // The filter for "報到" (id: "5fc14d") was intentionally removed to display it
+  ) {
+    coursesForTable.push(...splitCourseIfCrossLunch(course));
+  }
+});
+
+// Group courses by day
+const coursesByDay = {};
+dayKeys.forEach(dayKey => {
+  coursesByDay[dayKey] = coursesForTable.filter(course => course.room === dayKey);
+});
+
+// Time slots for rows
+const timeSlots = [
+  "08:00", "09:00", "10:00", "11:00", "12:00",
+  "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00"
+];
+
+// Helper function to get a course starting at a given time slot for a specific day
+function getCourseStartingAt(dayKey, timeSlot) {
+  const coursesForDay = coursesByDay[dayKey] || [];
+  return coursesForDay.find(course => {
+    const startTime = new Date(course.start);
+    const startHour = startTime.getHours();
+    const startMinute = startTime.getMinutes();
+    const [slotHour, slotMinute] = timeSlot.split(':').map(Number);
+    return startHour === slotHour && startMinute === slotMinute;
+  });
+}
+
+// Helper function to calculate event duration in 1-hour slots for rowspan
+function calculateDurationInSlots(event) {
+  const startTime = new Date(event.start);
+  const endTime = new Date(event.end);
+  const durationMs = endTime.getTime() - startTime.getTime();
+  // Calculate duration in hours, round to nearest half hour, then to slots.
+  // For simplicity, if duration is 0.5hr, it's 1 slot. 1.5hr is 2 slots if slots are hourly.
+  // The current timeSlots are hourly.
+  const durationHours = durationMs / (1000 * 60 * 60);
+  return Math.max(1, Math.ceil(durationHours)); // Ensure at least 1, round up for partial hours filling slots
+}
+
+// Format date function (e.g., "7/9")
+function formatDateDisplay(dateString) {
+  if (!dateString) return "";
+  const date = new Date(dateString);
+  const month = date.getMonth() + 1;
+  const day = date.getDate();
+  return `${month}/${day}`;
+}
+
+// Helper function to get day of the week in Chinese (e.g., "Wed." -> "三")
+function getDayOfWeekDisplay(dateString) {
+  if (!dateString) return "";
+  const date = new Date(dateString);
+  const days = ["日", "一", "二", "三", "四", "五", "六"];
+  return days[date.getDay()];
+}
+
+// Prepare headers dynamically
+const dynamicDayHeaders = dayKeys.map(dayKey => {
+  // Find the first event in the original dataset for this dayKey to get the date
+  const eventForDate = scheduleData.find(e => e.room === dayKey && e.start);
+  const dateStr = eventForDate ? eventForDate.start : "";
+  return {
+    dayNum: dayMap[dayKey],
+    dateText: dateStr ? `${formatDateDisplay(dateStr)} ${getDayOfWeekDisplay(dateStr)}.` : `Day ${dayMap[dayKey]}`
+  };
+});
+
+// This object will track cells that are already covered by a previous event's rowspan.
+// Keyed by dayKey, then by timeSlot.
+const cellCoverage = {};
+Object.keys(dayMap).forEach(dayKey => {
+  cellCoverage[dayKey] = {}; 
+});
+
+---
+<section class="container" id="schedule">
+  <h2 class="emfont-UnboundedSans">{t.components.home.schedulePreview.title}</h2>
+
+  <div class="schedule-table">
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th></th> {/* Empty for time column */}
+            {dynamicDayHeaders.map(header => (
+              <th>
+                <div class="day-header">Day {header.dayNum}</div>
+                <div class="date-header">{header.dateText}</div>
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {timeSlots.map((timeSlot, timeIndex) => {
+            // Handle special "午餐" (Lunch) row based on time, e.g., 12:00
+            // This assumes lunch is visually represented in the 12:00 slot row.
+            // The actual start/end times for lunch in JSON might be like 11:30-13:00.
+            if (timeSlot === "12:00") {
+              // Check if there's a "午餐" entry for Day1 to grab the name if needed, or use i18n
+              const lunchEventEntry = scheduleData.find(e => e.title_zh === "午餐" && e.room === "Day1");
+              const lunchText = lunchEventEntry ? lunchEventEntry.title_zh : t.components.home.schedulePreview?.lunch || "午餐";
+              return (
+                <tr>
+                  <td class="time-cell">{timeSlot}</td>
+                  <td colspan={Object.keys(dayMap).length} class="event-break-cell">
+                    {lunchText}
+                  </td>
+                </tr>
+              );
+            }
+
+            // Reset spannedCellsTracker for each new row if logic requires (here it's global for the table)
+            // For this structure, spannedCellsTracker should persist across rows for a day's column.
+
+            return (
+              <tr>
+                <td class="time-cell">{timeSlot}</td>
+                {Object.keys(dayMap).map(dayKey => {
+                  if (cellCoverage[`${dayKey}_${timeSlot}`]) {
+                    return null; // This cell is covered by a rowspan from a previous slot
+                  }
+
+                  const course = getCourseStartingAt(dayKey, timeSlot);
+                  if (course) {
+                    const rowspan = calculateDurationInSlots(course);
+                    if (rowspan > 1) {
+                      for (let i = 1; i < rowspan; i++) {
+                        const nextSlotIndex = timeIndex + i;
+                        if (nextSlotIndex < timeSlots.length) {
+                          cellCoverage[`${dayKey}_${timeSlots[nextSlotIndex]}`] = true;
+                        }
+                      }
+                    }
+                    const hasDetails = course.description_zh || course.slide || course.co_write || course.record;
+                    return (
+                      <td class={`course-cell type-${course.type?.toLowerCase() || 'default'}`} data-course-id={course.id} rowspan={rowspan}>
+                        <div class="course-title">{course.title_zh.split('\n')[0]}</div>
+                        {course.title_zh.split('\n')[1] && (
+                          <div class="course-subtitle">{course.title_zh.split('\n')[1]}</div>
+                        )}
+                        {course.speaker1 && (
+                          <div class="course-speaker">
+                            <Icon name="material-symbols:person" size={16} />
+                            {course.speaker1}
+                          </div>
+                        )}
+                        {hasDetails && (
+                          <div class="info-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 20 20" fill="none">
+                              <path d="M9.89673 9.10425V13.3696" stroke="#201814" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                              <path d="M9.89673 5.70126L9.90604 5.69092" stroke="#201814" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                              <path d="M9.89665 18.0614C14.608 18.0614 18.4273 14.242 18.4273 9.53068C18.4273 4.81931 14.608 1 9.89665 1C5.18528 1 1.36597 4.81931 1.36597 9.53068C1.36597 14.242 5.18528 18.0614 9.89665 18.0614Z" stroke="#201814" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                          </div>
+                        )}
+                      </td>
+                    );
+                  } else {
+                    return <td class="empty-cell"></td>;
+                  }
+                })}
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- Course Detail Modal -->
+<div id="courseModal" class="modal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <h2 id="modalTitle"></h2>
+    <h3 id="modalSubtitle"></h3>
+
+    <div class="modal-info">
+      <div class="info-item">
+        <Icon name="material-symbols:person" size={20} />
+        <span id="modalSpeaker"></span>
+      </div>
+      <div class="info-item">
+        <Icon name="material-symbols:schedule" size={20} />
+        <span id="modalTime"></span>
+      </div>
+      <div class="info-item">
+        <Icon name="material-symbols:label" size={20} />
+        <span id="modalType"></span>
+      </div>
+    </div>
+
+    <div class="description-container">
+      <p id="modalDescription"></p>
+    </div>
+
+    <div id="modalLinks" class="modal-links">
+      {/* Links will be populated here */}
+    </div>
+  </div>
+</div>
+
+<style>
+  .container {
+    padding: 2rem 0;
+    text-align: center;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  h2 {
+    margin-bottom: 2rem;
+    text-align: center;
+  }
+
+  .schedule-table {
+    overflow-x: auto; /* Allows horizontal scrolling for smaller screens */
+    margin: 2rem 0;
+  }
+
+  .table-container {
+    min-width: 900px; /* Minimum width before horizontal scrollbar appears */
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    border-spacing: 0;
+    font-size: 0.9rem;
+    table-layout: fixed; /* Helps with column widths and overflow */
+  }
+
+  th, td {
+    border: 1px solid #ccc;
+    padding: 0.5rem;
+    text-align: center;
+    vertical-align: top; /* Align content to the top for multi-line titles */
+    overflow: hidden; /* Prevent content from spilling out */
+    text-overflow: ellipsis; /* Add ellipsis for overflowing text */
+  }
+  
+  th:first-child, td:first-child { /* Time column */
+    width: 60px; /* Fixed width for time column */
+    min-width: 60px;
+  }
+
+  /* Style for day columns to be equally sized */
+  th:not(:first-child), td:not(:first-child) {
+    width: calc((100% - 60px) / 5); /* Distribute remaining width among 5 day columns */
+  }
+
+
+  thead th {
+    background-color: #f0f0f0; /* Light gray for header */
+    position: sticky;
+    top: 0; /* Stick to top on scroll */
+    z-index: 10;
+    font-weight: bold;
+  }
+
+  .day-header {
+    font-size: 1.1rem; /* Slightly smaller */
+    font-weight: bold;
+    color: #201814; /* Changed color */
+  }
+
+  .date-header {
+    font-size: 0.85rem; /* Slightly smaller */
+    color: #000; /* Changed color */
+  }
+
+  .time-cell {
+    font-weight: bold;
+    background-color: #f0f0f0; /* Match header background */
+    position: sticky;
+    left: 0; /* Stick to left on horizontal scroll */
+    z-index: 5; /* Ensure it's above course cells during scroll */
+    min-width: 50px;
+    color: #201814; /* Changed time color */
+  }
+
+  .course-cell {
+    background-color: #e9ecef; /* Changed default background to light gray */
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    min-height: 70px; /* Slightly smaller min-height */
+    padding: 0.6rem; /* Adjust padding */
+    position: relative; /* Added for positioning info icon */
+  }
+
+  .course-cell:hover {
+    background-color: #d8dcdf; /* Darker hover for new base color */
+    transform: translateY(-2px); /* Subtle lift effect */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+
+  /* Type-specific colors, ensure these class names match lowercase 'type' from JSON */
+  .course-cell.type-main { background-color: #e9ecef; } /* Uniform light gray */
+  .course-cell.type-broad { background-color: #e9ecef; } /* Uniform light gray */
+  .course-cell.type-hackathon { background-color: #e9ecef; } /* Uniform light gray */
+  .course-cell.type-game { background-color: #e9ecef; } /* Uniform light gray */
+  .course-cell.type-community { background-color: #e9ecef; } /* Uniform light gray */
+  .course-cell.type-other { background-color: #e9ecef; } /* Uniform light gray */
+  .course-cell.type-default { background-color: #e9ecef; } /* Uniform light gray */
+
+
+  .course-title {
+    font-weight: bold;
+    font-size: 0.9em;
+    margin-bottom: 0.3rem;
+    color: #222;
+  }
+
+  .course-cell.type-main .course-title,
+  .course-cell.type-broad .course-title,
+  .course-cell.type-hackathon .course-title,
+  .course-cell.type-game .course-title,
+  .course-cell.type-community .course-title,
+  .course-cell.type-other .course-title {
+    color: #222;
+  }
+
+  .course-subtitle {
+    font-size: 0.75em;
+    color: #333;
+    margin-bottom: 0.3rem;
+  }
+
+  .course-speaker {
+    font-size: 0.75em;
+    color: #555;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.25rem;
+    margin-top: 0.2rem;
+  }
+  .course-speaker .icon { /* If Icon component renders an svg inside a span or div */
+    width: 14px;
+    height: 14px;
+  }
+
+  .info-icon {
+    position: absolute;
+    bottom: 10px; /* Adjusted for smaller icon */
+    right: 3px; /* Adjusted for smaller icon */
+    width: 10px; /* Halved size */
+    height: 10px; /* Halved size */
+  }
+
+  .empty-cell {
+    background-color: #ffffff; /* Plain white for empty */
+  }
+  
+  .event-break-cell {
+    background-color: #6c757d; /* Dark gray for breaks like Lunch */
+    color: white;
+    font-weight: bold;
+    vertical-align: middle;
+  }
+
+  /* Modal styles */
+  .modal {
+    display: none;
+    position: fixed;
+    z-index: 1000; /* Ensure modal is on top */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.6); /* Darker overlay */
+  }
+
+  .modal-content {
+    background-color: #fff;
+    margin: 8% auto; /* Adjust margin for better centering */
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); /* Softer shadow */
+    max-width: 600px;
+    width: 90%;
+    position: relative;
+  }
+
+  .close {
+    position: absolute;
+    top: 0.75rem; /* Adjust position */
+    right: 1rem;
+    font-size: 2rem; /* Larger close button */
+    font-weight: bold;
+    color: #888; /* Lighter color for close button */
+    cursor: pointer;
+    line-height: 1;
+  }
+
+  .close:hover,
+  .close:focus {
+    color: #333; /* Darker on hover/focus */
+    text-decoration: none;
+  }
+
+  #modalTitle {
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+    font-size: 1.75rem; /* Larger title */
+    color: #333;
+  }
+
+  #modalSubtitle {
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    font-size: 1.1rem; /* Adjust subtitle size */
+    color: #555;
+  }
+
+  .modal-info {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem 1.5rem; /* Adjust gap */
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #eee; /* Separator */
+  }
+
+  .info-item {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem; /* Adjust gap */
+    font-size: 0.95rem;
+  }
+  .info-item .icon { /* If Icon component renders an svg inside a span or div */
+    width: 18px;
+    height: 18px;
+  }
+
+  .description-container {
+    margin-bottom: 1.5rem;
+    text-align: left;
+  }
+
+  #modalDescription {
+    line-height: 1.7; /* Improved line height for readability */
+    font-size: 0.95rem;
+    color: #444;
+  }
+
+  .modal-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem; /* Adjust gap */
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid #eee; /* Separator */
+  }
+
+  .modal-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 1rem; /* Adjust padding */
+    background-color: #f0f0f0;
+    border-radius: 5px; /* Slightly more rounded */
+    text-decoration: none;
+    color: #333;
+    font-size: 0.9rem;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+  }
+
+  .modal-link:hover {
+    background-color: #e0e0e0;
+    transform: translateY(-1px);
+  }
+   .modal-link .icon { /* If Icon component renders an svg inside a span or div */
+    width: 16px;
+    height: 16px;
+  }
+
+
+  @media (max-width: 900px) {
+    /* .table-container will already enable scroll due to min-width */
+  }
+
+  @media (max-width: 600px) {
+    .modal-content {
+      margin: 5% auto;
+      padding: 1.5rem;
+      width: 95%;
+    }
+    #modalTitle { font-size: 1.5rem; }
+    #modalSubtitle { font-size: 1rem; }
+    .modal-info {
+      flex-direction: column;
+      align-items: flex-start; /* Align items to start for column layout */
+      gap: 0.8rem;
+    }
+     .info-item { font-size: 0.9rem; }
+    #modalDescription { font-size: 0.9rem; }
+    .modal-link { font-size: 0.85rem; padding: 0.5rem 0.8rem;}
+  }
+</style>
+
+<script>
+  document.addEventListener('astro:page-load', () => {
+    const courseElements = document.querySelectorAll('.course-cell');
+    const modalElement = document.getElementById('courseModal');
+    const closeBtnElement = modalElement?.querySelector('.close'); // Query within modal
+
+    if (!modalElement) {
+      console.error('Schedule Modal element not found.');
+      return;
+    }
+
+    // Function to fetch course data by ID (using the already loaded scheduleDataAll from frontmatter)
+    // For client-side, if we cannot access frontmatter directly, we'd fetch or embed.
+    // Astro makes frontmatter variables available to <script> if it's not `is:inline`.
+    // However, to be safe and standard, let's assume we need to fetch or have it embedded.
+    // For this iteration, we'll keep the fetch, assuming scheduleDataAll is not directly in client scope.
+    const getCourseById = async (id) => {
+      try {
+        // In a real scenario, if scheduleDataAll is large, avoid refetching.
+        // Astro does not directly expose frontmatter vars to non-inline scripts without passing.
+        // We'll use the fetch as it was, or one could embed data into a global var or data attribute.
+        const res = await fetch(new URL('../../assets/data/schedule.json', import.meta.url).href);
+        if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+        const data = await res.json() as any[]; // Add type assertion for client-side fetch too
+        return data.find(course => course.id === id);
+      } catch (error) {
+        console.error('Error fetching course data:', error);
+        return null;
+      }
+    };
+
+    const formatDateTime = (start, end) => {
+      if (!start || !end) return 'N/A';
+      try {
+        const startDate = new Date(start);
+        const endDate = new Date(end);
+        const formatTime = (date) => date.toLocaleTimeString('zh-TW', { hour: '2-digit', minute: '2-digit', hour12: false });
+        return `${formatTime(startDate)} - ${formatTime(endDate)}`;
+      } catch (e) {
+        return 'Invalid date';
+      }
+    };
+
+    const openModal = async (courseId) => {
+      const course = await getCourseById(courseId);
+      if (!course || !modalElement) return;
+
+      const modalTitleEl = modalElement.querySelector('#modalTitle');
+      const modalSubtitleEl = modalElement.querySelector('#modalSubtitle');
+      const modalSpeakerEl = modalElement.querySelector('#modalSpeaker');
+      const modalTimeEl = modalElement.querySelector('#modalTime');
+      const modalTypeEl = modalElement.querySelector('#modalType');
+      const modalDescriptionEl = modalElement.querySelector('#modalDescription');
+      const linksContainerEl = modalElement.querySelector('#modalLinks');
+
+      if (modalTitleEl) modalTitleEl.textContent = course.title_zh?.split('\n')[0] || '';
+      if (modalSubtitleEl) modalSubtitleEl.textContent = course.title_zh?.split('\n')[1] || '';
+      if (modalSpeakerEl) modalSpeakerEl.textContent = [course.speaker1, course.speaker2, course.speaker3, course.speaker4, course.speaker5].filter(Boolean).join(', ') || 'N/A';
+      if (modalTimeEl) modalTimeEl.textContent = formatDateTime(course.start, course.end);
+      if (modalTypeEl) modalTypeEl.textContent = course.type || 'N/A';
+      if (modalDescriptionEl) modalDescriptionEl.innerHTML = course.description_zh?.replace(/\n/g, '<br>') || 'No description available.';
+      
+      if (linksContainerEl) {
+        linksContainerEl.innerHTML = ''; // Clear previous links
+        const createLink = (href, text, svgPath) => {
+          if (!href) return null;
+          const link = document.createElement('a');
+          link.href = href;
+          link.target = '_blank';
+          link.className = 'modal-link';
+          link.innerHTML = `<span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path fill="currentColor" d="${svgPath}"/></svg></span>${text}`;
+          return link;
+        };
+        
+        const slideLink = createLink(course.slide, '投影片', "M19 16V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v11h16m2 2H3V5c0-1.7 1.3-3 3-3h14c1.7 0 3 1.3 3 3v13zM10 7h8v2h-8V7zm0 4h8v2h-8v-2zM5 7h3v2H5V7zm0 4h3v2H5v-2z");
+        const coWriteLink = createLink(course.co_write, '共筆', "M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a.996.996 0 0 0 0-1.41l-2.34-2.34a.996.996 0 0 0-1.41 0l-1.83 1.83l3.75 3.75l1.83-1.83z");
+        const recordLink = createLink(course.record, '錄影', "M15 8v8H5V8h10m1-2H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4V7c0-.55-.45-1-1-1z");
+
+        if (slideLink) linksContainerEl.appendChild(slideLink);
+        if (coWriteLink) linksContainerEl.appendChild(coWriteLink);
+        if (recordLink) linksContainerEl.appendChild(recordLink);
+      }
+
+      modalElement.style.display = 'block';
+      document.body.style.overflow = 'hidden';
+    };
+
+    courseElements.forEach(element => {
+      element.addEventListener('click', () => {
+        const courseId = element.getAttribute('data-course-id');
+        if (courseId) {
+          openModal(courseId);
+        }
+      });
+    });
+
+    if (closeBtnElement) {
+      closeBtnElement.addEventListener('click', () => {
+        modalElement.style.display = 'none';
+        document.body.style.overflow = '';
+      });
+    }
+
+    window.addEventListener('click', (event) => {
+      if (event.target === modalElement) {
+        modalElement.style.display = 'none';
+        document.body.style.overflow = '';
+      }
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && modalElement.style.display === 'block') {
+        modalElement.style.display = 'none';
+        document.body.style.overflow = '';
+      }
+    });
+  });
+</script>
+
