@@ -193,12 +193,6 @@ Object.keys(dayMap).forEach(dayKey => {
                         {course.title_zh.split('\n')[1] && (
                           <div class="course-subtitle">{course.title_zh.split('\n')[1]}</div>
                         )}
-                        {course.speaker1 && (
-                          <div class="course-speaker">
-                            <Icon name="material-symbols:person" size={16} />
-                            {course.speaker1}
-                          </div>
-                        )}
                         {hasDetails && (
                           <div class="info-icon">
                             <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 20 20" fill="none">
@@ -292,6 +286,16 @@ Object.keys(dayMap).forEach(dayKey => {
     vertical-align: top; /* Align content to the top for multi-line titles */
     overflow: hidden; /* Prevent content from spilling out */
     text-overflow: ellipsis; /* Add ellipsis for overflowing text */
+    box-sizing: border-box; /* Added for consistent height control */
+  }
+
+  /* Ensure all td elements in the table body have a uniform height */
+  tbody td {
+    /* height: 45px; Removed as JS will handle row height */
+  }
+
+  tbody tr {
+    box-sizing: border-box; /* Added for easier JS height manipulation */
   }
   
   th:first-child, td:first-child { /* Time column */
@@ -332,14 +336,14 @@ Object.keys(dayMap).forEach(dayKey => {
     z-index: 5; /* Ensure it's above course cells during scroll */
     min-width: 50px;
     color: #201814; /* Changed time color */
+    vertical-align: middle; /* Vertically center content */
   }
 
   .course-cell {
     background-color: #e9ecef; /* Changed default background to light gray */
     cursor: pointer;
     transition: all 0.2s ease-in-out;
-    min-height: 70px; /* Slightly smaller min-height */
-    padding: 0.6rem; /* Adjust padding */
+    padding: 0.4rem; /* Reduced padding to help content fit fixed height */
     position: relative; /* Added for positioning info icon */
   }
 
@@ -671,6 +675,53 @@ Object.keys(dayMap).forEach(dayKey => {
         document.body.style.overflow = '';
       }
     });
+
+    // Function to adjust row heights to be uniform
+    const adjustRowHeights = () => {
+      const tableBody = document.querySelector('.schedule-table tbody');
+      if (!tableBody) return;
+
+      // Get all rows, but filter out the special lunch break row
+      const dataRows = Array.from(tableBody.querySelectorAll('tr')).filter(row => !row.querySelector('td.event-break-cell'));
+
+      if (dataRows.length === 0) return;
+
+      let maxHeight = 0;
+
+      // First pass: reset heights and measure natural height of each row
+      dataRows.forEach(row => {
+        row.style.height = ''; // Reset height
+      });
+
+      // Force a reflow to ensure heights are recalculated accurately after reset
+      // Reading an offset property or calling getComputedStyle can trigger a reflow.
+      if ((tableBody as HTMLElement).offsetParent !== null) { /* Reading offsetParent to help trigger reflow */}
+
+      dataRows.forEach(row => {
+        const rowHeight = row.offsetHeight;
+        if (rowHeight > maxHeight) {
+          maxHeight = rowHeight;
+        }
+      });
+
+      // Second pass: apply the max height to all data rows
+      if (maxHeight > 0) {
+        dataRows.forEach(row => {
+          row.style.height = `${maxHeight}px`;
+        });
+      }
+    };
+
+    // Adjust heights on page load
+    adjustRowHeights();
+
+    // Optional: Re-adjust on window resize if your layout is responsive
+    // let resizeTimeout;
+    // window.addEventListener('resize', () => {
+    //   clearTimeout(resizeTimeout);
+    //   resizeTimeout = setTimeout(adjustRowHeights, 100);
+    // });
+
   });
 </script>
 
