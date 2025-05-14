@@ -313,7 +313,7 @@ Object.keys(dayMap).forEach(dayKey => {
     background-color: #f0f0f0; /* Light gray for header */
     position: sticky;
     top: 0; /* Stick to top on scroll */
-    z-index: 10;
+    z-index: 2; /* Reduced z-index to prevent overlap with navbar */
     font-weight: bold;
   }
 
@@ -433,11 +433,11 @@ Object.keys(dayMap).forEach(dayKey => {
 
   .modal-content {
     background-color: #fff;
-    margin: 8% auto; /* Adjust margin for better centering */
-    padding: 2rem;
+    margin: 5% auto; /* More top margin */
+    padding: 2.5rem; /* Increased padding */
     border-radius: 8px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); /* Softer shadow */
-    max-width: 600px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    max-width: 750px; /* Wider modal */
     width: 90%;
     position: relative;
   }
@@ -462,24 +462,27 @@ Object.keys(dayMap).forEach(dayKey => {
   #modalTitle {
     margin-top: 0;
     margin-bottom: 0.5rem;
-    font-size: 1.75rem; /* Larger title */
-    color: #333;
+    font-size: 2rem; /* Larger title */
+    font-weight: 600; /* Slightly bolder */
+    color: #222; /* Darker title */
+    text-align: left; /* Align to left */
   }
 
   #modalSubtitle {
     margin-top: 0;
-    margin-bottom: 1.5rem;
-    font-size: 1.1rem; /* Adjust subtitle size */
+    margin-bottom: 2rem; /* Increased bottom margin */
+    font-size: 1.1rem;
     color: #555;
+    text-align: left; /* Align to left */
   }
 
   .modal-info {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.8rem 1.5rem; /* Adjust gap */
+    gap: 0.8rem 1.5rem;
     margin-bottom: 1.5rem;
-    padding-bottom: 1rem;
-    border-bottom: 1px solid #eee; /* Separator */
+    /* border-bottom: 1px solid #eee; Removed border */
+    padding-bottom: 1rem; 
   }
 
   .info-item {
@@ -487,6 +490,7 @@ Object.keys(dayMap).forEach(dayKey => {
     align-items: center;
     gap: 0.6rem; /* Adjust gap */
     font-size: 0.95rem;
+    color: #333; /* Ensure info item text is dark for readability */
   }
   .info-item .icon { /* If Icon component renders an svg inside a span or div */
     width: 18px;
@@ -496,10 +500,12 @@ Object.keys(dayMap).forEach(dayKey => {
   .description-container {
     margin-bottom: 1.5rem;
     text-align: left;
+    border-top: 1px solid #eee; /* Add border above description */
+    padding-top: 1.5rem; /* Add padding above description */
   }
 
   #modalDescription {
-    line-height: 1.7; /* Improved line height for readability */
+    line-height: 1.7;
     font-size: 0.95rem;
     color: #444;
   }
@@ -507,10 +513,10 @@ Object.keys(dayMap).forEach(dayKey => {
   .modal-links {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.8rem; /* Adjust gap */
+    gap: 0.8rem;
     margin-top: 1.5rem;
-    padding-top: 1rem;
-    border-top: 1px solid #eee; /* Separator */
+    /* border-top: 1px solid #eee; Removed border */
+    /* padding-top: 1rem; Removed padding, handled by description container's margin */
   }
 
   .modal-link {
@@ -530,11 +536,20 @@ Object.keys(dayMap).forEach(dayKey => {
     background-color: #e0e0e0;
     transform: translateY(-1px);
   }
-   .modal-link .icon { /* If Icon component renders an svg inside a span or div */
+  .modal-link .icon { /* If Icon component renders an svg inside a span or div */
     width: 16px;
     height: 16px;
   }
 
+  .modal-link-button {
+    background-color: #007bff; /* Example button color */
+    color: white;
+    padding: 0.6rem 1.2rem;
+  }
+  .modal-link-button:hover {
+    background-color: #0056b3;
+    color: white;
+  }
 
   @media (max-width: 900px) {
     /* .table-container will already enable scroll due to min-width */
@@ -616,7 +631,10 @@ Object.keys(dayMap).forEach(dayKey => {
 
       if (modalTitleEl) modalTitleEl.textContent = course.title_zh?.split('\n')[0] || '';
       if (modalSubtitleEl) modalSubtitleEl.textContent = course.title_zh?.split('\n')[1] || '';
-      if (modalSpeakerEl) modalSpeakerEl.textContent = [course.speaker1, course.speaker2, course.speaker3, course.speaker4, course.speaker5].filter(Boolean).join(', ') || 'N/A';
+      
+      const speakerText = [course.speaker1, course.speaker2, course.speaker3, course.speaker4, course.speaker5].filter(Boolean).join(', ');
+      if (modalSpeakerEl) modalSpeakerEl.textContent = speakerText ? `主講人：${speakerText}` : '主講人：N/A';
+      
       if (modalTimeEl) modalTimeEl.textContent = formatDateTime(course.start, course.end);
       if (modalTypeEl) modalTypeEl.textContent = course.type || 'N/A';
       if (modalDescriptionEl) modalDescriptionEl.innerHTML = course.description_zh?.replace(/\n/g, '<br>') || 'No description available.';
@@ -628,8 +646,16 @@ Object.keys(dayMap).forEach(dayKey => {
           const link = document.createElement('a');
           link.href = href;
           link.target = '_blank';
-          link.className = 'modal-link';
-          link.innerHTML = `<span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path fill="currentColor" d="${svgPath}"/></svg></span>${text}`;
+          
+          let displayText = text;
+          link.className = 'modal-link'; // Default class
+
+          if (text === '投影片') {
+            displayText = '簡報'; // Change text to 簡報
+            link.classList.add('modal-link-button'); // Add button specific class
+          }
+          
+          link.innerHTML = `<span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path fill="currentColor" d="${svgPath}"/></svg></span>${displayText}`;
           return link;
         };
         
