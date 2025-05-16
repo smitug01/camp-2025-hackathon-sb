@@ -19,8 +19,8 @@ import cat from "../../assets/img/cat-cutted.webp";
         </h3>
         <div class="content">
           {t.components.home.info.event.text[0]}<span
-            >{t.components.home.info.event.text[1]}</span
-          >
+        >{t.components.home.info.event.text[1]}</span
+        >
         </div>
         <div class="image">
           <Icon
@@ -35,8 +35,8 @@ import cat from "../../assets/img/cat-cutted.webp";
         </h3>
         <div class="content">
           {t.components.home.info.signup.text[0]}<span
-            >{t.components.home.info.signup.text[1]}</span
-          >
+        >{t.components.home.info.signup.text[1]}</span
+        >
         </div>
         <div class="image">
           <Icon name="material-symbols:schedule" size={50} />
@@ -144,7 +144,7 @@ import cat from "../../assets/img/cat-cutted.webp";
       <div class="signUp">
         <Image src={cat} alt="" />
         <a href="https://sitcon.kktix.cc/events/sitcon-camp2025"
-          >{t.components.home.info.price.signupNow}</a
+        >{t.components.home.info.price.signupNow}</a
         >
       </div>
     </div>
@@ -165,9 +165,9 @@ import cat from "../../assets/img/cat-cutted.webp";
         </li>
         <li>
           {t.components.home.info.reminder.groupDisclaimer[0]}<a
-            href="https://drive.google.com/file/d/1nxt-lYWAMnsK-QbwbbeIV7lTi9hcimTw/view"
-            >{t.components.home.info.reminder.groupDisclaimer[1]}</a
-          >。
+          href="https://drive.google.com/file/d/1nxt-lYWAMnsK-QbwbbeIV7lTi9hcimTw/view"
+        >{t.components.home.info.reminder.groupDisclaimer[1]}</a
+        >。
         </li>
         <li>
           {t.components.home.info.reminder.targetCount}
@@ -177,15 +177,15 @@ import cat from "../../assets/img/cat-cutted.webp";
         </li>
         <li>
           {t.components.home.info.reminder.payBeforeEnter[0]}<a
-            href="https://drive.google.com/file/d/1g6OSBT0yZIpOjKk5tkzgFOv-mcpBrPLd/view"
-            >{t.components.home.info.reminder.payBeforeEnter[1]}</a
-          >。
+          href="https://drive.google.com/file/d/1g6OSBT0yZIpOjKk5tkzgFOv-mcpBrPLd/view"
+        >{t.components.home.info.reminder.payBeforeEnter[1]}</a
+        >。
         </li>
         <li>
           {t.components.home.info.reminder.refund[0]}<a
-            href="https://drive.google.com/file/d/1A193ekw7DtCgfMmxsICeT4gO2pWYGd4q/view"
-            >{t.components.home.info.reminder.refund[1]}</a
-          >。
+          href="https://drive.google.com/file/d/1A193ekw7DtCgfMmxsICeT4gO2pWYGd4q/view"
+        >{t.components.home.info.reminder.refund[1]}</a
+        >。
         </li>
       </ol>
     </div>
@@ -196,9 +196,11 @@ import cat from "../../assets/img/cat-cutted.webp";
   h2 {
     margin-bottom: 2rem;
   }
+
   section {
     background-color: #374de5;
   }
+
   span {
     font-size: 0.6em;
     display: block;
@@ -250,6 +252,7 @@ import cat from "../../assets/img/cat-cutted.webp";
     background-color: #fff;
     color: #736d6d;
   }
+
   .info-container2 {
     display: flex;
     justify-content: center;
@@ -258,6 +261,7 @@ import cat from "../../assets/img/cat-cutted.webp";
     max-width: 1200px;
     margin: 0 auto;
   }
+
   .price-box {
     padding: 0 3rem;
   }
@@ -276,20 +280,22 @@ import cat from "../../assets/img/cat-cutted.webp";
   .price-container:last-child {
     border-bottom: none;
   }
+
   .people {
     color: #43a7ff;
   }
+
   .friends {
     flex: 1;
     text-align: center;
   }
-  
+
   .mobile-flex {
     display: flex;
     align-items: center;
     gap: 2rem;
   }
-  
+
   .calendar {
     margin: 2.5rem 0;
     color: #fff;
@@ -323,10 +329,12 @@ import cat from "../../assets/img/cat-cutted.webp";
   .reminder {
     line-height: 2;
   }
+
   .reminder h3 {
     font-size: 2.6875rem;
     margin-bottom: 1rem;
   }
+
   .signUp img {
     display: block;
     width: 15rem;
@@ -335,6 +343,7 @@ import cat from "../../assets/img/cat-cutted.webp";
     z-index: 1;
     position: relative;
   }
+
   .signUp a {
     border-radius: 0.9375rem;
     border: 8px solid #43a7ff;
@@ -346,10 +355,12 @@ import cat from "../../assets/img/cat-cutted.webp";
     display: block;
     font-size: 2rem;
     text-decoration: none;
+    transition: all 0.3s;
   }
 
   .signUp a:hover {
     background: #ecfbff;
+    scale: 1.1;
   }
 
   ol {
@@ -371,6 +382,7 @@ import cat from "../../assets/img/cat-cutted.webp";
       gap: 5rem;
       padding-right: 0;
     }
+
     .info-container2 {
       flex-direction: column;
       align-items: center;
@@ -378,18 +390,22 @@ import cat from "../../assets/img/cat-cutted.webp";
       width: 100%;
       max-width: 100%;
     }
+
     .info {
       padding: 2rem;
     }
+
     .info .content {
       font-size: 2rem;
     }
+
     .image {
       width: 4rem;
       height: 4rem;
       bottom: -3rem;
       right: -3rem;
     }
+
     .image svg {
       width: 2rem;
       height: 2rem;
@@ -406,31 +422,31 @@ import cat from "../../assets/img/cat-cutted.webp";
       align-items: flex-start;
       width: 100%;
     }
-    
+
     .mobile-flex {
       width: 100%;
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
-    
+
     .price-container svg {
       width: 1.5rem;
       height: 1.5rem;
     }
-    
+
     .friends {
       flex: 0;
       display: flex;
       gap: 0.5rem;
       max-width: 40%;
     }
-    
+
     .people {
       width: 100%;
       margin-bottom: 0.5rem;
     }
-    
+
     .price {
       text-align: right;
       min-width: 120px;
@@ -461,17 +477,17 @@ import cat from "../../assets/img/cat-cutted.webp";
       min-width: 140px;
     }
   }
-  
+
   @media (min-width: 901px) and (max-width: 1057px) {
     .info-container2 {
       gap: 3rem;
       max-width: 90%;
     }
-    
+
     .price-box {
       max-width: 65%;
     }
-    
+
     .signUp {
       max-width: 30%;
     }
