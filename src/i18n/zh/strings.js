@@ -138,12 +138,14 @@ const zhStrings = {
       host: {
         organize: "共同主辦",
         sponsor: "協辦單位",
+        personal_sponsor: "個人贊助",
         hosts: {
           sitcon: "SITCON 學生計算機年會",
           ocf: "開放文化基金會",
           nycuCsClub: "陽明交通大學資訊工程系學會",
           nycuCs: "陽明交通大學資訊工程系",
           itsa: "ITSA 教育部智慧創新關鍵人才躍升計畫",
+          personal_sponsor_1: "小弘",
         },
       },
       info: {
