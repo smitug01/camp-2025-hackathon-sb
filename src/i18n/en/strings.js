@@ -141,6 +141,7 @@ const enStrings = {
         // TODO: Confirm this translation
         sponsor: "Supporting Organization",
         special_thanks: "Special Thanks",
+        personal_sponsor: "Personal Sponsor",
         hosts: {
           sitcon: "SITCON",
           ocf: "Open culture foundation",
@@ -150,6 +151,7 @@ const enStrings = {
           // Cannot figure out what English means in the official website
           itsa: "ITSA 教育部智慧創新關鍵人才躍升計畫",
           google_for_developers: "Google for Developers",
+          personal_sponsor_1: "小弘",
         },
       },
       info: {
