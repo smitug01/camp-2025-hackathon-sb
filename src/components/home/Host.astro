@@ -1,5 +1,6 @@
 ---
 import ocfLogo from "../../assets/img/sponsors/ocf.png";
+import googleForDevelopersLogo from "../../assets/img/sponsors/GoogleForDevelopers.svg";
 import nycuCsClubLogo from "../../assets/img/sponsors/nycuCsClub.png";
 import nycuCsLogo from "../../assets/img/sponsors/nycuCs.png";
 import itsaLogo from "../../assets/img/sponsors/itsa.png";
@@ -63,6 +64,15 @@ const t = getLocale(Astro.url);
         <Image src={itsaLogo} alt="ITSA logo" loading="lazy" />
       </div>
       <div class="host-name">{t.components.home.host.hosts.itsa}</div>
+    </div>
+  </div>
+  <h3>{t.components.home.host.special_thanks}</h3>
+  <div class="host-container">
+    <div class="host-item">
+      <div class="host-logo">
+        <Image src={googleForDevelopersLogo} alt="Google for Developers logo" loading="lazy" />
+      </div>
+      <div class="host-name">{t.components.home.host.hosts.google_for_developers}</div>
     </div>
   </div>
   <h3>{t.components.home.host.personal_sponsor}</h3>
