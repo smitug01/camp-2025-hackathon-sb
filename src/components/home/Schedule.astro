@@ -109,8 +109,8 @@ function calculateDurationInSlots(course) {
   const taipeiStart = new Date(start.toLocaleString('en-US', { timeZone: 'Asia/Taipei' }));
   const taipeiEnd = new Date(end.toLocaleString('en-US', { timeZone: 'Asia/Taipei' }));
   
-  // Calculate duration in minutes
-  const durationMinutes = (taipeiEnd - taipeiStart) / (1000 * 60);
+  // Calculate duration in minutes - using getTime() to ensure we get number values
+  const durationMinutes = (taipeiEnd.getTime() - taipeiStart.getTime()) / (1000 * 60);
   
   // Convert to number of 30-minute slots and ensure at least 1 slot
   return Math.max(1, Math.ceil(durationMinutes / 30));
@@ -198,7 +198,7 @@ function getDayOfWeekDisplay(dateString) {
                     }
 
                     const isMeal = course.title_zh === "午餐" || course.title_zh === "晚餐";
-                    const hasDetails = course.description_zh || course.slide || course.co_write || course.record;
+                    const hasDetails = course.description_zh || course.slide || course.co_write || course.record || course.speaker1;
                     
                     if (isMeal) {
                       return (
@@ -209,7 +209,7 @@ function getDayOfWeekDisplay(dateString) {
                     }
 
                     return (
-                      <td class={`course-cell type-${course.type?.toLowerCase() || 'default'}`} data-course-id={course.id} rowspan={rowspan}>
+                      <td class={`course-cell type-${course.type?.toLowerCase() || 'default'}`} data-course-id={String(course.id)} rowspan={rowspan}>
                         <div class="course-title">{course.title_zh?.split('\n')[0] || ''}</div>
                         {course.title_zh?.split('\n')[1] && (
                           <div class="course-subtitle">{course.title_zh.split('\n')[1]}</div>
@@ -731,13 +731,16 @@ function getDayOfWeekDisplay(dateString) {
       return;
     }
 
-    // Function to fetch course data by ID
+    // Function to fetch course data by ID with proper ID type handling
     const getCourseById = async (id) => {
       try {
         const res = await fetch(new URL('../../assets/data/schedule.json', import.meta.url).href);
         if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
         const data = await res.json() as any[];
-        return data.find(course => course.id === id);
+        
+        // Convert id to the same type for comparison (string)
+        const searchId = String(id);
+        return data.find(course => String(course.id) === searchId);
       } catch (error) {
         console.error('Error fetching course data:', error);
         return null;
@@ -760,9 +763,9 @@ function getDayOfWeekDisplay(dateString) {
       const course = await getCourseById(courseId);
       if (!course || !modalElement) return;
 
-      // Check if course has any meaningful content
-      const hasContent = course.description_zh || course.slide || course.co_write || course.record || course.speaker1;
-      if (!hasContent) return; // Don't open modal if there's no content
+      // Update hasContent check to be less restrictive
+      const hasContent = course.title_zh; // If the course has a title, we'll show it
+      if (!hasContent) return;
 
       const modalTitleEl = modalElement.querySelector('#modalTitle');
       const modalSubtitleEl = modalElement.querySelector('#modalSubtitle');
@@ -780,7 +783,11 @@ function getDayOfWeekDisplay(dateString) {
       
       if (modalTimeEl) modalTimeEl.textContent = formatDateTime(course.start, course.end);
       if (modalTypeEl) modalTypeEl.textContent = course.type || 'N/A';
-      if (modalDescriptionEl) modalDescriptionEl.innerHTML = course.description_zh?.replace(/\n/g, '<br>') || 'No description available.';
+      
+      // Always provide some content even if description is empty
+      if (modalDescriptionEl) {
+        modalDescriptionEl.innerHTML = course.description_zh?.replace(/\n/g, '<br>') || '暫無課程介紹。';
+      }
       
       // Handle speaker section
       const speakerSectionTitleEl = modalElement.querySelector('#speakerSectionTitle');
@@ -857,10 +864,8 @@ function getDayOfWeekDisplay(dateString) {
       element.addEventListener('click', () => {
         const courseId = element.getAttribute('data-course-id');
         if (courseId) {
-          const hasDetails = element.querySelector('.info-icon');
-          if (hasDetails) { // Only open modal if course has details
+          // Remove the check for hasDetails - allow all course cells to be clickable
           openModal(courseId);
-          }
         }
       });
     });
