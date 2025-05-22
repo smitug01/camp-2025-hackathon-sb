@@ -110,7 +110,7 @@ function calculateDurationInSlots(course) {
   const taipeiEnd = new Date(end.toLocaleString('en-US', { timeZone: 'Asia/Taipei' }));
   
   // Calculate duration in minutes
-  const durationMinutes = (taipeiEnd.getTime() - taipeiStart.getTime()) / (1000 * 60);
+  const durationMinutes = (taipeiEnd - taipeiStart) / (1000 * 60);
   
   // Convert to number of 30-minute slots and ensure at least 1 slot
   return Math.max(1, Math.ceil(durationMinutes / 30));
@@ -458,17 +458,13 @@ function getDayOfWeekDisplay(dateString) {
     width: 100%;
     height: 100%;
     overflow: auto;
-    background-color: rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(5px);
-    -webkit-backdrop-filter: blur(5px);
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    background-color: rgba(0, 0, 0, 0.8);
   }
 
   .modal-content {
     background-color: #000;
     color: #fff;
+    margin: 5% auto;
     padding: 3rem;
     padding-top: 1.5rem;
     border-radius: 8px;
@@ -476,20 +472,6 @@ function getDayOfWeekDisplay(dateString) {
     width: 90%;
     position: relative;
     border-left: 4px solid #c9a845;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
-    transform: translateY(0);
-    animation: modalAppear 0.3s ease-out;
-  }
-
-  @keyframes modalAppear {
-    from {
-      opacity: 0;
-      transform: translateY(-30px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
   }
 
   .close {
@@ -503,7 +485,6 @@ function getDayOfWeekDisplay(dateString) {
     line-height: 1;
     opacity: 0.8;
     transition: opacity 0.2s ease;
-    z-index: 1010;
   }
 
   .close:hover,
@@ -818,6 +799,7 @@ function getDayOfWeekDisplay(dateString) {
       }
       
       // For now, use a placeholder for speaker description
+      // In a real implementation, you might want to fetch speaker bios from another data source
       if (speakerDescriptionEl) {
         if (speakerText && speakerText !== '主講人：N/A') {
           speakerDescriptionEl.innerHTML = `${speakerText.replace('主講人：', '')}是本課程的講師。<br>更多講者資訊將在未來更新。`;
@@ -861,7 +843,7 @@ function getDayOfWeekDisplay(dateString) {
         }
       }
 
-      modalElement.style.display = 'flex';
+      modalElement.style.display = 'block';
       document.body.style.overflow = 'hidden';
     };
 
@@ -901,7 +883,7 @@ function getDayOfWeekDisplay(dateString) {
     });
 
     document.addEventListener('keydown', (event) => {
-      if (event.key === 'Escape' && modalElement.style.display === 'flex') {
+      if (event.key === 'Escape' && modalElement.style.display === 'block') {
         modalElement.style.display = 'none';
         document.body.style.overflow = '';
       }
