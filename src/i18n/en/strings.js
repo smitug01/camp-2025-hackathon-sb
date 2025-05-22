@@ -165,7 +165,7 @@ const enStrings = {
         },
         signup: {
           title: "Registration Period",
-          text: ["From now until 2025/5/24 (Sat)", "Deadline: 23:59"],
+          text: ["From now until 2025/5/31 (Sat)", "Deadline: 23:59"],
         },
         place: {
           title: "Event Location",
