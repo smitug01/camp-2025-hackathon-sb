@@ -285,6 +285,7 @@ function getDayOfWeekDisplay(dateString) {
   .schedule-table {
     overflow-x: auto; /* Allows horizontal scrolling for smaller screens */
     margin: 2rem 0;
+    padding: 1rem;
   }
 
   .table-container {
@@ -734,6 +735,16 @@ function getDayOfWeekDisplay(dateString) {
     border-radius: 50%;
     object-fit: cover;
     z-index: 5;
+  }
+
+  @media (max-width: 768px) {
+    body {
+      font-size: 1rem;
+    }
+    
+    .schedule-table {
+      padding: 0.5rem;
+    }
   }
 </style>
 
