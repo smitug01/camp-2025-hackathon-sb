@@ -633,17 +633,22 @@ function getDayOfWeekDisplay(dateString) {
     }
     
     #modalTitle { 
-      font-size: 1.5rem; 
+      font-size: 1.5rem;
+      padding-right: 0; /* Remove padding as person image is hidden */
     }
     
     #modalSubtitle { 
       font-size: 1rem; 
       margin-bottom: 1.5rem;
     }
+
+    .modal-person-image {
+      display: none; /* Hide person image on mobile */
+    }
     
     .modal-info {
       flex-direction: column;
-      align-items: flex-start; /* Align items to start for column layout */
+      align-items: flex-start;
       gap: 0.8rem;
     }
     

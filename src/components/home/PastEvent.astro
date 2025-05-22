@@ -148,13 +148,22 @@ const allImages = [...images, ...marquee];
   const marqueeImage = document.querySelector(".marquee-image");
   const marqueeContent = marquee.innerHTML;
   const marqueeSet = () => {
-    const content = marqueeContent.repeat(
-      Math.ceil(
-        Math.max(window.innerWidth / marqueeImage.offsetWidth, 2),
-      ),
-    );
-    marquee.innerHTML = content;
-    marquee2.innerHTML = content;
+    try {
+      // Calculate repeat count with a maximum limit
+      const repeatCount = Math.min(
+        Math.ceil(Math.max(window.innerWidth / marqueeImage.offsetWidth, 2)),
+        10 // Maximum repeat count to prevent infinite loop
+      );
+      const content = marqueeContent.repeat(repeatCount);
+      marquee.innerHTML = content;
+      marquee2.innerHTML = content;
+    } catch (error) {
+      console.error('Error in marqueeSet:', error);
+      // Fallback to minimum repeat in case of error
+      const content = marqueeContent.repeat(2);
+      marquee.innerHTML = content;
+      marquee2.innerHTML = content;
+    }
   };
   window.onload = () => {
     marqueeSet();
