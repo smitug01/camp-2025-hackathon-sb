@@ -5,8 +5,9 @@ interface Props {
 
 import { getLocale } from "../../i18n";
 import { Icon } from "astro-icon/components";
-import scheduleDataAll from "../../assets/data/schedule.json"; // Renamed to avoid conflict
-const scheduleData = scheduleDataAll as any[]; // Add type assertion and use 'scheduleData' henceforth
+import scheduleDataAll from "../../assets/data/schedule.json";
+import person from "../../assets/img/modal/image-11.png";
+const scheduleData = scheduleDataAll as any[];
 
 const t = getLocale(Astro.url);
 
@@ -44,20 +45,8 @@ function splitCourseIfCrossLunch(course) {
   return [course];
 }
 
-// 產生新課程陣列，僅用 schedule.json
-let coursesForTable: any[] = []; // Initialize with explicit type any[]
-scheduleData.forEach(course => {
-  if (
-    course.id !== undefined && // Ensure id exists
-    course.title_zh !== "午餐" && // Exclude '午餐'
-    course.title_zh !== "晚餐" && // Exclude '晚餐'
-    course.room in dayMap // Ensure the course has a valid room/dayKey
-  ) {
-    // Convert ID to string if it's not already
-    course.id = String(course.id);
-    coursesForTable.push(...splitCourseIfCrossLunch(course));
-  }
-});
+// 直接使用所有課程，不做過濾
+let coursesForTable = scheduleData;
 
 // Group courses by day
 const coursesByDay = {};
@@ -65,34 +54,50 @@ dayKeys.forEach(dayKey => {
   coursesByDay[dayKey] = coursesForTable.filter(course => course.room === dayKey);
 });
 
-// Time slots for rows
+// Track cells that should be skipped due to rowspan
+const cellCoverage = {};
+dayKeys.forEach(dayKey => {
+  cellCoverage[dayKey] = {};
+});
+
+// Prepare headers dynamically with fixed dates
+const dynamicDayHeaders = [
+  { dayNum: "1", dateText: "7/9 三" },
+  { dayNum: "2", dateText: "7/10 四" },
+  { dayNum: "3", dateText: "7/11 五" },
+  { dayNum: "4", dateText: "7/12 六" },
+  { dayNum: "5", dateText: "7/13 日" }
+];
+
+// Time slots for rows (更新時間槽，包含所有可能的時間)
 const timeSlots = [
-  "08:00", "09:00", "10:00", "11:00", "12:00",
-  "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00"
+  "08:00", "08:30", "09:00", "09:30", "10:00", "10:30", "11:00", "11:30", 
+  "12:00", "12:30", "13:00", "13:30", "14:00", "14:30", "15:00", "15:30",
+  "16:00", "16:30", "17:00", "17:30", "18:00", "18:30", "19:00", "19:30",
+  "20:00", "20:30", "21:00", "21:30"
 ];
 
 // Helper function to get a course starting at a given time slot for a specific day
 function getCourseStartingAt(dayKey, timeSlot) {
   const coursesForDay = coursesByDay[dayKey] || [];
   return coursesForDay.find(course => {
+    if (!course.start) return false;
     const startTime = new Date(course.start);
-    const startHour = startTime.getHours();
-    const startMinute = startTime.getMinutes();
     const [slotHour, slotMinute] = timeSlot.split(':').map(Number);
-    return startHour === slotHour && startMinute === slotMinute;
+    return startTime.getHours() === slotHour && 
+           Math.floor(startTime.getMinutes() / 30) * 30 === slotMinute;
   });
 }
 
-// Helper function to calculate event duration in 1-hour slots for rowspan
+// Helper function to calculate event duration in half-hour slots for rowspan
 function calculateDurationInSlots(event) {
+  if (!event.start || !event.end) return 1;
   const startTime = new Date(event.start);
   const endTime = new Date(event.end);
   const durationMs = endTime.getTime() - startTime.getTime();
-  // Calculate duration in hours, round to nearest half hour, then to slots.
-  // For simplicity, if duration is 0.5hr, it's 1 slot. 1.5hr is 2 slots if slots are hourly.
-  // The current timeSlots are hourly.
   const durationHours = durationMs / (1000 * 60 * 60);
-  return Math.max(1, Math.ceil(durationHours)); // Ensure at least 1, round up for partial hours filling slots
+  // Convert hours to 30-minute slots and round up
+  return Math.ceil(durationHours * 2);
 }
 
 // Format date function (e.g., "7/9")
@@ -124,32 +129,6 @@ function getDayOfWeekDisplay(dateString) {
   }
 }
 
-// Prepare headers dynamically
-const dynamicDayHeaders = dayKeys.map(dayKey => {
-  // Find a valid event for this day
-  const eventForDate = scheduleData.find(e => 
-    e.room === dayKey && 
-    e.start && 
-    !isNaN(new Date(e.start).getTime())
-  );
-  
-  const dateStr = eventForDate?.start || "";
-  const formattedDate = formatDateDisplay(dateStr);
-  const dayOfWeek = getDayOfWeekDisplay(dateStr);
-  
-  return {
-    dayNum: dayMap[dayKey],
-    dateText: dateStr ? `${formattedDate} ${dayOfWeek}.` : `Day ${dayMap[dayKey]}`
-  };
-});
-
-// This object will track cells that are already covered by a previous event's rowspan.
-// Keyed by dayKey, then by timeSlot.
-const cellCoverage = {};
-Object.keys(dayMap).forEach(dayKey => {
-  cellCoverage[dayKey] = {}; 
-});
-
 ---
 <section class="container" id="schedule">
   <h2 class="emfont-UnboundedSans">{t.components.home.schedulePreview.title}</h2>
@@ -170,50 +149,45 @@ Object.keys(dayMap).forEach(dayKey => {
         </thead>
         <tbody>
           {timeSlots.map((timeSlot, timeIndex) => {
-            // Handle special "午餐" (Lunch) row based on time, e.g., 12:00
-            // This assumes lunch is visually represented in the 12:00 slot row.
-            // The actual start/end times for lunch in JSON might be like 11:30-13:00.
-            if (timeSlot === "12:00") {
-              // Check if there's a "午餐" entry for Day1 to grab the name if needed, or use i18n
-              const lunchEventEntry = scheduleData.find(e => e.title_zh === "午餐" && e.room === "Day1");
-              const lunchText = lunchEventEntry ? lunchEventEntry.title_zh : t.components.home.schedulePreview?.lunch || "午餐";
-              return (
-                <tr>
-                  <td class="time-cell">{timeSlot}</td>
-                  <td colspan={Object.keys(dayMap).length} class="event-break-cell">
-                    {lunchText}
-                  </td>
-                </tr>
-              );
-            }
-
-            // Reset spannedCellsTracker for each new row if logic requires (here it's global for the table)
-            // For this structure, spannedCellsTracker should persist across rows for a day's column.
-
             return (
               <tr>
                 <td class="time-cell">{timeSlot}</td>
                 {Object.keys(dayMap).map(dayKey => {
-                  if (cellCoverage[`${dayKey}_${timeSlot}`]) {
-                    return null; // This cell is covered by a rowspan from a previous slot
+                  // Skip if this cell is covered by a previous rowspan
+                  const coverageKey = `${dayKey}_${timeSlot}`;
+                  if (cellCoverage[dayKey][timeSlot]) {
+                    return null;
                   }
 
                   const course = getCourseStartingAt(dayKey, timeSlot);
                   if (course) {
                     const rowspan = calculateDurationInSlots(course);
+                    // Mark future slots as covered
                     if (rowspan > 1) {
                       for (let i = 1; i < rowspan; i++) {
-                        const nextSlotIndex = timeIndex + i;
-                        if (nextSlotIndex < timeSlots.length) {
-                          cellCoverage[`${dayKey}_${timeSlots[nextSlotIndex]}`] = true;
+                        const futureSlotIndex = timeIndex + i;
+                        if (futureSlotIndex < timeSlots.length) {
+                          const futureTimeSlot = timeSlots[futureSlotIndex];
+                          cellCoverage[dayKey][futureTimeSlot] = true;
                         }
                       }
                     }
+
+                    const isMeal = course.title_zh === "午餐" || course.title_zh === "晚餐";
                     const hasDetails = course.description_zh || course.slide || course.co_write || course.record;
+                    
+                    if (isMeal) {
+                      return (
+                        <td class="event-break-cell" rowspan={rowspan}>
+                          {course.title_zh}
+                        </td>
+                      );
+                    }
+
                     return (
                       <td class={`course-cell type-${course.type?.toLowerCase() || 'default'}`} data-course-id={course.id} rowspan={rowspan}>
-                        <div class="course-title">{course.title_zh.split('\n')[0]}</div>
-                        {course.title_zh.split('\n')[1] && (
+                        <div class="course-title">{course.title_zh?.split('\n')[0] || ''}</div>
+                        {course.title_zh?.split('\n')[1] && (
                           <div class="course-subtitle">{course.title_zh.split('\n')[1]}</div>
                         )}
                         {hasDetails && (
@@ -227,9 +201,8 @@ Object.keys(dayMap).forEach(dayKey => {
                         )}
                       </td>
                     );
-                  } else {
-                    return <td class="empty-cell"></td>;
                   }
+                  return <td class="empty-cell"></td>;
                 })}
               </tr>
             );
@@ -244,7 +217,7 @@ Object.keys(dayMap).forEach(dayKey => {
 <div id="courseModal" class="modal">
   <div class="modal-content">
     <span class="close">&times;</span>
-    <img src="https://via.placeholder.com/90x90" alt="Person" class="modal-person-image" />
+    <img src={person.src} alt="Person" class="modal-person-image" />
     <h2 id="modalTitle"></h2>
     <h3 id="modalSubtitle"></h3>
 
@@ -444,10 +417,11 @@ Object.keys(dayMap).forEach(dayKey => {
   }
   
   .event-break-cell {
-    background-color: #6c757d; /* Dark gray for breaks like Lunch */
+    background-color: #6c757d;
     color: white;
     font-weight: bold;
     vertical-align: middle;
+    cursor: default; /* Remove pointer cursor for meal cells */
   }
 
   /* Modal styles */
@@ -495,7 +469,7 @@ Object.keys(dayMap).forEach(dayKey => {
   }
 
   #modalTitle {
-    margin-top: 0;
+    margin-top: 100px; /* Add margin to push title below the image */
     margin-bottom: 0.5rem;
     font-size: 2.2rem;
     font-weight: 600;
@@ -702,6 +676,7 @@ Object.keys(dayMap).forEach(dayKey => {
 
   .modal-person-image {
     position: absolute;
+    top: 3rem; /* Move image to top of modal */
     right: 3.5rem;
     width: 90px;
     height: 90px;
