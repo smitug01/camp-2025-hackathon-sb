@@ -161,8 +161,8 @@ const allImages = [...images, ...marquee];
       console.error('Error in marqueeSet:', error);
       // Fallback to minimum repeat in case of error
       const content = marqueeContent.repeat(2);
-      marquee.innerHTML = content;
-      marquee2.innerHTML = content;
+    marquee.innerHTML = content;
+    marquee2.innerHTML = content;
     }
   };
   window.onload = () => {
