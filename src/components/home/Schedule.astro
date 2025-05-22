@@ -717,8 +717,14 @@ function getDayOfWeekDisplay(dateString) {
 
 <script>
   document.addEventListener('astro:page-load', () => {
-    const courseElements = document.querySelectorAll('.course-cell');
+    // Find the modal and move it to body
     const modalElement = document.getElementById('courseModal');
+    if (modalElement) {
+      // Move modal to body to avoid z-index issues
+      document.body.appendChild(modalElement);
+    }
+
+    const courseElements = document.querySelectorAll('.course-cell');
     const closeBtnElement = modalElement?.querySelector('.close'); // Query within modal
 
     if (!modalElement) {
@@ -929,11 +935,6 @@ function getDayOfWeekDisplay(dateString) {
     //   clearTimeout(resizeTimeout);
     //   resizeTimeout = setTimeout(adjustRowHeights, 100);
     // });
-
-    // Ensure the modal is added directly to the body
-    if (modalElement && modalElement.parentNode !== document.body) {
-      document.body.appendChild(modalElement);
-    }
 
   });
 </script>
