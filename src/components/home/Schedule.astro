@@ -1,8 +1,11 @@
 ---
+interface Props {
+  url: URL;
+}
+
 import { getLocale } from "../../i18n";
 import { Icon } from "astro-icon/components";
 import scheduleDataAll from "../../assets/data/schedule.json"; // Renamed to avoid conflict
-import person from "../../assets/img/modal/image-11.png"
 const scheduleData = scheduleDataAll as any[]; // Add type assertion and use 'scheduleData' henceforth
 
 const t = getLocale(Astro.url);
@@ -46,12 +49,12 @@ let coursesForTable: any[] = []; // Initialize with explicit type any[]
 scheduleData.forEach(course => {
   if (
     course.id !== undefined && // Ensure id exists
-    typeof course.id === 'string' && // Ensure id is a string
-    course.room in dayMap && // Ensure the course has a valid room/dayKey
     course.title_zh !== "午餐" && // Exclude '午餐'
-    course.title_zh !== "晚餐"    // Exclude '晚餐'
-    // The filter for "報到" (id: "5fc14d") was intentionally removed to display it
+    course.title_zh !== "晚餐" && // Exclude '晚餐'
+    course.room in dayMap // Ensure the course has a valid room/dayKey
   ) {
+    // Convert ID to string if it's not already
+    course.id = String(course.id);
     coursesForTable.push(...splitCourseIfCrossLunch(course));
   }
 });
@@ -95,28 +98,48 @@ function calculateDurationInSlots(event) {
 // Format date function (e.g., "7/9")
 function formatDateDisplay(dateString) {
   if (!dateString) return "";
-  const date = new Date(dateString);
-  const month = date.getMonth() + 1;
-  const day = date.getDate();
-  return `${month}/${day}`;
+  try {
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) return "";
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+    return `${month}/${day}`;
+  } catch (e) {
+    console.error('Error formatting date:', e);
+    return "";
+  }
 }
 
 // Helper function to get day of the week in Chinese (e.g., "Wed." -> "三")
 function getDayOfWeekDisplay(dateString) {
   if (!dateString) return "";
-  const date = new Date(dateString);
-  const days = ["日", "一", "二", "三", "四", "五", "六"];
-  return days[date.getDay()];
+  try {
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) return "";
+    const days = ["日", "一", "二", "三", "四", "五", "六"];
+    return days[date.getDay()];
+  } catch (e) {
+    console.error('Error getting day of week:', e);
+    return "";
+  }
 }
 
 // Prepare headers dynamically
 const dynamicDayHeaders = dayKeys.map(dayKey => {
-  // Find the first event in the original dataset for this dayKey to get the date
-  const eventForDate = scheduleData.find(e => e.room === dayKey && e.start);
-  const dateStr = eventForDate ? eventForDate.start : "";
+  // Find a valid event for this day
+  const eventForDate = scheduleData.find(e => 
+    e.room === dayKey && 
+    e.start && 
+    !isNaN(new Date(e.start).getTime())
+  );
+  
+  const dateStr = eventForDate?.start || "";
+  const formattedDate = formatDateDisplay(dateStr);
+  const dayOfWeek = getDayOfWeekDisplay(dateStr);
+  
   return {
     dayNum: dayMap[dayKey],
-    dateText: dateStr ? `${formatDateDisplay(dateStr)} ${getDayOfWeekDisplay(dateStr)}.` : `Day ${dayMap[dayKey]}`
+    dateText: dateStr ? `${formattedDate} ${dayOfWeek}.` : `Day ${dayMap[dayKey]}`
   };
 });
 
@@ -221,7 +244,7 @@ Object.keys(dayMap).forEach(dayKey => {
 <div id="courseModal" class="modal">
   <div class="modal-content">
     <span class="close">&times;</span>
-    <img src={person.src} alt="Person" class="modal-person-image" />
+    <img src="https://via.placeholder.com/90x90" alt="Person" class="modal-person-image" />
     <h2 id="modalTitle"></h2>
     <h3 id="modalSubtitle"></h3>
 
