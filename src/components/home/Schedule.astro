@@ -733,6 +733,10 @@ function getDayOfWeekDisplay(dateString) {
       const course = await getCourseById(courseId);
       if (!course || !modalElement) return;
 
+      // Check if course has any meaningful content
+      const hasContent = course.description_zh || course.slide || course.co_write || course.record || course.speaker1;
+      if (!hasContent) return; // Don't open modal if there's no content
+
       const modalTitleEl = modalElement.querySelector('#modalTitle');
       const modalSubtitleEl = modalElement.querySelector('#modalSubtitle');
       const modalSpeakerEl = modalElement.querySelector('#modalSpeaker');
@@ -815,7 +819,10 @@ function getDayOfWeekDisplay(dateString) {
       element.addEventListener('click', () => {
         const courseId = element.getAttribute('data-course-id');
         if (courseId) {
-          openModal(courseId);
+          const hasDetails = element.querySelector('.info-icon');
+          if (hasDetails) { // Only open modal if course has details
+            openModal(courseId);
+          }
         }
       });
     });
