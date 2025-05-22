@@ -442,6 +442,7 @@ function getDayOfWeekDisplay(dateString) {
     color: #fff;
     margin: 5% auto;
     padding: 3rem;
+    padding-top: 1.5rem;
     border-radius: 8px;
     max-width: 800px;
     width: 90%;
@@ -469,12 +470,14 @@ function getDayOfWeekDisplay(dateString) {
   }
 
   #modalTitle {
-    margin-top: 100px; /* Add margin to push title below the image */
+    margin-top: 0;
     margin-bottom: 0.5rem;
     font-size: 2.2rem;
     font-weight: 600;
     color: #E0E0E0;
     text-align: left;
+    padding-right: 100px;
+    position: relative;
   }
 
   #modalSubtitle {
@@ -676,7 +679,7 @@ function getDayOfWeekDisplay(dateString) {
 
   .modal-person-image {
     position: absolute;
-    top: 3rem; /* Move image to top of modal */
+    top: 1.5rem;
     right: 3.5rem;
     width: 90px;
     height: 90px;
