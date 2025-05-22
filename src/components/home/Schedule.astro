@@ -458,13 +458,13 @@ function getDayOfWeekDisplay(dateString) {
     width: 100%;
     height: 100%;
     overflow: auto;
-    background-color: rgba(0, 0, 0, 0.8);
+    background-color: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(5px);
   }
 
   .modal-content {
     background-color: #000;
     color: #fff;
-    margin: 5% auto;
     padding: 3rem;
     padding-top: 1.5rem;
     border-radius: 8px;
@@ -472,6 +472,8 @@ function getDayOfWeekDisplay(dateString) {
     width: 90%;
     position: relative;
     border-left: 4px solid #c9a845;
+    z-index: 1001; /* Ensure it's above the modal background */
+    margin: 0 auto; /* Center horizontally */
   }
 
   .close {
@@ -729,19 +731,12 @@ function getDayOfWeekDisplay(dateString) {
       return;
     }
 
-    // Function to fetch course data by ID (using the already loaded scheduleDataAll from frontmatter)
-    // For client-side, if we cannot access frontmatter directly, we'd fetch or embed.
-    // Astro makes frontmatter variables available to <script> if it's not `is:inline`.
-    // However, to be safe and standard, let's assume we need to fetch or have it embedded.
-    // For this iteration, we'll keep the fetch, assuming scheduleDataAll is not directly in client scope.
+    // Function to fetch course data by ID
     const getCourseById = async (id) => {
       try {
-        // In a real scenario, if scheduleDataAll is large, avoid refetching.
-        // Astro does not directly expose frontmatter vars to non-inline scripts without passing.
-        // We'll use the fetch as it was, or one could embed data into a global var or data attribute.
         const res = await fetch(new URL('../../assets/data/schedule.json', import.meta.url).href);
         if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
-        const data = await res.json() as any[]; // Add type assertion for client-side fetch too
+        const data = await res.json() as any[];
         return data.find(course => course.id === id);
       } catch (error) {
         console.error('Error fetching course data:', error);
@@ -843,8 +838,19 @@ function getDayOfWeekDisplay(dateString) {
         }
       }
 
-      modalElement.style.display = 'block';
+      // Display modal with flex layout
+      modalElement.style.display = 'flex';
+      modalElement.style.alignItems = 'center';
+      modalElement.style.justifyContent = 'center';
       document.body.style.overflow = 'hidden';
+    };
+
+    // Close modal function
+    const closeModal = () => {
+      if (modalElement) {
+        modalElement.style.display = 'none';
+        document.body.style.overflow = '';
+      }
     };
 
     courseElements.forEach(element => {
@@ -860,32 +866,26 @@ function getDayOfWeekDisplay(dateString) {
     });
 
     if (closeBtnElement) {
-      closeBtnElement.addEventListener('click', () => {
-        modalElement.style.display = 'none';
-        document.body.style.overflow = '';
-      });
+      closeBtnElement.addEventListener('click', closeModal);
     }
     
-    // Add event listener for the new close button at the bottom
+    // Close button at the bottom
     const closeButtonElement = modalElement.querySelector('.close-button');
     if (closeButtonElement) {
-      closeButtonElement.addEventListener('click', () => {
-        modalElement.style.display = 'none';
-        document.body.style.overflow = '';
-      });
+      closeButtonElement.addEventListener('click', closeModal);
     }
 
+    // Click outside to close
     window.addEventListener('click', (event) => {
       if (event.target === modalElement) {
-        modalElement.style.display = 'none';
-        document.body.style.overflow = '';
+        closeModal();
       }
     });
 
+    // ESC key to close
     document.addEventListener('keydown', (event) => {
-      if (event.key === 'Escape' && modalElement.style.display === 'block') {
-        modalElement.style.display = 'none';
-        document.body.style.overflow = '';
+      if (event.key === 'Escape' && modalElement.style.display === 'flex') {
+        closeModal();
       }
     });
 
