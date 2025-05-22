@@ -77,37 +77,18 @@ const timeSlots = [
   "20:00", "20:30", "21:00", "21:30"
 ];
 
-// Helper function to get a course starting at a given time slot for a specific day
-function getCourseStartingAt(dayKey, timeSlot) {
-  const coursesForDay = coursesByDay[dayKey] || [];
-  return coursesForDay.find(course => {
-    if (!course.start) return false;
-    const startTime = new Date(course.start);
-    const [slotHour, slotMinute] = timeSlot.split(':').map(Number);
-    return startTime.getHours() === slotHour && 
-           Math.floor(startTime.getMinutes() / 30) * 30 === slotMinute;
-  });
-}
-
-// Helper function to calculate event duration in half-hour slots for rowspan
-function calculateDurationInSlots(event) {
-  if (!event.start || !event.end) return 1;
-  const startTime = new Date(event.start);
-  const endTime = new Date(event.end);
-  const durationMs = endTime.getTime() - startTime.getTime();
-  const durationHours = durationMs / (1000 * 60 * 60);
-  // Convert hours to 30-minute slots and round up
-  return Math.ceil(durationHours * 2);
-}
-
 // Format date function (e.g., "7/9")
 function formatDateDisplay(dateString) {
   if (!dateString) return "";
   try {
+    // Create date in local timezone
     const date = new Date(dateString);
     if (isNaN(date.getTime())) return "";
-    const month = date.getMonth() + 1;
-    const day = date.getDate();
+    
+    // Convert to Taipei time
+    const taipeiDate = new Date(date.toLocaleString('en-US', { timeZone: 'Asia/Taipei' }));
+    const month = taipeiDate.getMonth() + 1;
+    const day = taipeiDate.getDate();
     return `${month}/${day}`;
   } catch (e) {
     console.error('Error formatting date:', e);
@@ -119,14 +100,48 @@ function formatDateDisplay(dateString) {
 function getDayOfWeekDisplay(dateString) {
   if (!dateString) return "";
   try {
+    // Create date in local timezone
     const date = new Date(dateString);
     if (isNaN(date.getTime())) return "";
+    
+    // Convert to Taipei time
+    const taipeiDate = new Date(date.toLocaleString('en-US', { timeZone: 'Asia/Taipei' }));
     const days = ["日", "一", "二", "三", "四", "五", "六"];
-    return days[date.getDay()];
+    return days[taipeiDate.getDay()];
   } catch (e) {
     console.error('Error getting day of week:', e);
     return "";
   }
+}
+
+// Helper function to get a course starting at a given time slot for a specific day
+function getCourseStartingAt(dayKey, timeSlot) {
+  const coursesForDay = coursesByDay[dayKey] || [];
+  return coursesForDay.find(course => {
+    if (!course.start) return false;
+    // Convert course start time to Taipei time
+    const startTime = new Date(course.start);
+    const taipeiTime = new Date(startTime.toLocaleString('en-US', { timeZone: 'Asia/Taipei' }));
+    const [slotHour, slotMinute] = timeSlot.split(':').map(Number);
+    return taipeiTime.getHours() === slotHour && 
+           taipeiTime.getMinutes() === slotMinute;
+  });
+}
+
+// Calculate duration in slots
+function calculateDurationInSlots(course) {
+  if (!course.start || !course.end) return 1;
+  
+  // Convert start and end times to Taipei timezone
+  const start = new Date(course.start);
+  const end = new Date(course.end);
+  const taipeiStart = new Date(start.toLocaleString('en-US', { timeZone: 'Asia/Taipei' }));
+  const taipeiEnd = new Date(end.toLocaleString('en-US', { timeZone: 'Asia/Taipei' }));
+  
+  // Calculate duration in minutes
+  const durationMinutes = (taipeiEnd.getTime() - taipeiStart.getTime()) / (1000 * 60);
+  // Convert to number of 30-minute slots
+  return Math.ceil(durationMinutes / 30);
 }
 
 ---
