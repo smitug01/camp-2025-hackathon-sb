@@ -247,21 +247,6 @@ function getDayOfWeekDisplay(dateString) {
     <h2 id="modalTitle"></h2>
     <h3 id="modalSubtitle"></h3>
 
-    <!-- <div class="modal-info">
-      <div class="info-item">
-        <Icon name="material-symbols:person" size={20} />
-        <span id="modalSpeaker"></span>
-      </div>
-      <div class="info-item">
-        <Icon name="material-symbols:schedule" size={20} />
-        <span id="modalTime"></span>
-      </div>
-      <div class="info-item">
-        <Icon name="material-symbols:label" size={20} />
-        <span id="modalType"></span>
-      </div>
-    </div> -->
-
     <div class="section-title">課程介紹</div>
     <div class="description-container">
       <p id="modalDescription"></p>
@@ -454,18 +439,18 @@ function getDayOfWeekDisplay(dateString) {
     cursor: default; /* Remove pointer cursor for meal cells */
   }
 
-  /* Modal styles */
+  /* Modal styles - with important flags and highest possible z-index */
   .modal {
     display: none;
-    position: fixed;
-    z-index: 1000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
+    position: fixed !important;
+    inset: 0 !important; 
+    z-index: 2147483647 !important; /* Maximum possible z-index value */
+    width: 100vw !important;
+    height: 100vh !important;
     overflow: auto;
     background-color: rgba(0, 0, 0, 0.7);
     backdrop-filter: blur(5px);
+    isolation: isolate;
   }
 
   .modal-content {
@@ -476,10 +461,13 @@ function getDayOfWeekDisplay(dateString) {
     border-radius: 8px;
     max-width: 800px;
     width: 90%;
-    position: relative;
+    position: fixed !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
     border-left: 4px solid #c9a845;
-    z-index: 1001; /* Ensure it's above the modal background */
-    margin: 0 auto; /* Center horizontally */
+    margin: 0 auto;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
   }
 
   .close {
@@ -941,6 +929,11 @@ function getDayOfWeekDisplay(dateString) {
     //   clearTimeout(resizeTimeout);
     //   resizeTimeout = setTimeout(adjustRowHeights, 100);
     // });
+
+    // Ensure the modal is added directly to the body
+    if (modalElement && modalElement.parentNode !== document.body) {
+      document.body.appendChild(modalElement);
+    }
 
   });
 </script>
