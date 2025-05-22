@@ -209,7 +209,9 @@ function getDayOfWeekDisplay(dateString) {
                     }
 
                     return (
-                      <td class={`course-cell type-${course.type?.toLowerCase() || 'default'}`} data-course-id={String(course.id)} rowspan={rowspan}>
+                      <td class={`course-cell type-${course.type?.toLowerCase() || 'default'}`} 
+                          data-course-id={hasDetails ? String(course.id) : null} 
+                          rowspan={rowspan}>
                         <div class="course-title">{course.title_zh?.split('\n')[0] || ''}</div>
                         {course.title_zh?.split('\n')[1] && (
                           <div class="course-subtitle">{course.title_zh.split('\n')[1]}</div>
@@ -370,13 +372,17 @@ function getDayOfWeekDisplay(dateString) {
 
   .course-cell {
     background-color: #e9ecef; /* Changed default background to light gray */
-    cursor: pointer;
     transition: all 0.2s ease-in-out;
     padding: 0.4rem; /* Reduced padding to help content fit fixed height */
     position: relative; /* Added for positioning info icon */
   }
 
-  .course-cell:hover {
+  /* Only apply cursor pointer to cells with data-course-id that is not null */
+  .course-cell[data-course-id]:not([data-course-id="null"]) {
+    cursor: pointer;
+  }
+
+  .course-cell[data-course-id]:not([data-course-id="null"]):hover {
     background-color: #d8dcdf; /* Darker hover for new base color */
     transform: translateY(-2px); /* Subtle lift effect */
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
@@ -763,10 +769,7 @@ function getDayOfWeekDisplay(dateString) {
       const course = await getCourseById(courseId);
       if (!course || !modalElement) return;
 
-      // Update hasContent check to be less restrictive
-      const hasContent = course.title_zh; // If the course has a title, we'll show it
-      if (!hasContent) return;
-
+      // Always show the modal if there's a course
       const modalTitleEl = modalElement.querySelector('#modalTitle');
       const modalSubtitleEl = modalElement.querySelector('#modalSubtitle');
       const modalSpeakerEl = modalElement.querySelector('#modalSpeaker');
@@ -786,7 +789,7 @@ function getDayOfWeekDisplay(dateString) {
       
       // Always provide some content even if description is empty
       if (modalDescriptionEl) {
-        modalDescriptionEl.innerHTML = course.description_zh?.replace(/\n/g, '<br>') || '暫無課程介紹。';
+        modalDescriptionEl.innerHTML = course.description_zh?.replace(/\n/g, '<br>') || '暫無課程介紹';
       }
       
       // Handle speaker section
@@ -801,7 +804,6 @@ function getDayOfWeekDisplay(dateString) {
       }
       
       // For now, use a placeholder for speaker description
-      // In a real implementation, you might want to fetch speaker bios from another data source
       if (speakerDescriptionEl) {
         if (speakerText && speakerText !== '主講人：N/A') {
           speakerDescriptionEl.innerHTML = `${speakerText.replace('主講人：', '')}是本課程的講師。<br>更多講者資訊將在未來更新。`;
@@ -863,8 +865,8 @@ function getDayOfWeekDisplay(dateString) {
     courseElements.forEach(element => {
       element.addEventListener('click', () => {
         const courseId = element.getAttribute('data-course-id');
-        if (courseId) {
-          // Remove the check for hasDetails - allow all course cells to be clickable
+        // Only open modal if courseId exists and is not "null"
+        if (courseId && courseId !== "null") {
           openModal(courseId);
         }
       });
