@@ -1,6 +1,13 @@
 import type { Course } from '../types/schedule';
 import { MEAL_LUNCH, MEAL_DINNER, COURSE_TYPES } from '../constants/schedule';
 
+const createDateInterpretedAsTaipei = (dateTimeString: string): Date => {
+  if (dateTimeString.endsWith('Z') || dateTimeString.includes('+') || dateTimeString.lastIndexOf('-') > 7) { 
+    return new Date(dateTimeString);
+  }
+  return new Date(dateTimeString + "+08:00");
+};
+
 /**
  * Generate a unique course ID
  */
@@ -38,12 +45,12 @@ export const calculateDurationInSlots = (course: Course): number => {
     return 1; // Default to 1 slot if invalid
   }
 
-  const start = new Date(course.start);
-  const end = new Date(course.end);
+  const start = createDateInterpretedAsTaipei(course.start);
+  const end = createDateInterpretedAsTaipei(course.end);
 
   // Validate dates
   if (isNaN(start.getTime()) || isNaN(end.getTime())) {
-    console.error(`Invalid date format for course ${course.id}`);
+    console.error(`Invalid date object for course ${course.id} after attempting Taipei interpretation`);
     return 1;
   }
 
@@ -53,11 +60,11 @@ export const calculateDurationInSlots = (course: Course): number => {
 /**
  * Get a formatted time string for a course
  */
-export const formatCourseTime = (start: string, end: string): string => {
-  if (!start || !end) return "N/A";
+export const formatCourseTime = (startStr: string, endStr: string): string => {
+  if (!startStr || !endStr) return "N/A";
   
-  const startDate = new Date(start);
-  const endDate = new Date(end);
+  const startDate = createDateInterpretedAsTaipei(startStr);
+  const endDate = createDateInterpretedAsTaipei(endStr);
   
   const formatTime = (date: Date) => date.toLocaleTimeString("zh-TW", {
     hour: "2-digit",
@@ -76,17 +83,16 @@ export const getCourseStartingAt = (courses: Course[], timeSlot: string): Course
   return courses.find(course => {
     if (!course.start) return false;
 
-    const courseDateTime = new Date(course.start);
-    const courseTime = new Date(courseDateTime.toLocaleString("en-US", { timeZone: "Asia/Taipei" }));
-
-    const courseTimeString = courseTime.toLocaleTimeString("zh-TW", {
+    const courseDate = createDateInterpretedAsTaipei(course.start);
+    
+    const courseTimeStringInTaipei = courseDate.toLocaleTimeString("zh-TW", {
       hour: "2-digit",
       minute: "2-digit",
       hour12: false,
       timeZone: "Asia/Taipei",
     });
 
-    return courseTimeString === timeSlot;
+    return courseTimeStringInTaipei === timeSlot;
   });
 };
 
