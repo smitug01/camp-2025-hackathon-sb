@@ -61,6 +61,7 @@ function getCourseStartingAt(dayKey, timeSlot) {
       hour: "2-digit",
       minute: "2-digit",
       hour12: false,
+      timeZone: "Asia/Taipei",
     });
 
     return courseTimeString === normalizedTimeSlot;
@@ -849,6 +850,7 @@ function calculateDurationInSlots(course) {
         hour: "2-digit",
         minute: "2-digit",
         hour12: false,
+        timezone: "Asia/Taipei",
       });
       return `${formatTime(startDate)} - ${formatTime(endDate)}`;
     };
