@@ -373,6 +373,7 @@ function getDayOfWeekDisplay(dateString) {
     text-align: center;
     max-width: 1200px;
     margin: 0 auto;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
   }
 
   h2 {
@@ -394,18 +395,18 @@ function getDayOfWeekDisplay(dateString) {
     width: 100%;
     border-collapse: collapse;
     border-spacing: 0;
-    font-size: 0.9rem;
-    table-layout: fixed; /* Helps with column widths and overflow */
+    font-size: max(1vw, 0.9rem);
+    table-layout: fixed;
   }
 
   th, td {
     border: 1px solid #ccc;
     padding: 0.5rem;
     text-align: center;
-    vertical-align: top; /* Align content to the top for multi-line titles */
-    overflow: hidden; /* Prevent content from spilling out */
-    text-overflow: ellipsis; /* Add ellipsis for overflowing text */
-    box-sizing: border-box; /* Added for consistent height control */
+    vertical-align: middle;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    box-sizing: border-box;
   }
 
   /* Ensure all td elements in the table body have a uniform height */
@@ -418,15 +419,16 @@ function getDayOfWeekDisplay(dateString) {
   }
   
   th:first-child, td:first-child { /* Time column */
-    width: 60px; /* Fixed width for time column */
-    min-width: 60px;
+    width: 80px;
+    min-width: 80px;
+    padding: 0.5rem 0.25rem;
   }
 
   /* Style for day columns to be equally sized */
   th:not(:first-child), td:not(:first-child) {
-    width: calc((100% - 60px) / 5); /* Distribute remaining width among 5 day columns */
+    width: calc((100% - 80px) / 5);
+    padding: 0.5rem;
   }
-
 
   thead th {
     background-color: #f0f0f0; /* Light gray for header */
@@ -449,13 +451,15 @@ function getDayOfWeekDisplay(dateString) {
 
   .time-cell {
     font-weight: bold;
-    background-color: #f0f0f0; /* Match header background */
+    background-color: #f0f0f0;
     position: sticky;
-    left: 0; /* Stick to left on horizontal scroll */
-    z-index: 5; /* Ensure it's above course cells during scroll */
-    min-width: 50px;
-    color: #201814; /* Changed time color */
-    vertical-align: middle; /* Vertically center content */
+    left: 0;
+    z-index: 5;
+    color: #201814;
+    vertical-align: middle;
+    font-size: 0.9rem !important;
+    white-space: nowrap;
+    padding: 0.5rem 0.25rem;
   }
 
   .course-cell {
@@ -487,10 +491,11 @@ function getDayOfWeekDisplay(dateString) {
 
 
   .course-title {
-    font-weight: bold;
-    font-size: 0.9em;
+    font-weight: 600;
+    font-size: max(1vw, 0.9rem);
     margin-bottom: 0.3rem;
     color: #222;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
   }
 
   .course-cell.type-main .course-title,
@@ -503,9 +508,10 @@ function getDayOfWeekDisplay(dateString) {
   }
 
   .course-subtitle {
-    font-size: 0.75em;
+    font-size: max(0.85vw, 0.75rem);
     color: #333;
     margin-bottom: 0.3rem;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
   }
 
   .course-speaker {
@@ -639,6 +645,7 @@ function getDayOfWeekDisplay(dateString) {
     margin-right: 10px;
     padding-right: 100px;
     position: relative;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
   }
 
   #modalSubtitle {
@@ -647,6 +654,7 @@ function getDayOfWeekDisplay(dateString) {
     font-size: 1.2rem;
     color: #EAB99F;
     text-align: left;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
   }
 
   .modal-info {
@@ -887,6 +895,7 @@ function getDayOfWeekDisplay(dateString) {
     margin-top: 1.5rem;
     padding-bottom: 0.5rem;
     border-bottom: 1px solid #333;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
   }
 
 
@@ -904,12 +913,38 @@ function getDayOfWeekDisplay(dateString) {
 
   @media (max-width: 768px) {
     body {
-      font-size: 1rem;
+      font-size: max(3.5vw, 1rem);
     }
     
     .schedule-table {
       padding: 0;
       margin: 1.5rem 0.5rem;
+    }
+
+    table {
+      font-size: max(0.9rem, 3vw);
+    }
+
+    th:first-child, td:first-child {
+      width: 70px;
+      min-width: 70px;
+      padding: 0.5rem 0.15rem;
+    }
+
+    .time-cell {
+      padding: 0.5rem 0.15rem;
+    }
+
+    th:not(:first-child), td:not(:first-child) {
+      width: calc((100% - 70px) / 5);
+    }
+
+    .course-title {
+      font-size: max(0.9rem, 3vw);
+    }
+
+    .course-subtitle {
+      font-size: max(0.75rem, 2.5vw);
     }
   }
 </style>
