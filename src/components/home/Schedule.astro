@@ -916,11 +916,6 @@ function getDayOfWeekDisplay(dateString) {
       font-size: max(3.5vw, 1rem);
     }
     
-    .schedule-table {
-      padding: 0;
-      margin: 1.5rem 0.5rem;
-    }
-
     table {
       font-size: max(0.9rem, 3vw);
     }
@@ -933,18 +928,30 @@ function getDayOfWeekDisplay(dateString) {
 
     .time-cell {
       padding: 0.5rem 0.15rem;
+      font-size: 0.9rem !important;
     }
 
     th:not(:first-child), td:not(:first-child) {
       width: calc((100% - 70px) / 5);
-    }
-
-    .course-title {
       font-size: max(0.9rem, 3vw);
     }
 
-    .course-subtitle {
+    td.course-cell {
+      font-size: max(0.9rem, 3vw);
+    }
+
+    .course-cell .course-title {
+      font-size: max(0.9rem, 3vw);
+      margin-bottom: 0.2rem;
+    }
+
+    .course-cell .course-subtitle {
       font-size: max(0.75rem, 2.5vw);
+      margin-bottom: 0.2rem;
+    }
+
+    .event-break-cell {
+      font-size: max(0.9rem, 3vw);
     }
   }
 </style>
@@ -1277,4 +1284,5 @@ function getDayOfWeekDisplay(dateString) {
 
   });
 </script>
+
 
