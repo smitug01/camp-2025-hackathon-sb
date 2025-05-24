@@ -39,32 +39,6 @@ const dayMap = {
 
 const dayKeys = Object.keys(dayMap);
 
-// 午餐時間（12:00~13:00）
-const LUNCH_START_HOUR = 12;
-const LUNCH_END_HOUR = 13;
-
-function splitCourseIfCrossLunch(course) {
-  const start = new Date(course.start);
-  const end = new Date(course.end);
-  const lunchStart = new Date(start);
-  lunchStart.setHours(LUNCH_START_HOUR, 0, 0, 0);
-  const lunchEnd = new Date(start);
-  lunchEnd.setHours(LUNCH_END_HOUR, 0, 0, 0);
-
-  // 檢查是否跨午餐
-  if (start < lunchStart && end > lunchEnd) {
-    // 拆成午餐前、午餐後
-    return [
-      { ...course, end: lunchStart.toISOString() },
-      { ...course, start: lunchEnd.toISOString() },
-    ];
-  }
-  return [course];
-}
-
-// 直接使用所有課程，不做過濾
-let coursesForTable = scheduleData;
-
 // Group courses by day
 const coursesByDay = {};
 dayKeys.forEach(dayKey => {
@@ -142,8 +116,7 @@ function getCourseStartingAt(dayKey, timeSlot) {
   const coursesForDay = coursesByDay[dayKey] || [];
   const normalizedTimeSlot = normalizeTimeString(timeSlot);
 
-  // First, try an exact match
-  const exactMatch = coursesForDay.find(course => {
+  return coursesForDay.find(course => {
     if (!course.start) return false;
 
     try {
@@ -169,27 +142,6 @@ function getCourseStartingAt(dayKey, timeSlot) {
       return false;
     }
   });
-
-  if (exactMatch) return exactMatch;
-
-  // If no exact match, try a more flexible approach for specific courses we know are problematic
-  return coursesForDay.find(course => {
-    if (!course.start) return false;
-
-    // Special case for "Python Function：寫出會重複用的你自己"
-    if (course.title_zh === "Python Function：寫出會重複用的你自己" &&
-      timeSlot === "08:00" && dayKey === "Day2") {
-      return true;
-    }
-
-    // Special case for HTML+Next.js course
-    if (course.title_zh?.includes("HTML") && course.title_zh?.includes("Next.js") &&
-      timeSlot === "08:00" && dayKey === "Day3") {
-      return true;
-    }
-
-    return false;
-  });
 }
 
 // Calculate duration in slots
@@ -209,45 +161,8 @@ function calculateDurationInSlots(course) {
   // Convert to number of 30-minute slots and ensure at least 1 slot
   return Math.max(1, Math.ceil(durationMinutes / 30));
 }
-
-// Format date function (e.g., "7/9")
-function formatDateDisplay(dateString) {
-  if (!dateString) return "";
-  try {
-    // Create date in Taipei timezone
-    const date = new Date(dateString);
-    const taipeiDate = new Date(date.toLocaleString("en-US", { timeZone: "Asia/Taipei" }));
-
-    if (isNaN(taipeiDate.getTime())) return "";
-
-    const month = taipeiDate.getMonth() + 1;
-    const day = taipeiDate.getDate();
-    return `${month}/${day}`;
-  } catch (e) {
-    console.error("Error formatting date:", e);
-    return "";
-  }
-}
-
-// Helper function to get day of the week in Chinese
-function getDayOfWeekDisplay(dateString) {
-  if (!dateString) return "";
-  try {
-    // Create date in Taipei timezone
-    const date = new Date(dateString);
-    const taipeiDate = new Date(date.toLocaleString("en-US", { timeZone: "Asia/Taipei" }));
-
-    if (isNaN(taipeiDate.getTime())) return "";
-
-    const days = ["日", "一", "二", "三", "四", "五", "六"];
-    return days[taipeiDate.getDay()];
-  } catch (e) {
-    console.error("Error getting day of week:", e);
-    return "";
-  }
-}
 ---
-<section class="container" id="schedule">
+<section class="container" id="schedule" data-schedule={scheduleDataAll}>
   <h2 class="emfont-UnboundedSans">{t.components.home.schedulePreview.title}</h2>
 
   <div class="schedule-table">
@@ -270,9 +185,6 @@ function getDayOfWeekDisplay(dateString) {
             <tr>
               <td class="time-cell">{timeSlot}</td>
               {Object.keys(dayMap).map(dayKey => {
-                // Skip if this cell is covered by a previous rowspan
-
-                const coverageKey = `${dayKey}_${timeSlot}`;
                 if (cellCoverage[dayKey][timeSlot]) {
                   return null;
                 }
@@ -593,14 +505,11 @@ function getDayOfWeekDisplay(dateString) {
     inset: 0 !important;
     z-index: 2147483647 !important;
     width: 100vw !important;
-    height: 100vh !important;
     height: 100dvh !important; /* Dynamic viewport height */
     overflow: auto;
     background-color: rgba(0, 0, 0, 0.7);
     backdrop-filter: blur(5px);
     isolation: isolate;
-    /* Ensure content is centered and scrollable */
-    display: none;
     align-items: flex-start;
     justify-content: center;
     padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
@@ -609,8 +518,7 @@ function getDayOfWeekDisplay(dateString) {
   .modal-content {
     background-color: #000;
     color: #fff;
-    padding: 3rem;
-    padding-top: 1.5rem;
+    padding: 1.5rem 3rem 3rem;
     border-radius: 8px;
     max-width: 800px;
     width: 90%;
@@ -618,7 +526,6 @@ function getDayOfWeekDisplay(dateString) {
     margin: 2vh auto;
     border-left: 4px solid #c9a845;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
-    max-height: 96vh;
     max-height: 96dvh;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
@@ -867,15 +774,13 @@ function getDayOfWeekDisplay(dateString) {
     }
 
     .modal-content {
-      margin: 0;
       padding: 1.5rem;
       width: 90%;
-      max-height: 90vh;
       max-height: 90dvh;
       overflow-y: auto;
       border-radius: 12px;
       /* Add padding for bottom bar */
-      margin-bottom: env(safe-area-inset-bottom, 20px);
+      margin: 0 0 env(safe-area-inset-bottom, 20px);
     }
 
     /* Add smooth scrolling for iOS */
@@ -1014,6 +919,8 @@ function getDayOfWeekDisplay(dateString) {
 </style>
 
 <script>
+  import data from "../../assets/data/schedule.json";
+
   document.addEventListener("astro:page-load", () => {
     // Find the modal and move it to body
     const modalElement = document.getElementById("courseModal");
@@ -1033,10 +940,6 @@ function getDayOfWeekDisplay(dateString) {
     // Function to fetch course data by ID
     const getCourseById = async (id) => {
       try {
-        const res = await fetch(new URL("../../assets/data/schedule.json", import.meta.url).href);
-        if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
-        const data = await res.json() as any[];
-
         // Handle both numeric IDs and our custom generated IDs
         if (id.startsWith("course_")) {
           // For custom IDs, extract the course title and time
@@ -1055,10 +958,9 @@ function getDayOfWeekDisplay(dateString) {
               const startTime = new Date(course.start);
               const taipeiTime = new Date(startTime.toLocaleString("en-US", { timeZone: "Asia/Taipei" }));
               const courseHour = taipeiTime.getHours();
-              const courseMinute = taipeiTime.getMinutes();
 
               // Convert timeSlot to hours and minutes
-              const [slotHour, slotMinute] = timeSlot.split(":").map(Number);
+              const [slotHour] = timeSlot.split(":").map(Number);
 
               return Math.abs(courseHour - slotHour) <= 1; // Allow 1 hour difference to handle edge cases
             }
@@ -1343,7 +1245,6 @@ function getDayOfWeekDisplay(dateString) {
     //   clearTimeout(resizeTimeout);
     //   resizeTimeout = setTimeout(adjustRowHeights, 100);
     // });
-
   });
 </script>
 
