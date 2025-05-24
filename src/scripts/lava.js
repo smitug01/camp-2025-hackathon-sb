@@ -13,6 +13,10 @@ document.addEventListener(
       q.dragOffsetX = 0;
       q.dragOffsetY = 0;
 
+      q.canvas.oncontextmenu = (e) => {
+        e.preventDefault();
+      };
+
       class Lava {
         constructor(x, y, r) {
           this.x = x;
