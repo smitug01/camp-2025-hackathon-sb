@@ -553,13 +553,19 @@ function getDayOfWeekDisplay(dateString) {
     display: none;
     position: fixed !important;
     inset: 0 !important; 
-    z-index: 2147483647 !important; /* Maximum possible z-index value */
+    z-index: 2147483647 !important;
     width: 100vw !important;
     height: 100vh !important;
+    height: 100dvh !important; /* Dynamic viewport height */
     overflow: auto;
     background-color: rgba(0, 0, 0, 0.7);
     backdrop-filter: blur(5px);
     isolation: isolate;
+    /* Ensure content is centered and scrollable */
+    display: none;
+    align-items: flex-start;
+    justify-content: center;
+    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
   }
 
   .modal-content {
@@ -570,13 +576,14 @@ function getDayOfWeekDisplay(dateString) {
     border-radius: 8px;
     max-width: 800px;
     width: 90%;
-    position: fixed !important;
-    top: 50% !important;
-    left: 50% !important;
-    transform: translate(-50%, -50%) !important;
+    position: relative !important;
+    margin: 2vh auto;
     border-left: 4px solid #c9a845;
-    margin: 0 auto;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+    max-height: 96vh;
+    max-height: 96dvh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
   }
 
   /* Special container for close button to ensure it's at the top layer */
@@ -816,16 +823,29 @@ function getDayOfWeekDisplay(dateString) {
   }
 
   @media (max-width: 600px) {
+    .modal {
+      padding: 0;
+      align-items: center;
+    }
+
     .modal-content {
       margin: 0;
       padding: 1.5rem;
       width: 90%;
       max-height: 90vh;
+      max-height: 90dvh;
       overflow-y: auto;
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
+      border-radius: 12px;
+      /* Add padding for bottom bar */
+      margin-bottom: env(safe-area-inset-bottom, 20px);
+    }
+
+    /* Add smooth scrolling for iOS */
+    .modal-content {
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior-y: contain;
+      /* Prevent content from being cut off at the bottom */
+      padding-bottom: calc(1.5rem + env(safe-area-inset-bottom, 20px));
     }
     
     #modalTitle { 
