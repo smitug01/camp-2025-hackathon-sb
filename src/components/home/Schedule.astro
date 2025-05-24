@@ -2,21 +2,21 @@
 import { getLocale } from "../../i18n";
 import { Icon } from "astro-icon/components";
 import scheduleData from "../../assets/data/schedule.json";
-import person from "../../assets/img/modal/image-11.png";
+// import person from "../../assets/img/modal/image-11.png"; // No longer needed here
 import {
   generateCourseId,
   isMealCourse,
   hasCourseDetails,
   calculateDurationInSlots,
-  formatCourseTime,
+  // formatCourseTime, // This will be used inside CourseModal.astro
   getCourseStartingAt,
   updateCellCoverage
 } from "../../utils/schedule";
-import type { Course, DayMap, CellCoverage, CoursesByDay } from '../../types/schedule';
+import type { Course, DayMap, CellCoverage, CoursesByDay, DayHeader } from '../../types/schedule';
+import CourseModal from './CourseModal.astro'; // Import the new modal component
 
 const t = getLocale(Astro.url);
 
-// Day mapping for rooms
 const dayMap: DayMap = {
   "Day1": "1",
   "Day2": "2",
@@ -24,23 +24,19 @@ const dayMap: DayMap = {
   "Day4": "4",
   "Day5": "5",
 };
-
 const dayKeys = Object.keys(dayMap);
 
-// Group courses by day
 const coursesByDay: CoursesByDay = {};
 dayKeys.forEach(dayKey => {
   coursesByDay[dayKey] = scheduleData.filter(course => course.room === dayKey);
 });
 
-// Track cells that should be skipped due to rowspan
 const cellCoverage: CellCoverage = {};
 dayKeys.forEach(dayKey => {
   cellCoverage[dayKey] = {};
 });
 
-// Prepare headers dynamically with fixed dates
-const dynamicDayHeaders = [
+const dynamicDayHeaders: DayHeader[] = [
   { dayNum: "1", dateText: "7/9 三" },
   { dayNum: "2", dateText: "7/10 四" },
   { dayNum: "3", dateText: "7/11 五" },
@@ -48,7 +44,6 @@ const dynamicDayHeaders = [
   { dayNum: "5", dateText: "7/13 日" },
 ];
 
-// Time slots for rows
 const timeSlots = [
   "08:00", "08:30", "09:00", "09:30", "10:00", "10:30", "11:00", "11:30",
   "12:00", "12:30", "13:00", "13:30", "14:00", "14:30", "15:00", "15:30",
@@ -98,17 +93,17 @@ const timeSlots = [
                     }
 
                     const courseId = generateCourseId(course, timeSlot);
-                    const hasDetails = hasCourseDetails(course);
+                    const courseHasDetails = hasCourseDetails(course); // Renamed to avoid conflict
 
                     return (
                       <td class={`course-cell type-${course.type?.toLowerCase() || "default"}`}
-                          data-course-id={hasDetails ? courseId : null}
+                          data-course-id={courseHasDetails ? courseId : null} 
                           rowspan={rowspan}>
                         <div class="course-title">{course.title_zh?.split("\n")[0] || ""}</div>
                         {course.title_zh?.split("\n")[1] && (
                           <div class="course-subtitle">{course.title_zh.split("\n")[1]}</div>
                         )}
-                        {hasDetails && (
+                        {courseHasDetails && (
                           <div class="info-icon">
                             <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 20 20" fill="none">
                               <path d="M9.89673 9.10425V13.3696" stroke="#201814" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
@@ -121,7 +116,6 @@ const timeSlots = [
                     );
                   }
                 }
-
                 return <td class="empty-cell"></td>;
               })}
             </tr>
@@ -132,35 +126,7 @@ const timeSlots = [
   </div>
 </section>
 
-<!-- Course Detail Modal -->
-<div id="courseModal" class="modal">
-  <div class="modal-content">
-    <!-- Move close button outside other content for better z-index handling -->
-    <div class="modal-close-container">
-      <span class="close">&times;</span>
-    </div>
-
-    <img src={person.src} alt="Person" class="modal-person-image" />
-    <h2 id="modalTitle"></h2>
-    <h3 id="modalSubtitle"></h3>
-
-    <div class="section-title">課程介紹</div>
-    <div class="description-container">
-      <p id="modalDescription"></p>
-    </div>
-
-    <div class="section-title" id="speakerSectionTitle">講者介紹</div>
-    <div class="description-container">
-      <p id="speakerDescription"></p>
-    </div>
-
-    <div id="modalLinks" class="modal-links">
-      {/* Links will be populated here */}
-    </div>
-
-    <button class="close-button">Close</button>
-  </div>
-</div>
+<CourseModal />
 
 <style>
   .container {
@@ -203,29 +169,28 @@ const timeSlots = [
     padding: 0.5rem 0.25rem;
   }
 
-  /* Style for day columns to be equally sized */
   th:not(:first-child), td:not(:first-child) {
     width: calc((100% - 80px) / 5);
     padding: 0.5rem;
   }
 
   thead th {
-    background-color: #f0f0f0; /* Light gray for header */
+    background-color: #f0f0f0;
     position: sticky;
-    top: 0; /* Stick to top on scroll */
-    z-index: 2; /* Reduced z-index to prevent overlap with navbar */
+    top: 0;
+    z-index: 2;
     font-weight: bold;
   }
 
   .day-header {
-    font-size: 1.1rem; /* Slightly smaller */
+    font-size: 1.1rem;
     font-weight: bold;
-    color: #201814; /* Changed color */
+    color: #201814;
   }
 
   .date-header {
-    font-size: 0.85rem; /* Slightly smaller */
-    color: #000; /* Changed color */
+    font-size: 0.85rem;
+    color: #000;
   }
 
   .time-cell {
@@ -233,73 +198,44 @@ const timeSlots = [
     background-color: #f0f0f0;
     position: sticky;
     left: 0;
-    z-index: 5;
+    z-index: 5; /* Ensure time cells are above course cells if they overlap during scroll */
     color: #201814;
     vertical-align: middle;
-    font-size: 0.9rem !important;
+    font-size: 0.9rem !important; /* Force smaller font size */
     white-space: nowrap;
     padding: 0.5rem 0.25rem;
   }
 
   .course-cell {
-    background-color: #e9ecef; /* Changed default background to light gray */
+    background-color: #e9ecef;
     transition: all 0.2s ease-in-out;
-    padding: 0.4rem; /* Reduced padding to help content fit fixed height */
-    position: relative; /* Added for positioning info icon */
+    padding: 0.4rem;
+    position: relative;
   }
 
-  /* Only apply cursor pointer to cells with data-course-id that is not null */
   .course-cell[data-course-id]:not([data-course-id="null"]) {
     cursor: pointer;
   }
 
   .course-cell[data-course-id]:not([data-course-id="null"]):hover {
-    background-color: #d8dcdf; /* Darker hover for new base color */
-    transform: translateY(-2px); /* Subtle lift effect */
+    background-color: #d8dcdf;
+    transform: translateY(-2px);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   }
 
-  /* Type-specific colors, ensure these class names match lowercase 'type' from JSON */
-  .course-cell.type-main {
-    background-color: #e9ecef;
-  }
-
-  /* Uniform light gray */
-  .course-cell.type-broad {
-    background-color: #e9ecef;
-  }
-
-  /* Uniform light gray */
-  .course-cell.type-hackathon {
-    background-color: #e9ecef;
-  }
-
-  /* Uniform light gray */
-  .course-cell.type-game {
-    background-color: #e9ecef;
-  }
-
-  /* Uniform light gray */
-  .course-cell.type-community {
-    background-color: #e9ecef;
-  }
-
-  /* Uniform light gray */
-  .course-cell.type-other {
-    background-color: #e9ecef;
-  }
-
-  /* Uniform light gray */
+  .course-cell.type-main,
+  .course-cell.type-broad,
+  .course-cell.type-hackathon,
+  .course-cell.type-game,
+  .course-cell.type-community,
+  .course-cell.type-other,
   .course-cell.type-default {
     background-color: #e9ecef;
   }
 
-  /* Uniform light gray */
-
-
   .course-title {
     font-weight: 600;
-    font-size: max(1vw, 0.9rem);
+    font-size: max(1vw, 0.9rem); /* Responsive font size */
     margin-bottom: 0.3rem;
     color: #222;
     font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
@@ -315,7 +251,7 @@ const timeSlots = [
   }
 
   .course-subtitle {
-    font-size: max(0.85vw, 0.75rem);
+    font-size: max(0.85vw, 0.75rem); /* Responsive font size */
     color: #333;
     margin-bottom: 0.3rem;
     font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
@@ -331,21 +267,21 @@ const timeSlots = [
     margin-top: 0.2rem;
   }
 
-  .course-speaker .icon { /* If Icon component renders an svg inside a span or div */
+  .course-speaker .icon {
     width: 14px;
     height: 14px;
   }
 
   .info-icon {
     position: absolute;
-    bottom: 10px; /* Adjusted for smaller icon */
-    right: 3px; /* Adjusted for smaller icon */
-    width: 10px; /* Halved size */
-    height: 10px; /* Halved size */
+    bottom: 10px;
+    right: 3px;
+    width: 10px;
+    height: 10px;
   }
 
   .empty-cell {
-    background-color: #ffffff; /* Plain white for empty */
+    background-color: #ffffff;
   }
 
   .event-break-cell {
@@ -353,423 +289,44 @@ const timeSlots = [
     color: white;
     font-weight: bold;
     vertical-align: middle;
-    cursor: default; /* Remove pointer cursor for meal cells */
+    cursor: default;
   }
 
-  /* Modal styles - with important flags and highest possible z-index */
-  .modal {
-    display: none;
-    position: fixed !important;
-    inset: 0 !important;
-    z-index: 2147483647 !important;
-    width: 100vw !important;
-    height: 100dvh !important; /* Dynamic viewport height */
-    overflow: auto;
-    background-color: rgba(0, 0, 0, 0.7);
-    backdrop-filter: blur(5px);
-    isolation: isolate;
-    align-items: flex-start;
-    justify-content: center;
-    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
-  }
+  /* Removed Modal specific styles as they are now in CourseModal.astro */
 
-  .modal-content {
-    background-color: #000;
-    color: #fff;
-    padding: 1.5rem 3rem 3rem;
-    border-radius: 8px;
-    max-width: 800px;
-    width: 90%;
-    position: relative !important;
-    margin: 2vh auto;
-    border-left: 4px solid #c9a845;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
-    max-height: 96dvh;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-  }
-
-  /* Special container for close button to ensure it's at the top layer */
-  .modal-close-container {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-    z-index: 9999;
-  }
-
-  .close {
-    position: relative;
-    width: 40px;
-    height: 40px;
-    cursor: pointer;
-    background: rgba(255, 255, 255, 0.1);
-    border: 2px solid rgba(255, 255, 255, 0.2);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    transform-origin: center;
-  }
-
-  .close::before,
-  .close::after {
-    content: '';
-    position: absolute;
-    width: 20px;
-    height: 2px;
-    background-color: #fff;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  .close::before {
-    transform: rotate(45deg);
-  }
-
-  .close::after {
-    transform: rotate(-45deg);
-  }
-
-  .close:hover {
-    background: rgba(255, 255, 255, 0.2);
-    border-color: rgba(255, 255, 255, 0.3);
-    transform: rotate(180deg);
-  }
-
-  .close:hover::before,
-  .close:hover::after {
-    background-color: #c9a845;
-  }
-
-  .close:active {
-    transform: rotate(180deg) scale(0.9);
-  }
-
-  #modalTitle {
-    margin-top: 0;
-    margin-bottom: 0.5rem;
-    font-size: 2.2rem;
-    font-weight: 600;
-    color: #E0E0E0;
-    text-align: left;
-    margin-right: 10px;
-    padding-right: 100px;
-    position: relative;
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-  }
-
-  #modalSubtitle {
-    margin-top: 0;
-    margin-bottom: 2.5rem;
-    font-size: 1.2rem;
-    color: #EAB99F;
-    text-align: left;
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-  }
-
-  .modal-info {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem 2rem;
-    margin-bottom: 2rem;
-    padding-bottom: 1rem;
-    border-bottom: 1px solid #333;
-  }
-
-  .info-item {
-    display: flex;
-    align-items: center;
-    gap: 0.8rem;
-    font-size: 1rem;
-    color: #d0d0d0;
-  }
-
-  .info-item .icon {
-    width: 20px;
-    height: 20px;
-    color: #c9a845;
-  }
-
-  .description-container {
-    margin-bottom: 2rem;
-    text-align: left;
-    padding-top: 0.5rem;
-  }
-
-  #modalDescription {
-    line-height: 1.8;
-    font-size: 1rem;
-    color: #c0c0c0;
-  }
-
-  .description-text {
-    line-height: 1.8;
-    font-size: 1rem;
-    color: #c0c0c0;
-  }
-
-  .modal-links {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
-    margin-top: 2rem;
-    justify-content: center;
-  }
-
-  .modal-link {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.6rem;
-    padding: 0.85rem 1.4rem;
-    background-color: #1e1e1e;
-    border: 1px solid #333;
-    border-radius: 8px;
-    text-decoration: none;
-    color: #fff;
-    font-size: 1rem;
-    font-weight: 500;
-    transition: all 0.3s ease;
-    min-width: 120px;
-    max-width: 200px;
-    letter-spacing: 0.02em;
-  }
-
-  .modal-link:hover {
-    background-color: #2a2a2a;
-    transform: translateY(-2px);
-    border-color: #444;
-  }
-
-  .modal-link:active {
-    transform: translateY(0);
-  }
-
-  .modal-link .icon {
-    width: 18px;
-    height: 18px;
-    color: #c9a845;
-  }
-
-  .modal-link-button {
-    background-color: #c9a845;
-    border: none;
-    color: #000;
-    padding: 0.85rem 1.6rem;
-    font-size: 1.05rem;
-    font-weight: 600;
-    position: relative;
-    overflow: hidden;
-    z-index: 1;
-    min-width: 140px;
-    max-width: 220px;
-  }
-
-  .modal-link-button:hover {
-    background-color: #d8b754;
-    transform: translateY(-2px);
-  }
-
-  .modal-link-button .icon {
-    color: #000;
-  }
-
-  /* Bottom close button styles */
-  .close-button {
-    display: block;
-    width: 140px;
-    margin: 2rem auto 0;
-    padding: 0.8rem 1.5rem;
-    background-color: transparent;
-    border: 2px solid rgba(255, 255, 255, 0.2);
-    border-radius: 8px;
-    color: #fff;
-    font-size: 1rem;
-    text-align: center;
-    cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative;
-    z-index: 10;
-    overflow: hidden;
-  }
-
-  .close-button::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: #c9a845;
-    transform: scaleX(0);
-    transform-origin: right;
-    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    z-index: -1;
-  }
-
-  .close-button:hover {
-    border-color: #c9a845;
-    color: #000;
-  }
-
-  .close-button:hover::before {
-    transform: scaleX(1);
-    transform-origin: left;
-  }
-
-  .close-button:active {
-    transform: scale(0.95);
-  }
-
-  @media (max-width: 900px) {
-    /* .table-container will already enable scroll due to min-width */
-  }
-
-  @media (max-width: 600px) {
-    .modal {
-      padding: 0;
-      align-items: center;
-    }
-
-    .modal-content {
-      padding: 1.5rem;
-      width: 90%;
-      max-height: 90dvh;
-      overflow-y: auto;
-      border-radius: 12px;
-      /* Add padding for bottom bar */
-      margin: 0 0 env(safe-area-inset-bottom, 20px);
-    }
-
-    /* Add smooth scrolling for iOS */
-    .modal-content {
-      -webkit-overflow-scrolling: touch;
-      overscroll-behavior-y: contain;
-      /* Prevent content from being cut off at the bottom */
-      padding-bottom: calc(1.5rem + env(safe-area-inset-bottom, 20px));
-    }
-
-    #modalTitle {
-      font-size: 1.5rem;
-      padding-right: 0; /* Remove padding as person image is hidden */
-    }
-
-    #modalSubtitle {
-      font-size: 1rem;
-      margin-bottom: 1.5rem;
-    }
-
-    .modal-person-image {
-      display: none; /* Hide person image on mobile */
-    }
-
-    .modal-info {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 0.8rem;
-    }
-
-    .info-item {
-      font-size: 0.9rem;
-    }
-
-    #modalDescription {
-      font-size: 0.9rem;
-    }
-
-    .modal-link {
-      font-size: 0.85rem;
-      padding: 0.5rem 0.8rem;
-    }
-
-    .modal-link-button {
-      padding: 0.5rem 1rem;
-    }
-
-    .modal-close-container {
-      top: 0.5rem;
-      right: 0.5rem;
-    }
-
-    .close {
-      width: 32px;
-      height: 32px;
-    }
-
-    .close::before,
-    .close::after {
-      width: 16px;
-    }
-
-    .close-button {
-      width: 120px;
-      padding: 0.6rem 1.2rem;
-      font-size: 0.9rem;
-    }
-  }
-
-  .section-title {
-    font-size: 1.3rem;
-    font-weight: 600;
-    color: #E0E0E0;
-    margin-bottom: 1rem;
-    margin-top: 1.5rem;
-    padding-bottom: 0.5rem;
-    border-bottom: 1px solid #333;
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-  }
-
-
-  .modal-person-image {
-    position: absolute;
-    top: 1.5rem;
-    right: 3.5rem;
-    width: 90px;
-    height: 90px;
-    border-radius: 50%;
-    object-fit: cover;
-    z-index: 5;
-  }
+  @media (max-width: 900px) {}
 
   @media (max-width: 768px) {
     body {
       font-size: max(3.5vw, 1rem);
     }
-
     table {
       font-size: max(0.9rem, 3vw);
     }
-
     th:first-child, td:first-child {
       width: 70px;
       min-width: 70px;
       padding: 0.5rem 0.15rem;
     }
-
     .time-cell {
       padding: 0.5rem 0.15rem;
       font-size: 0.9rem !important;
     }
-
     th:not(:first-child), td:not(:first-child) {
       width: calc((100% - 70px) / 5);
       font-size: max(0.9rem, 3vw);
     }
-
     td.course-cell {
       font-size: max(0.9rem, 3vw);
     }
-
     .course-cell .course-title {
       font-size: max(0.9rem, 3vw);
       margin-bottom: 0.2rem;
     }
-
     .course-cell .course-subtitle {
       font-size: max(0.75rem, 2.5vw);
       margin-bottom: 0.2rem;
     }
-
     .event-break-cell {
       font-size: max(0.9rem, 3vw);
     }
@@ -777,143 +334,21 @@ const timeSlots = [
 </style>
 
 <script>
-  import data from "../../assets/data/schedule.json";
-  import { formatCourseTime } from "../../utils/schedule";
-
   document.addEventListener("astro:page-load", () => {
-    const modalElement = document.getElementById("courseModal");
-    if (modalElement) {
-      document.body.appendChild(modalElement);
-    }
+    const courseCells = document.querySelectorAll('.course-cell[data-course-id]:not([data-course-id="null"])');
 
-    const courseElements = document.querySelectorAll(".course-cell");
-    const closeBtnElement = modalElement?.querySelector(".close");
-
-    if (!modalElement) {
-      console.error("Schedule Modal element not found.");
-      return;
-    }
-
-    const openModal = async (courseId) => {
-      const course = data.find(k => k.id === courseId);
-      if (!course) console.error(`Unable to find ${courseId}`);
-      displayModalContent(course);
-      modalElement.style.display = "flex";
-      modalElement.style.alignItems = "center";
-      modalElement.style.justifyContent = "center";
-      document.body.style.overflow = "hidden";
-    };
-
-    function displayModalContent(course) {
-      if (!modalElement) return;
-
-      const modalTitleEl = modalElement.querySelector("#modalTitle");
-      const modalSubtitleEl = modalElement.querySelector("#modalSubtitle");
-      const modalSpeakerEl = modalElement.querySelector("#modalSpeaker");
-      const modalTimeEl = modalElement.querySelector("#modalTime");
-      const modalTypeEl = modalElement.querySelector("#modalType");
-      const modalDescriptionEl = modalElement.querySelector("#modalDescription");
-      const linksContainerEl = modalElement.querySelector("#modalLinks");
-
-      if (modalTitleEl) modalTitleEl.textContent = course.title_zh?.split("\n")[0] || "";
-      if (modalSubtitleEl) modalSubtitleEl.textContent = course.title_zh?.split("\n")[1] || "";
-
-      const speakerText = [course.speaker1, course.speaker2, course.speaker3, course.speaker4, course.speaker5]
-        .filter(Boolean)
-        .join(", ");
-      if (modalSpeakerEl) modalSpeakerEl.textContent = speakerText ? `主講人：${speakerText}` : "主講人：N/A";
-
-      if (modalTimeEl) modalTimeEl.textContent = formatCourseTime(course.start, course.end);
-      if (modalTypeEl) modalTypeEl.textContent = course.type || "N/A";
-
-      if (modalDescriptionEl) {
-        modalDescriptionEl.innerHTML = course.description_zh?.replace(/\n/g, "<br>") || "暫無課程介紹";
-      }
-
-      const speakerSectionTitleEl = modalElement.querySelector("#speakerSectionTitle");
-      const speakerDescriptionEl = modalElement.querySelector("#speakerDescription");
-
-      if (speakerSectionTitleEl && speakerText) {
-        speakerSectionTitleEl.textContent = `講者介紹 - ${speakerText.replace("主講人：", "")}`;
-      } else if (speakerSectionTitleEl) {
-        speakerSectionTitleEl.textContent = "講者介紹";
-      }
-
-      if (speakerDescriptionEl) {
-        if (speakerText && speakerText !== "主講人：N/A") {
-          speakerDescriptionEl.innerHTML = `${speakerText.replace("主講人：", "")}是本課程的講師。<br>更多講者資訊將在未來更新。`;
-        } else {
-          speakerDescriptionEl.innerHTML = "無講者資訊";
-        }
-        speakerDescriptionEl.classList.add("description-text");
-      }
-
-      if (linksContainerEl) {
-        linksContainerEl.innerHTML = "";
-        if (course.slide) {
-          const slideBtn = document.createElement("a");
-          slideBtn.href = course.slide;
-          slideBtn.target = "_blank";
-          slideBtn.className = "modal-link modal-link-button";
-          slideBtn.textContent = "課程簡報";
-          linksContainerEl.appendChild(slideBtn);
-        }
-
-        if (course.co_write) {
-          const coWriteBtn = document.createElement("a");
-          coWriteBtn.href = course.co_write;
-          coWriteBtn.target = "_blank";
-          coWriteBtn.className = "modal-link";
-          coWriteBtn.textContent = "共筆";
-          linksContainerEl.appendChild(coWriteBtn);
-        }
-
-        if (course.record) {
-          const recordBtn = document.createElement("a");
-          recordBtn.href = course.record;
-          recordBtn.target = "_blank";
-          recordBtn.className = "modal-link";
-          recordBtn.textContent = "錄影";
-          linksContainerEl.appendChild(recordBtn);
-        }
-      }
-    }
-
-    const closeModal = () => {
-      if (modalElement) {
-        modalElement.style.display = "none";
-        document.body.style.overflow = "";
-      }
-    };
-
-    courseElements.forEach(element => {
-      element.addEventListener("click", () => {
-        const courseId = element.getAttribute("data-course-id");
-        if (courseId && courseId !== "null") {
-          openModal(courseId);
+    courseCells.forEach(cell => {
+      cell.addEventListener('click', () => {
+        const courseId = cell.getAttribute('data-course-id');
+        if (courseId) {
+          const event = new CustomEvent('openCourseModal', { 
+            detail: { courseId },
+            bubbles: true, // Optional: if you need the event to bubble up
+            composed: true // Optional: if you need the event to cross shadow DOM boundaries
+          });
+          document.dispatchEvent(event);
         }
       });
-    });
-
-    if (closeBtnElement) {
-      closeBtnElement.addEventListener("click", closeModal);
-    }
-
-    const closeButtonElement = modalElement.querySelector(".close-button");
-    if (closeButtonElement) {
-      closeButtonElement.addEventListener("click", closeModal);
-    }
-
-    window.addEventListener("click", (event) => {
-      if (event.target === modalElement) {
-        closeModal();
-      }
-    });
-
-    document.addEventListener("keydown", (event) => {
-      if (event.key === "Escape" && modalElement.style.display === "flex") {
-        closeModal();
-      }
     });
   });
 </script>

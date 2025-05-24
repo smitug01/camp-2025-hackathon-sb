@@ -1,0 +1,523 @@
+---
+import type { Course } from '../../types/schedule';
+import person from "../../assets/img/modal/image-11.png";
+
+export interface Props {
+  // Props definition here if needed later
+}
+---
+
+<!-- Course Detail Modal Structure -->
+<div id="courseModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-close-container">
+      <span class="close">&times;</span>
+    </div>
+    <img src={person.src} alt="Person" class="modal-person-image" />
+    <h2 id="modalTitle"></h2>
+    <h3 id="modalSubtitle"></h3>
+    <div class="section-title">課程介紹</div>
+    <div class="description-container">
+      <p id="modalDescription"></p>
+    </div>
+    <div class="section-title" id="speakerSectionTitle">講者介紹</div>
+    <div class="description-container">
+      <p id="speakerDescription"></p>
+    </div>
+    <div id="modalLinks" class="modal-links"></div>
+    <button class="close-button">Close</button>
+  </div>
+</div>
+
+<style>
+  /* Modal styles (as previously defined) */
+  .modal {
+    display: none;
+    position: fixed !important;
+    inset: 0 !important;
+    z-index: 2147483647 !important;
+    width: 100vw !important;
+    height: 100dvh !important;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(5px);
+    isolation: isolate;
+    align-items: flex-start;
+    justify-content: center;
+    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  }
+
+  .modal-content {
+    background-color: #000;
+    color: #fff;
+    padding: 1.5rem 3rem 3rem;
+    border-radius: 8px;
+    max-width: 800px;
+    width: 90%;
+    position: relative !important;
+    margin: 2vh auto;
+    border-left: 4px solid #c9a845;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+    max-height: 96dvh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .modal-close-container {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    z-index: 9999;
+  }
+
+  .close {
+    position: relative;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transform-origin: center;
+  }
+
+  .close::before,
+  .close::after {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 2px;
+    background-color: #fff;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .close::before {
+    transform: rotate(45deg);
+  }
+
+  .close::after {
+    transform: rotate(-45deg);
+  }
+
+  .close:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.3);
+    transform: rotate(180deg);
+  }
+
+  .close:hover::before,
+  .close:hover::after {
+    background-color: #c9a845;
+  }
+
+  .close:active {
+    transform: rotate(180deg) scale(0.9);
+  }
+
+  #modalTitle {
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+    font-size: 2.2rem;
+    font-weight: 600;
+    color: #E0E0E0;
+    text-align: left;
+    margin-right: 10px;
+    padding-right: 100px;
+    position: relative;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  }
+
+  #modalSubtitle {
+    margin-top: 0;
+    margin-bottom: 2.5rem;
+    font-size: 1.2rem;
+    color: #EAB99F;
+    text-align: left;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  }
+
+  .modal-info {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem 2rem;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #333;
+  }
+
+  .info-item {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    font-size: 1rem;
+    color: #d0d0d0;
+  }
+
+  .info-item .icon {
+    width: 20px;
+    height: 20px;
+    color: #c9a845;
+  }
+
+  .description-container {
+    margin-bottom: 2rem;
+    text-align: left;
+    padding-top: 0.5rem;
+  }
+
+  #modalDescription {
+    line-height: 1.8;
+    font-size: 1rem;
+    color: #c0c0c0;
+  }
+
+  .description-text {
+    line-height: 1.8;
+    font-size: 1rem;
+    color: #c0c0c0;
+  }
+
+  .modal-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 2rem;
+    justify-content: center;
+  }
+
+  .modal-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    padding: 0.85rem 1.4rem;
+    background-color: #1e1e1e;
+    border: 1px solid #333;
+    border-radius: 8px;
+    text-decoration: none;
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    min-width: 120px;
+    max-width: 200px;
+    letter-spacing: 0.02em;
+  }
+
+  .modal-link:hover {
+    background-color: #2a2a2a;
+    transform: translateY(-2px);
+    border-color: #444;
+  }
+
+  .modal-link:active {
+    transform: translateY(0);
+  }
+
+  .modal-link .icon {
+    width: 18px;
+    height: 18px;
+    color: #c9a845;
+  }
+
+  .modal-link-button {
+    background-color: #c9a845;
+    border: none;
+    color: #000;
+    padding: 0.85rem 1.6rem;
+    font-size: 1.05rem;
+    font-weight: 600;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+    min-width: 140px;
+    max-width: 220px;
+  }
+
+  .modal-link-button:hover {
+    background-color: #d8b754;
+    transform: translateY(-2px);
+  }
+
+  .modal-link-button .icon {
+    color: #000;
+  }
+
+  .close-button {
+    display: block;
+    width: 140px;
+    margin: 2rem auto 0;
+    padding: 0.8rem 1.5rem;
+    background-color: transparent;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    color: #fff;
+    font-size: 1rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    z-index: 10;
+    overflow: hidden;
+  }
+
+  .close-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #c9a845;
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: -1;
+  }
+
+  .close-button:hover {
+    border-color: #c9a845;
+    color: #000;
+  }
+
+  .close-button:hover::before {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
+
+  .close-button:active {
+    transform: scale(0.95);
+  }
+
+  .section-title {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #E0E0E0;
+    margin-bottom: 1rem;
+    margin-top: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #333;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  }
+
+  .modal-person-image {
+    position: absolute;
+    top: 1.5rem;
+    right: 3.5rem;
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    object-fit: cover;
+    z-index: 5;
+  }
+
+  @media (max-width: 600px) {
+    .modal {
+      padding: 0;
+      align-items: center;
+    }
+
+    .modal-content {
+      padding: 1.5rem;
+      width: 90%;
+      max-height: 90dvh;
+      overflow-y: auto;
+      border-radius: 12px;
+      margin: 0 0 env(safe-area-inset-bottom, 20px);
+    }
+
+    .modal-content {
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior-y: contain;
+      padding-bottom: calc(1.5rem + env(safe-area-inset-bottom, 20px));
+    }
+
+    #modalTitle {
+      font-size: 1.5rem;
+      padding-right: 0;
+    }
+
+    #modalSubtitle {
+      font-size: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .modal-person-image {
+      display: none;
+    }
+
+    .modal-info {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.8rem;
+    }
+
+    .info-item {
+      font-size: 0.9rem;
+    }
+
+    #modalDescription {
+      font-size: 0.9rem;
+    }
+
+    .modal-link {
+      font-size: 0.85rem;
+      padding: 0.5rem 0.8rem;
+    }
+
+    .modal-link-button {
+      padding: 0.5rem 1rem;
+    }
+
+    .modal-close-container {
+      top: 0.5rem;
+      right: 0.5rem;
+    }
+
+    .close {
+      width: 32px;
+      height: 32px;
+    }
+
+    .close::before,
+    .close::after {
+      width: 16px;
+    }
+
+    .close-button {
+      width: 120px;
+      padding: 0.6rem 1.2rem;
+      font-size: 0.9rem;
+    }
+  }
+</style>
+
+<script>
+  import scheduleData from "../../assets/data/schedule.json"; // Full schedule data
+  import { formatCourseTime } from "../../utils/schedule"; // Utility function
+
+  document.addEventListener("astro:page-load", () => {
+    const modalElement = document.getElementById("courseModal");
+    const closeBtnElement = modalElement?.querySelector(".close");
+    const closeButtonBottomElement = modalElement?.querySelector(".close-button");
+
+    // Listener for course cells is now on the parent (Schedule.astro) 
+    // and will dispatch a custom event to open the modal.
+    // We listen for that custom event here.
+
+    if (!modalElement) {
+      console.error("CourseModal element not found.");
+      return;
+    }
+    
+    // Ensure modal is appended to body to avoid z-index issues with other page elements
+    // This is important if the <CourseModal /> tag is not at the root of the body in the final DOM
+    if (modalElement.parentElement !== document.body) {
+        document.body.appendChild(modalElement);
+    }
+
+    const displayModalContent = (course) => {
+      if (!modalElement || !course) return;
+
+      const modalTitleEl = modalElement.querySelector("#modalTitle");
+      const modalSubtitleEl = modalElement.querySelector("#modalSubtitle");
+      const modalDescriptionEl = modalElement.querySelector("#modalDescription");
+      const linksContainerEl = modalElement.querySelector("#modalLinks");
+      const speakerSectionTitleEl = modalElement.querySelector("#speakerSectionTitle");
+      const speakerDescriptionEl = modalElement.querySelector("#speakerDescription");
+
+      if (modalTitleEl) modalTitleEl.textContent = course.title_zh?.split("\n")[0] || "";
+      if (modalSubtitleEl) modalSubtitleEl.textContent = course.title_zh?.split("\n")[1] || "";
+      
+      const speakerText = [course.speaker1, course.speaker2, course.speaker3, course.speaker4, course.speaker5]
+        .filter(Boolean)
+        .join(", ");
+
+      if (speakerSectionTitleEl) {
+        speakerSectionTitleEl.textContent = speakerText ? `講者介紹 - ${speakerText}` : "講者介紹";
+      }
+      if (speakerDescriptionEl) {
+        if (speakerText) {
+          speakerDescriptionEl.innerHTML = `${speakerText}是本課程的講師。<br>更多講者資訊將在未來更新。`;
+        } else {
+          speakerDescriptionEl.innerHTML = "無講者資訊";
+        }
+        speakerDescriptionEl.classList.add("description-text");
+      }
+
+      if (modalDescriptionEl) {
+        modalDescriptionEl.innerHTML = course.description_zh?.replace(/\n/g, "<br>") || "暫無課程介紹";
+      }
+
+      if (linksContainerEl) {
+        linksContainerEl.innerHTML = ""; 
+        if (course.slide) {
+          const slideBtn = document.createElement("a");
+          slideBtn.href = course.slide;
+          slideBtn.target = "_blank";
+          slideBtn.className = "modal-link modal-link-button";
+          slideBtn.textContent = "課程簡報";
+          linksContainerEl.appendChild(slideBtn);
+        }
+        if (course.co_write) {
+          const coWriteBtn = document.createElement("a");
+          coWriteBtn.href = course.co_write;
+          coWriteBtn.target = "_blank";
+          coWriteBtn.className = "modal-link";
+          coWriteBtn.textContent = "共筆";
+          linksContainerEl.appendChild(coWriteBtn);
+        }
+        if (course.record) {
+          const recordBtn = document.createElement("a");
+          recordBtn.href = course.record;
+          recordBtn.target = "_blank";
+          recordBtn.className = "modal-link";
+          recordBtn.textContent = "錄影";
+          linksContainerEl.appendChild(recordBtn);
+        }
+      }
+    };
+
+    const openModalWithCourseId = (courseId) => {
+      const course = scheduleData.find(c => String(c.id) === String(courseId));
+      if (course) {
+        displayModalContent(course);
+        modalElement.style.display = "flex";
+        document.body.style.overflow = "hidden";
+      } else {
+        console.error(`Course with ID ${courseId} not found.`);
+      }
+    };
+
+    const closeModal = () => {
+      if (modalElement) {
+        modalElement.style.display = "none";
+        document.body.style.overflow = "";
+      }
+    };
+
+    // Listen for a custom event to open the modal
+    document.addEventListener('openCourseModal', (event: Event) => {
+      const customEvent = event as CustomEvent;
+      const courseId = customEvent.detail?.courseId;
+      if (courseId) {
+        openModalWithCourseId(courseId);
+      }
+    });
+
+    if (closeBtnElement) closeBtnElement.addEventListener("click", closeModal);
+    if (closeButtonBottomElement) closeButtonBottomElement.addEventListener("click", closeModal);
+
+    window.addEventListener("click", (event) => {
+      if (event.target === modalElement) closeModal();
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && modalElement.style.display === "flex") closeModal();
+    });
+  });
+</script> 
