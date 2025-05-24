@@ -1,8 +1,4 @@
 ---
-interface Props {
-  url: URL;
-}
-
 import { getLocale } from "../../i18n";
 import { Icon } from "astro-icon/components";
 import scheduleData from "../../assets/data/schedule.json";
@@ -61,10 +57,11 @@ function getCourseStartingAt(dayKey, timeSlot) {
 
     const courseTime = new Date(course.start.toLocaleString("en-US", { timeZone: "Asia/Taipei" }));
 
-    // Format hour and minute with leading zeros
-    const courseHour = courseTime.getHours().toString().padStart(2, "0");
-    const courseMinute = courseTime.getMinutes().toString().padStart(2, "0");
-    const courseTimeString = `${courseHour}:${courseMinute}`;
+    const courseTimeString = courseTime.toLocaleTimeString("zh-TW", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    });
 
     return courseTimeString === normalizedTimeSlot;
   });
@@ -72,20 +69,12 @@ function getCourseStartingAt(dayKey, timeSlot) {
 
 // Calculate duration in slots
 function calculateDurationInSlots(course) {
-  if (!course.start || !course.end) return 1;
+  if (!course.start || !course.end) return console.error(`Undefined course start or end ${course.id}`);
 
-  // Convert start and end times to Taipei timezone
   const start = new Date(course.start);
   const end = new Date(course.end);
 
-  const taipeiStart = new Date(start.toLocaleString("en-US", { timeZone: "Asia/Taipei" }));
-  const taipeiEnd = new Date(end.toLocaleString("en-US", { timeZone: "Asia/Taipei" }));
-
-  // Calculate duration in minutes - using getTime() to ensure we get number values
-  const durationMinutes = (taipeiEnd.getTime() - taipeiStart.getTime()) / (1000 * 60);
-
-  // Convert to number of 30-minute slots and ensure at least 1 slot
-  return Math.max(1, Math.ceil(durationMinutes / 30));
+  return Math.ceil((end - start) / (1000 * 60 * 30));
 }
 ---
 <section class="container" id="schedule">
@@ -220,12 +209,6 @@ function calculateDurationInSlots(course) {
     text-align: center;
     max-width: 1200px;
     margin: 0 auto;
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-  }
-
-  h2 {
-    margin-bottom: 2rem;
-    text-align: center;
   }
 
   .schedule-table {
@@ -235,14 +218,14 @@ function calculateDurationInSlots(course) {
   }
 
   .table-container {
-    min-width: 900px; /* Minimum width before horizontal scrollbar appears */
+    min-width: 900px;
   }
 
   table {
     width: 100%;
     border-collapse: collapse;
     border-spacing: 0;
-    font-size: max(1vw, 0.9rem);
+    font-size: 1.25rem;
     table-layout: fixed;
   }
 
@@ -250,19 +233,9 @@ function calculateDurationInSlots(course) {
     border: 1px solid #ccc;
     padding: 0.5rem;
     text-align: center;
-    vertical-align: middle;
     overflow: hidden;
     text-overflow: ellipsis;
     box-sizing: border-box;
-  }
-
-  /* Ensure all td elements in the table body have a uniform height */
-  tbody td {
-    /* height: 45px; Removed as JS will handle row height */
-  }
-
-  tbody tr {
-    box-sizing: border-box; /* Added for easier JS height manipulation */
   }
 
   th:first-child, td:first-child { /* Time column */
@@ -865,90 +838,27 @@ function calculateDurationInSlots(course) {
 
     // Function to fetch course data by ID
     const getCourseById = async (id) => {
-      // Handle both numeric IDs and our custom generated IDs
-      // For custom IDs, extract the course title and time
-      const parts = id.split("_");
-      const timeSlot = parts[parts.length - 2] + ":" + parts[parts.length - 1];
-      // Join all parts except the last two (which are the time) to get the title
-      const title = parts.slice(1, parts.length - 2).join("_").replace(/_/g, " ");
-
-      // Find the course with matching title and time
-      return data.find(course => {
-        if (!course.start) return false;
-
-        const courseTitle = course.title_zh?.split("\n")[0] || "";
-        if (courseTitle.includes(title)) {
-          // Check if time approximately matches
-          const startTime = new Date(course.start);
-          const taipeiTime = new Date(startTime.toLocaleString("en-US", { timeZone: "Asia/Taipei" }));
-          const courseHour = taipeiTime.getHours();
-
-          // Convert timeSlot to hours and minutes
-          const [slotHour] = timeSlot.split(":").map(Number);
-
-          return Math.abs(courseHour - slotHour) <= 1; // Allow 1 hour difference to handle edge cases
-        }
-        return false;
-      });
+      return data.find(course => course.id === id);
     };
 
     const formatDateTime = (start, end) => {
       if (!start || !end) return "N/A";
-      try {
-        const startDate = new Date(start);
-        const endDate = new Date(end);
-        const formatTime = (date) => date.toLocaleTimeString("zh-TW", {
-          hour: "2-digit",
-          minute: "2-digit",
-          hour12: false,
-        });
-        return `${formatTime(startDate)} - ${formatTime(endDate)}`;
-      } catch (e) {
-        return "Invalid date";
-      }
+      const startDate = new Date(start);
+      const endDate = new Date(end);
+      const formatTime = (date) => date.toLocaleTimeString("zh-TW", {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false,
+      });
+      return `${formatTime(startDate)} - ${formatTime(endDate)}`;
     };
 
     const openModal = async (courseId) => {
-      console.log("Opening modal for course ID:", courseId);
+      const course = data.find(k => k.id === courseId);
 
-      // Special handling for custom IDs
-      if (courseId.startsWith("course_")) {
-        // Get all courses
-        const res = await fetch(new URL("../../assets/data/schedule.json", import.meta.url).href);
-        if (!res.ok) {
-          console.error(`HTTP error when fetching courses! status: ${res.status}`);
-          return;
-        }
-        const allCourses = await res.json();
+      if (!course) console.error(`Unable to find ${courseId}`);
 
-        // For custom IDs, try to find by title
-        const parts = courseId.split("_");
-        const timeSlot = parts[parts.length - 2] + ":" + parts[parts.length - 1];
-
-        // Extract the title part from the custom ID (all parts except the time parts)
-        const titlePart = parts.slice(1, parts.length - 2).join("_").replace(/_/g, " ");
-
-        // Find course by partial title match
-        let course = null;
-        for (const c of allCourses) {
-          if (c.title_zh && c.title_zh.includes(titlePart)) {
-            course = c;
-            break;
-          }
-        }
-
-        if (!course) {
-          console.error(`Could not find course for custom ID: ${courseId}`);
-          return;
-        }
-
-        displayModalContent(course);
-      } else {
-        const course = await getCourseById(courseId);
-        if (!course || !modalElement) return;
-
-        displayModalContent(course);
-      }
+      displayModalContent(course);
 
       // Display modal with flex layout
       modalElement.style.display = "flex";
@@ -959,6 +869,7 @@ function calculateDurationInSlots(course) {
 
     // Function to display modal content
     function displayModalContent(course) {
+      console.log(course);
       if (!modalElement) return;
 
       const modalTitleEl = modalElement.querySelector("#modalTitle");
@@ -1080,40 +991,6 @@ function calculateDurationInSlots(course) {
         closeModal();
       }
     });
-
-    // Function to adjust row heights to be uniform
-    const adjustRowHeights = () => {
-      const tableBody = document.querySelector(".schedule-table tbody");
-      if (!tableBody) return;
-
-      // Get all rows, including the lunch break row
-      const allRows = Array.from(tableBody.querySelectorAll("tr"));
-
-      if (allRows.length === 0) return;
-
-      let maxHeight = 0;
-
-      // First pass: reset heights and measure natural height of each row
-      allRows.forEach(row => {
-        row.style.height = ""; // Reset height
-      });
-
-      allRows.forEach(row => {
-        const rowHeight = row.offsetHeight;
-        if (rowHeight > maxHeight) {
-          maxHeight = rowHeight;
-        }
-      });
-
-      // Second pass: apply the max height to all rows
-      if (maxHeight > 0) {
-        allRows.forEach(row => {
-          row.style.height = `${maxHeight}px`;
-        });
-      }
-    };
-
-    adjustRowHeights();
   });
 </script>
 
