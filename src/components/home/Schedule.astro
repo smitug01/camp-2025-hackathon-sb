@@ -2,15 +2,14 @@
 import { getLocale } from "../../i18n";
 import { Icon } from "astro-icon/components";
 import scheduleData from "../../assets/data/schedule.json";
-// import person from "../../assets/img/modal/image-11.png"; // No longer needed here
 import {
   generateCourseId,
   isMealCourse,
   hasCourseDetails,
   calculateDurationInSlots,
-  // formatCourseTime, // This will be used inside CourseModal.astro
   getCourseStartingAt,
-  updateCellCoverage
+  updateCellCoverage,
+  getCourseCellClasses
 } from "../../utils/schedule";
 import type { Course, DayMap, CellCoverage, CoursesByDay, DayHeader } from '../../types/schedule';
 import CourseModal from './CourseModal.astro'; // Import the new modal component
@@ -93,11 +92,12 @@ const timeSlots = [
                     }
 
                     const courseId = generateCourseId(course, timeSlot);
-                    const courseHasDetails = hasCourseDetails(course); // Renamed to avoid conflict
+                    const courseHasDetails = hasCourseDetails(course);
+                    const cellClasses = getCourseCellClasses(course);
 
                     return (
-                      <td class={`course-cell type-${course.type?.toLowerCase() || "default"}`}
-                          data-course-id={courseHasDetails ? courseId : null} 
+                      <td class={cellClasses}
+                          data-course-id={courseHasDetails ? courseId : null}
                           rowspan={rowspan}>
                         <div class="course-title">{course.title_zh?.split("\n")[0] || ""}</div>
                         {course.title_zh?.split("\n")[1] && (

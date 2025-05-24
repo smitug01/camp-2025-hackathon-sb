@@ -1,4 +1,5 @@
 import type { Course } from '../types/schedule';
+import { MEAL_LUNCH, MEAL_DINNER, COURSE_TYPES } from '../constants/schedule';
 
 /**
  * Generate a unique course ID
@@ -12,7 +13,7 @@ export const generateCourseId = (course: Course, timeSlot: string): string => {
  * Check if a course is a meal break
  */
 export const isMealCourse = (course: Course): boolean => {
-  return course.title_zh === "午餐" || course.title_zh === "晚餐";
+  return course.title_zh === MEAL_LUNCH || course.title_zh === MEAL_DINNER;
 };
 
 /**
@@ -75,7 +76,9 @@ export const getCourseStartingAt = (courses: Course[], timeSlot: string): Course
   return courses.find(course => {
     if (!course.start) return false;
 
-    const courseTime = new Date(course.start.toLocaleString("en-US", { timeZone: "Asia/Taipei" }));
+    const courseDateTime = new Date(course.start);
+    const courseTime = new Date(courseDateTime.toLocaleString("en-US", { timeZone: "Asia/Taipei" }));
+
     const courseTimeString = courseTime.toLocaleTimeString("zh-TW", {
       hour: "2-digit",
       minute: "2-digit",
@@ -104,4 +107,22 @@ export const updateCellCoverage = (
       cellCoverage[dayKey][futureTimeSlot] = true;
     }
   }
+};
+
+/**
+ * Get CSS classes for a course cell
+ */
+export const getCourseCellClasses = (course: Course): string => {
+  let classes = "course-cell";
+  const type = course.type?.toLowerCase();
+
+  // Check if the type is a valid key in COURSE_TYPES
+  const isValidType = Object.values(COURSE_TYPES).includes(type as typeof COURSE_TYPES[keyof typeof COURSE_TYPES]);
+
+  if (type && isValidType) {
+    classes += ` type-${type}`;
+  } else {
+    classes += ` type-${COURSE_TYPES.DEFAULT}`;
+  }
+  return classes;
 }; 
