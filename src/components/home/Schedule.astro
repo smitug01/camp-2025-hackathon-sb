@@ -576,36 +576,57 @@ function getDayOfWeekDisplay(dateString) {
   /* Special container for close button to ensure it's at the top layer */
   .modal-close-container {
     position: absolute;
-    top: 0;
-    right: 0;
+    top: 1rem;
+    right: 1rem;
     z-index: 9999;
-    padding: 1rem;
   }
 
   .close {
     position: relative;
-    font-size: 2.5rem;
-    font-weight: bold;
-    color: #fff;
-    cursor: pointer;
-    line-height: 1;
-    opacity: 1;
-    transition: all 0.2s ease;
-    display: flex;
-    justify-content: center;
-    align-items: center;
     width: 40px;
     height: 40px;
-    background-color: rgba(0, 0, 0, 0.5);
+    cursor: pointer;
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.2);
     border-radius: 50%;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transform-origin: center;
   }
 
-  .close:hover,
-  .close:focus {
-    background-color: rgba(80, 80, 80, 0.7);
-    transform: scale(1.1);
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+  .close::before,
+  .close::after {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 2px;
+    background-color: #fff;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .close::before {
+    transform: rotate(45deg);
+  }
+
+  .close::after {
+    transform: rotate(-45deg);
+  }
+
+  .close:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.3);
+    transform: rotate(180deg);
+  }
+
+  .close:hover::before,
+  .close:hover::after {
+    background-color: #c9a845;
+  }
+
+  .close:active {
+    transform: rotate(180deg) scale(0.9);
   }
 
   #modalTitle {
@@ -735,26 +756,51 @@ function getDayOfWeekDisplay(dateString) {
     color: #000;
   }
   
-  /* Close button at the bottom like in the image */
+  /* Bottom close button styles */
   .close-button {
     display: block;
-    width: 120px;
+    width: 140px;
     margin: 2rem auto 0;
-    padding: 0.7rem 1.5rem;
+    padding: 0.8rem 1.5rem;
     background-color: transparent;
-    border: 1px solid #444;
-    border-radius: 4px;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
     color: #fff;
     font-size: 1rem;
     text-align: center;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
     z-index: 10;
+    overflow: hidden;
   }
   
+  .close-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #c9a845;
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: -1;
+  }
+
   .close-button:hover {
-    background-color: #333;
+    border-color: #c9a845;
+    color: #000;
+  }
+
+  .close-button:hover::before {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
+
+  .close-button:active {
+    transform: scale(0.95);
   }
 
   @media (max-width: 900px) {
@@ -809,6 +855,27 @@ function getDayOfWeekDisplay(dateString) {
     
     .modal-link-button {
       padding: 0.5rem 1rem;
+    }
+
+    .modal-close-container {
+      top: 0.5rem;
+      right: 0.5rem;
+    }
+
+    .close {
+      width: 32px;
+      height: 32px;
+    }
+
+    .close::before,
+    .close::after {
+      width: 16px;
+    }
+
+    .close-button {
+      width: 120px;
+      padding: 0.6rem 1.2rem;
+      font-size: 0.9rem;
     }
   }
 
