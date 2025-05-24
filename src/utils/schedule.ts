@@ -98,13 +98,15 @@ export const updateCellCoverage = (
   dayKey: string,
   timeIndex: number,
   rowspan: number,
-  timeSlots: string[]
+  timeSlots: readonly string[]
 ): void => {
   for (let i = 1; i < rowspan; i++) {
     const futureSlotIndex = timeIndex + i;
     if (futureSlotIndex < timeSlots.length) {
       const futureTimeSlot = timeSlots[futureSlotIndex];
-      cellCoverage[dayKey][futureTimeSlot] = true;
+      if (futureTimeSlot) {
+        cellCoverage[dayKey][futureTimeSlot] = true;
+      }
     }
   }
 };

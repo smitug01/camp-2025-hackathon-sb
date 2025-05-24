@@ -1,6 +1,5 @@
 ---
 import { getLocale } from "../../i18n";
-import { Icon } from "astro-icon/components";
 import scheduleData from "../../assets/data/schedule.json";
 import {
   generateCourseId,
@@ -11,44 +10,29 @@ import {
   updateCellCoverage,
   getCourseCellClasses
 } from "../../utils/schedule";
-import type { Course, DayMap, CellCoverage, CoursesByDay, DayHeader } from '../../types/schedule';
+import { TIME_SLOTS, DAY_DEFINITIONS } from "../../constants/schedule";
+import type {CellCoverage, CoursesByDay, DayHeader } from '../../types/schedule';
 import CourseModal from './CourseModal.astro';
 
 const t = getLocale(Astro.url);
 
-const dayMap: DayMap = {
-  "Day1": "1",
-  "Day2": "2",
-  "Day3": "3",
-  "Day4": "4",
-  "Day5": "5",
-};
-const dayKeys = Object.keys(dayMap);
+
+const dynamicDayHeaders: DayHeader[] = DAY_DEFINITIONS.map(day => ({
+  dayNum: day.displayNum,
+  dateText: day.dateText,
+}));
+
+const timeSlots = TIME_SLOTS;
 
 const coursesByDay: CoursesByDay = {};
-dayKeys.forEach(dayKey => {
-  coursesByDay[dayKey] = scheduleData.filter(course => course.room === dayKey);
+DAY_DEFINITIONS.forEach(dayDef => {
+  coursesByDay[dayDef.id] = scheduleData.filter(course => course.room === dayDef.id);
 });
 
 const cellCoverage: CellCoverage = {};
-dayKeys.forEach(dayKey => {
-  cellCoverage[dayKey] = {};
+DAY_DEFINITIONS.forEach(dayDef => { 
+  cellCoverage[dayDef.id] = {}; 
 });
-
-const dynamicDayHeaders: DayHeader[] = [
-  { dayNum: "1", dateText: "7/9 三" },
-  { dayNum: "2", dateText: "7/10 四" },
-  { dayNum: "3", dateText: "7/11 五" },
-  { dayNum: "4", dateText: "7/12 六" },
-  { dayNum: "5", dateText: "7/13 日" },
-];
-
-const timeSlots = [
-  "08:00", "08:30", "09:00", "09:30", "10:00", "10:30", "11:00", "11:30",
-  "12:00", "12:30", "13:00", "13:30", "14:00", "14:30", "15:00", "15:30",
-  "16:00", "16:30", "17:00", "17:30", "18:00", "18:30", "19:00", "19:30",
-  "20:00", "20:30", "21:00",
-];
 ---
 
 <section class="container" id="schedule">
@@ -72,10 +56,9 @@ const timeSlots = [
           {timeSlots.map((timeSlot, timeIndex) => (
             <tr>
               <td class="time-cell">{timeSlot}</td>
-              {Object.keys(dayMap).map(dayKey => {
-                if (cellCoverage[dayKey][timeSlot]) {
-                  return null;
-                }
+              {DAY_DEFINITIONS.map(dayDef => {
+                const dayKey = dayDef.id;
+                if (cellCoverage[dayKey]?.[timeSlot]) return null;
 
                 const course = getCourseStartingAt(coursesByDay[dayKey], timeSlot);
                 if (course) {
@@ -137,7 +120,7 @@ const timeSlots = [
   }
 
   .schedule-table {
-    overflow-x: auto; /* Allows horizontal scrolling for smaller screens */
+    overflow-x: auto;
     margin: 2rem 0;
     padding: 1rem;
   }
@@ -198,10 +181,10 @@ const timeSlots = [
     background-color: #f0f0f0;
     position: sticky;
     left: 0;
-    z-index: 5; /* Ensure time cells are above course cells if they overlap during scroll */
+    z-index: 5; 
     color: #201814;
     vertical-align: middle;
-    font-size: 0.9rem !important; /* Force smaller font size */
+    font-size: 0.9rem !important;
     white-space: nowrap;
     padding: 0.5rem 0.25rem;
   }
@@ -235,7 +218,7 @@ const timeSlots = [
 
   .course-title {
     font-weight: 600;
-    font-size: max(1vw, 0.9rem); /* Responsive font size */
+    font-size: max(1vw, 0.9rem); 
     margin-bottom: 0.3rem;
     color: #222;
     font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
@@ -251,7 +234,7 @@ const timeSlots = [
   }
 
   .course-subtitle {
-    font-size: max(0.85vw, 0.75rem); /* Responsive font size */
+    font-size: max(0.85vw, 0.75rem); 
     color: #333;
     margin-bottom: 0.3rem;
     font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
