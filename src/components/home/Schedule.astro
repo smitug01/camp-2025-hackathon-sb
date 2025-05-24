@@ -922,10 +922,92 @@ function getDayOfWeekDisplay(dateString) {
     };
 
     const openModal = async (courseId) => {
-      const course = await getCourseById(courseId);
-      if (!course || !modalElement) return;
+      console.log("Opening modal for course ID:", courseId);
+      
+      // Special handling for custom IDs
+      if (courseId.startsWith('course_')) {
+        // Get all courses
+        const res = await fetch(new URL('../../assets/data/schedule.json', import.meta.url).href);
+        if (!res.ok) {
+          console.error(`HTTP error when fetching courses! status: ${res.status}`);
+          return;
+        }
+        const allCourses = await res.json();
+        
+        // For custom IDs, try to find by title
+        const parts = courseId.split('_');
+        const timeSlot = parts[parts.length - 2] + ':' + parts[parts.length - 1];
+        
+        // Extract the title part from the custom ID (all parts except the time parts)
+        const titlePart = parts.slice(1, parts.length - 2).join('_').replace(/_/g, ' ');
+        
+        // Find course by partial title match
+        let course = null;
+        for (const c of allCourses) {
+          if (c.title_zh && c.title_zh.includes(titlePart)) {
+            course = c;
+            break;
+          }
+        }
+        
+        // If no match by title, try finding by room and time as fallback
+        if (!course) {
+          const room = courseId.includes('Day2') ? 'Day2' : 
+                       courseId.includes('Day3') ? 'Day3' : null;
+                       
+          if (room) {
+            console.log(`Trying to find course by room ${room} and time ${timeSlot}`);
+            for (const c of allCourses) {
+              if (c.room === room) {
+                // Try to match the start time approximately
+                const startTime = c.start ? new Date(c.start) : null;
+                if (startTime) {
+                  const startHour = startTime.getHours();
+                  const slotHour = parseInt(timeSlot.split(':')[0], 10);
+                  if (startHour === slotHour) {
+                    course = c;
+                    break;
+                  }
+                }
+              }
+            }
+          }
+        }
+        
+        // Special case for HTML + Next.js course
+        if (!course && titlePart.includes('HTML')) {
+          for (const c of allCourses) {
+            if (c.title_zh && c.title_zh.includes('HTML') && c.title_zh.includes('Next.js')) {
+              course = c;
+              break;
+            }
+          }
+        }
+        
+        if (!course) {
+          console.error(`Could not find course for custom ID: ${courseId}`);
+          return;
+        }
+        
+        displayModalContent(course);
+      } else {
+        const course = await getCourseById(courseId);
+        if (!course || !modalElement) return;
+        
+        displayModalContent(course);
+      }
+      
+      // Display modal with flex layout
+      modalElement.style.display = 'flex';
+      modalElement.style.alignItems = 'center';
+      modalElement.style.justifyContent = 'center';
+      document.body.style.overflow = 'hidden';
+    };
 
-      // Always show the modal if there's a course
+    // Function to display modal content
+    function displayModalContent(course) {
+      if (!modalElement) return;
+      
       const modalTitleEl = modalElement.querySelector('#modalTitle');
       const modalSubtitleEl = modalElement.querySelector('#modalSubtitle');
       const modalSpeakerEl = modalElement.querySelector('#modalSpeaker');
@@ -1002,13 +1084,7 @@ function getDayOfWeekDisplay(dateString) {
           linksContainerEl.appendChild(recordBtn);
         }
       }
-
-      // Display modal with flex layout
-      modalElement.style.display = 'flex';
-      modalElement.style.alignItems = 'center';
-      modalElement.style.justifyContent = 'center';
-      document.body.style.overflow = 'hidden';
-    };
+    }
 
     // Close modal function
     const closeModal = () => {
