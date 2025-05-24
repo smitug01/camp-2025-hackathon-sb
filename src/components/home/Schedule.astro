@@ -865,42 +865,31 @@ function calculateDurationInSlots(course) {
 
     // Function to fetch course data by ID
     const getCourseById = async (id) => {
-      try {
-        // Handle both numeric IDs and our custom generated IDs
-        if (id.startsWith("course_")) {
-          // For custom IDs, extract the course title and time
-          const parts = id.split("_");
-          const timeSlot = parts[parts.length - 2] + ":" + parts[parts.length - 1];
-          // Join all parts except the last two (which are the time) to get the title
-          const title = parts.slice(1, parts.length - 2).join("_").replace(/_/g, " ");
+      // Handle both numeric IDs and our custom generated IDs
+      // For custom IDs, extract the course title and time
+      const parts = id.split("_");
+      const timeSlot = parts[parts.length - 2] + ":" + parts[parts.length - 1];
+      // Join all parts except the last two (which are the time) to get the title
+      const title = parts.slice(1, parts.length - 2).join("_").replace(/_/g, " ");
 
-          // Find the course with matching title and time
-          return data.find(course => {
-            if (!course.start) return false;
+      // Find the course with matching title and time
+      return data.find(course => {
+        if (!course.start) return false;
 
-            const courseTitle = course.title_zh?.split("\n")[0] || "";
-            if (courseTitle.includes(title)) {
-              // Check if time approximately matches
-              const startTime = new Date(course.start);
-              const taipeiTime = new Date(startTime.toLocaleString("en-US", { timeZone: "Asia/Taipei" }));
-              const courseHour = taipeiTime.getHours();
+        const courseTitle = course.title_zh?.split("\n")[0] || "";
+        if (courseTitle.includes(title)) {
+          // Check if time approximately matches
+          const startTime = new Date(course.start);
+          const taipeiTime = new Date(startTime.toLocaleString("en-US", { timeZone: "Asia/Taipei" }));
+          const courseHour = taipeiTime.getHours();
 
-              // Convert timeSlot to hours and minutes
-              const [slotHour] = timeSlot.split(":").map(Number);
+          // Convert timeSlot to hours and minutes
+          const [slotHour] = timeSlot.split(":").map(Number);
 
-              return Math.abs(courseHour - slotHour) <= 1; // Allow 1 hour difference to handle edge cases
-            }
-            return false;
-          });
-        } else {
-          // For regular IDs, convert to string for comparison
-          const searchId = String(id);
-          return data.find(course => String(course.id) === searchId);
+          return Math.abs(courseHour - slotHour) <= 1; // Allow 1 hour difference to handle edge cases
         }
-      } catch (error) {
-        console.error("Error fetching course data:", error);
-        return null;
-      }
+        return false;
+      });
     };
 
     const formatDateTime = (start, end) => {
@@ -945,40 +934,6 @@ function calculateDurationInSlots(course) {
           if (c.title_zh && c.title_zh.includes(titlePart)) {
             course = c;
             break;
-          }
-        }
-
-        // If no match by title, try finding by room and time as fallback
-        if (!course) {
-          const room = courseId.includes("Day2") ? "Day2" :
-            courseId.includes("Day3") ? "Day3" : null;
-
-          if (room) {
-            console.log(`Trying to find course by room ${room} and time ${timeSlot}`);
-            for (const c of allCourses) {
-              if (c.room === room) {
-                // Try to match the start time approximately
-                const startTime = c.start ? new Date(c.start) : null;
-                if (startTime) {
-                  const startHour = startTime.getHours();
-                  const slotHour = parseInt(timeSlot.split(":")[0], 10);
-                  if (startHour === slotHour) {
-                    course = c;
-                    break;
-                  }
-                }
-              }
-            }
-          }
-        }
-
-        // Special case for HTML + Next.js course
-        if (!course && titlePart.includes("HTML")) {
-          for (const c of allCourses) {
-            if (c.title_zh && c.title_zh.includes("HTML") && c.title_zh.includes("Next.js")) {
-              course = c;
-              break;
-            }
           }
         }
 
@@ -1143,10 +1098,6 @@ function calculateDurationInSlots(course) {
         row.style.height = ""; // Reset height
       });
 
-      // Force a reflow to ensure heights are recalculated accurately after reset
-      if ((tableBody as HTMLElement).offsetParent !== null) { /* Reading offsetParent to help trigger reflow */
-      }
-
       allRows.forEach(row => {
         const rowHeight = row.offsetHeight;
         if (rowHeight > maxHeight) {
@@ -1162,15 +1113,7 @@ function calculateDurationInSlots(course) {
       }
     };
 
-    // Adjust heights on page load
     adjustRowHeights();
-
-    // Optional: Re-adjust on window resize if your layout is responsive
-    // let resizeTimeout;
-    // window.addEventListener('resize', () => {
-    //   clearTimeout(resizeTimeout);
-    //   resizeTimeout = setTimeout(adjustRowHeights, 100);
-    // });
   });
 </script>
 
