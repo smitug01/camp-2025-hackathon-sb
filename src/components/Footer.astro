@@ -26,20 +26,32 @@ const t = getLocale(Astro.url);
         Conference
       </h3>
       <div class="contact">
-        <h3 class="emfont-NotoSansTC-700">{t.components.footer.contact.title}</h3>
+        <h3 class="emfont-NotoSansTC-700">
+          {t.components.footer.contact.title}
+        </h3>
         <p>
           {t.components.footer.contact.cooperation}
-          <a href="mailto:contact@sitcon.org" aria-label="Contact SITCON for cooperation">contact@sitcon.org</a>
+          <a
+            href="mailto:contact@sitcon.org"
+            aria-label="Contact SITCON for cooperation"
+            >contact@sitcon.org</a
+          >
         </p>
         <p>
           {t.components.footer.contact.signup}
-          <a href="mailto:ask@sitcon.camp" aria-label="Contact SITCON Camp for signup">ask@sitcon.camp</a>
+          <a
+            href="mailto:ask@sitcon.camp"
+            aria-label="Contact SITCON Camp for signup"
+            >ask@sitcon.camp</a
+          >
         </p>
       </div>
     </div>
     <div class="footer-right">
       <div class="social-media">
-        <h3 class="emfont-NotoSansTC-700">{t.components.footer.contact.social}</h3>
+        <h3 class="emfont-NotoSansTC-700">
+          {t.components.footer.contact.social}
+        </h3>
         <div class="social-icons">
           <a
             href="https://www.facebook.com/SITCONtw/"
@@ -100,7 +112,9 @@ const t = getLocale(Astro.url);
         </div>
       </div>
       <div class="previous-websites">
-        <h3 class="emfont-NotoSansTC-700">{t.components.footer.contact.previous}</h3>
+        <h3 class="emfont-NotoSansTC-700">
+          {t.components.footer.contact.previous}
+        </h3>
         <div class="year-links">
           <a
             href="https://sitcon.camp/2024"
@@ -163,6 +177,7 @@ const t = getLocale(Astro.url);
     position: relative;
     padding: 5rem 0 2rem;
   }
+
   /* Background using clip-path instead of SVG */
   .footer-bg {
     position: absolute;
@@ -281,6 +296,7 @@ const t = getLocale(Astro.url);
     .year-link {
       font-size: 1.1rem;
     }
+
     .contact {
       margin-bottom: 2rem;
     }

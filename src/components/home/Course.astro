@@ -135,6 +135,7 @@ const t = getLocale(Astro.url);
   .container {
     margin-bottom: 8rem;
   }
+
   .course-container {
     display: flex;
     align-items: center;
@@ -145,9 +146,11 @@ const t = getLocale(Astro.url);
     margin-bottom: 1rem;
     z-index: 3;
   }
+
   .course-container > * {
     z-index: 3;
   }
+
   .course-container::before,
   .course-container::after {
     display: block;
@@ -160,6 +163,7 @@ const t = getLocale(Astro.url);
     height: calc(100% + var(--extra-height) * 1rem);
     /* --box-width: calc(min(100vw, 1200px) - 4rem); */
   }
+
   .course-container::before {
     top: 50%;
     left: 50%;
@@ -169,6 +173,7 @@ const t = getLocale(Astro.url);
   .course-container::after {
     left: 0;
   }
+
   .course-container:first-child {
     background-color: #6c6c6c;
     color: white;
@@ -215,6 +220,7 @@ const t = getLocale(Astro.url);
     bottom: -2;
     --extra-height: 7;
   }
+
   .course-container:nth-child(4) {
     z-index: 4;
   }
@@ -244,15 +250,18 @@ const t = getLocale(Astro.url);
   .course-container:nth-child(5) {
     color: #fff;
   }
+
   .course-container:nth-child(5)::after {
     background-color: #525252;
     bottom: -5rem;
     height: 200%;
     z-index: 1;
   }
+
   .course-container:nth-child(6) {
     color: #fff;
   }
+
   .course-container:nth-child(6) > * {
     z-index: 4;
   }
@@ -311,8 +320,8 @@ const t = getLocale(Astro.url);
     font-weight: 700;
   }
 
-  @media (max-width:1200px) {
-    section{
+  @media (max-width: 1200px) {
+    section {
       overflow: hidden;
     }
   }
@@ -321,7 +330,7 @@ const t = getLocale(Astro.url);
     .course-container {
       flex-direction: column;
       align-items: center;
-      padding:2rem 1.5rem;
+      padding: 2rem 1.5rem;
     }
 
     .course-container:nth-child(even) {
@@ -332,6 +341,7 @@ const t = getLocale(Astro.url);
       background-color: #dfff60;
       margin-bottom: 0;
     }
+
     .course-container:nth-child(3) {
       background-color: #fff;
     }
@@ -339,10 +349,12 @@ const t = getLocale(Astro.url);
     .course-container:nth-child(6) {
       background-color: #2659ce;
     }
+
     .course-container:nth-child(6)::before,
     .course-container:nth-child(6)::after {
       width: 100%;
     }
+
     .course-container:nth-child(6)::before {
       top: 53%;
     }

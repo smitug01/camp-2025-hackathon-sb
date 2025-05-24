@@ -70,15 +70,23 @@ const t = getLocale(Astro.url);
   <div class="host-container">
     <div class="host-item">
       <div class="host-logo">
-        <Image src={googleForDevelopersLogo} alt="Google for Developers logo" loading="lazy" />
+        <Image
+          src={googleForDevelopersLogo}
+          alt="Google for Developers logo"
+          loading="lazy"
+        />
       </div>
-      <div class="host-name">{t.components.home.host.hosts.google_for_developers}</div>
+      <div class="host-name">
+        {t.components.home.host.hosts.google_for_developers}
+      </div>
     </div>
   </div>
   <h3>{t.components.home.host.personal_sponsor}</h3>
   <div class="host-container">
     <div class="host-item">
-      <div class="host-name">{t.components.home.host.hosts.personal_sponsor_1}</div>
+      <div class="host-name">
+        {t.components.home.host.hosts.personal_sponsor_1}
+      </div>
     </div>
   </div>
 </section>

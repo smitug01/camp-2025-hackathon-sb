@@ -64,7 +64,8 @@ const t = getLocale(Astro.url);
       <p>
         {t.components.about.pastEvents.sitconGroup.text}
       </p>
-    </div><Image
+    </div>
+    <Image
       src={SITCONGroupImage}
       alt="SITCON 定期聚活動照片 / SITCON Meetup pictures"
       loading="lazy"
@@ -82,7 +83,7 @@ const t = getLocale(Astro.url);
       text-align: center;
     }
 
-    h3{
+    h3 {
       font-size: 2rem;
       margin-bottom: 1rem;
     }
@@ -98,8 +99,8 @@ const t = getLocale(Astro.url);
       display: flex;
       align-items: center;
       position: relative;
-      gap:2rem;
-      background-color: #FFF;
+      gap: 2rem;
+      background-color: #fff;
       color: #000;
       max-width: 980px;
       width: 100%;
@@ -111,7 +112,7 @@ const t = getLocale(Astro.url);
       position: absolute;
       content: "";
       width: calc(100% + 5rem);
-      height:  calc(100% + 3rem);
+      height: calc(100% + 3rem);
       background-color: #fff200;
       top: 50%;
       left: 50%;
@@ -125,7 +126,7 @@ const t = getLocale(Astro.url);
       );
     }
 
-    img{
+    img {
       width: 300px;
       height: auto;
     }
@@ -140,11 +141,12 @@ const t = getLocale(Astro.url);
         max-width: 500px;
         padding: 1.5rem;
       }
+
       .event::before {
         width: calc(100% + 4rem);
         height: calc(100% + 2rem);
       }
-      
+
       img {
         width: 250px;
       }

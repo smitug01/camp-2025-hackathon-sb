@@ -27,12 +27,24 @@ const currentLocation = Astro.url.pathname;
     </div>
 
     <ul class="nav-links emfont-MaokenAssortedSansTC">
-      <li><a href={currentLocation == "/2025/" ? "#info" : l("#info")}>{t.components.nav.signup}</a></li>
       <li>
-        <a href={currentLocation == "/2025/" ? "#schedule" : l("#schedule")}>{t.components.nav.record}</a>
+        <a href={currentLocation == "/2025/" ? "#info" : l("#info")}
+          >{t.components.nav.signup}</a
+        >
       </li>
       <li>
-        <a href={currentLocation == "/2025/" ? "#pastEvent" : l("#pastEvent")}>{t.components.nav.previous}</a>
+        <a
+          href={currentLocation == "/2025/"
+            ? "#schedule"
+            : l("#schedule")}>{t.components.nav.record}</a
+        >
+      </li>
+      <li>
+        <a
+          href={currentLocation == "/2025/"
+            ? "#pastEvent"
+            : l("#pastEvent")}>{t.components.nav.previous}</a
+        >
       </li>
       <li><a href={l("/coc")}>{t.components.nav.coc}</a></li>
       <li><a href={l("/about")}>{t.components.nav.team}</a></li>
@@ -44,7 +56,7 @@ const currentLocation = Astro.url.pathname;
       </li>
       <li>
         <a href={l("/", true)}
-        >{extractLocale(Astro.url) === "en" ? "中文" : "EN"}</a
+          >{extractLocale(Astro.url) === "en" ? "中文" : "EN"}</a
         >
       </li>
     </ul>
@@ -178,8 +190,9 @@ const currentLocation = Astro.url.pathname;
     .nav-links li {
       opacity: 0;
       transform: translateY(15px);
-      transition: opacity 0.3s ease,
-      transform 0.3s ease;
+      transition:
+        opacity 0.3s ease,
+        transform 0.3s ease;
       transition-delay: calc(0.1s * var(--i, 0));
     }
 

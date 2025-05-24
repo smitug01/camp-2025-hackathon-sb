@@ -2,8 +2,14 @@
 import { Image } from "astro:assets";
 import { getLocale } from "../../i18n";
 const t = getLocale(Astro.url);
-const images = Object.values(import.meta.glob("../../assets/img/about/events/*", { eager: true })).map(i => i.default);
-const marquee = Object.values(import.meta.glob("../../assets/img/marquee/*", { eager: true })).map(i => i.default);
+const images = Object.values(
+  import.meta.glob("../../assets/img/about/events/*", {
+    eager: true,
+  }),
+).map((i) => i.default);
+const marquee = Object.values(
+  import.meta.glob("../../assets/img/marquee/*", { eager: true }),
+).map((i) => i.default);
 const allImages = [...images, ...marquee];
 ---
 
@@ -33,7 +39,12 @@ const allImages = [...images, ...marquee];
     <div class="marquee-image">
       {
         allImages.map((image) => (
-          <Image src={image} height={150} alt="活動照片" loading="lazy" />
+          <Image
+            src={image}
+            height={150}
+            alt="活動照片"
+            loading="lazy"
+          />
         ))
       }
     </div>
@@ -103,18 +114,19 @@ const allImages = [...images, ...marquee];
     --offset: 0.9rem;
     --dash-height: 0.6rem;
     --black: #0a1922;
-    background: linear-gradient(
-      to bottom,
-      var(--black) var(--offset),
-      transparent var(--offset),
-      transparent calc(var(--offset) + var(--dash-height)),
-      var(--black) calc(var(--offset) + var(--dash-height)),
-      var(--black) calc(100% - var(--offset) - var(--dash-height)),
-      transparent calc(100% - var(--offset) - var(--dash-height)),
-      transparent calc(100% - var(--offset)),
-      var(--black) calc(100% - var(--offset))
-    ),
-    linear-gradient(to right, #fff 1.9rem, var(--black) 1.9rem);
+    background:
+      linear-gradient(
+        to bottom,
+        var(--black) var(--offset),
+        transparent var(--offset),
+        transparent calc(var(--offset) + var(--dash-height)),
+        var(--black) calc(var(--offset) + var(--dash-height)),
+        var(--black) calc(100% - var(--offset) - var(--dash-height)),
+        transparent calc(100% - var(--offset) - var(--dash-height)),
+        transparent calc(100% - var(--offset)),
+        var(--black) calc(100% - var(--offset))
+      ),
+      linear-gradient(to right, #fff 1.9rem, var(--black) 1.9rem);
     background-size: 4.5rem 100%;
   }
 
@@ -151,18 +163,20 @@ const allImages = [...images, ...marquee];
     try {
       // Calculate repeat count with a maximum limit
       const repeatCount = Math.min(
-        Math.ceil(Math.max(window.innerWidth / marqueeImage.offsetWidth, 2)),
-        10 // Maximum repeat count to prevent infinite loop
+        Math.ceil(
+          Math.max(window.innerWidth / marqueeImage.offsetWidth, 2),
+        ),
+        10, // Maximum repeat count to prevent infinite loop
       );
       const content = marqueeContent.repeat(repeatCount);
       marquee.innerHTML = content;
       marquee2.innerHTML = content;
     } catch (error) {
-      console.error('Error in marqueeSet:', error);
+      console.error("Error in marqueeSet:", error);
       // Fallback to minimum repeat in case of error
       const content = marqueeContent.repeat(2);
-    marquee.innerHTML = content;
-    marquee2.innerHTML = content;
+      marquee.innerHTML = content;
+      marquee2.innerHTML = content;
     }
   };
   window.onload = () => {

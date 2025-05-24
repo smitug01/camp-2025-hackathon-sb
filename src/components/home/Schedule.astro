@@ -11,18 +11,18 @@ import person from "../../assets/img/modal/image-11.png";
 // Preprocess schedule data to fix time formats
 const scheduleData = scheduleDataAll.map(course => {
   // Create a new object to avoid modifying the original data
-  const updatedCourse = {...course};
-  
+  const updatedCourse = { ...course };
+
   // Fix start time format if it doesn't have a leading zero for hour
   if (updatedCourse.start && updatedCourse.start.match(/T\d:/) && !updatedCourse.start.match(/T\d\d:/)) {
     updatedCourse.start = updatedCourse.start.replace(/T(\d):/, (match, hour) => `T0${hour}:`);
   }
-  
+
   // Fix end time format if it doesn't have a leading zero for hour
   if (updatedCourse.end && updatedCourse.end.match(/T\d:/) && !updatedCourse.end.match(/T\d\d:/)) {
     updatedCourse.end = updatedCourse.end.replace(/T(\d):/, (match, hour) => `T0${hour}:`);
   }
-  
+
   return updatedCourse;
 });
 
@@ -34,7 +34,7 @@ const dayMap = {
   "Day2": "2",
   "Day3": "3",
   "Day4": "4",
-  "Day5": "5"
+  "Day5": "5",
 };
 
 const dayKeys = Object.keys(dayMap);
@@ -56,7 +56,7 @@ function splitCourseIfCrossLunch(course) {
     // 拆成午餐前、午餐後
     return [
       { ...course, end: lunchStart.toISOString() },
-      { ...course, start: lunchEnd.toISOString() }
+      { ...course, start: lunchEnd.toISOString() },
     ];
   }
   return [course];
@@ -71,30 +71,30 @@ dayKeys.forEach(dayKey => {
   // Convert course dates to local timezone for comparison
   coursesByDay[dayKey] = scheduleData.filter(course => {
     if (course.room !== dayKey) return false;
-    
+
     // Fix any incorrect date formatting in the data
     if (course.start && course.end) {
       // Ensure dates are properly parsed
       try {
         const startDate = new Date(course.start);
         const endDate = new Date(course.end);
-        
+
         // Fix any obvious date errors (like day mismatches)
-        if (dayKey === "Day3" && 
-            (endDate.getDate() !== startDate.getDate() || 
-             endDate.getMonth() !== startDate.getMonth())) {
+        if (dayKey === "Day3" &&
+          (endDate.getDate() !== startDate.getDate() ||
+            endDate.getMonth() !== startDate.getMonth())) {
           // Fix the specific date error in Day3 data
           console.log(`Fixing date mismatch in course: ${course.title_zh}`);
-          
+
           // Get the correct date from the start date
           const correctDate = startDate.getDate();
           const correctMonth = startDate.getMonth();
-          
+
           // Create a new end date with corrected day but same time
           const fixedEnd = new Date(endDate);
           fixedEnd.setDate(correctDate);
           fixedEnd.setMonth(correctMonth);
-          
+
           // Update the course end date
           course.end = fixedEnd.toISOString();
         }
@@ -120,74 +120,74 @@ const dynamicDayHeaders = [
   { dayNum: "2", dateText: "7/10 四" },
   { dayNum: "3", dateText: "7/11 五" },
   { dayNum: "4", dateText: "7/12 六" },
-  { dayNum: "5", dateText: "7/13 日" }
+  { dayNum: "5", dateText: "7/13 日" },
 ];
 
 // Time slots for rows (更新時間槽，包含所有可能的時間)
 const timeSlots = [
-  "08:00", "08:30", "09:00", "09:30", "10:00", "10:30", "11:00", "11:30", 
+  "08:00", "08:30", "09:00", "09:30", "10:00", "10:30", "11:00", "11:30",
   "12:00", "12:30", "13:00", "13:30", "14:00", "14:30", "15:00", "15:30",
   "16:00", "16:30", "17:00", "17:30", "18:00", "18:30", "19:00", "19:30",
-  "20:00", "20:30", "21:00", "21:30"
+  "20:00", "20:30", "21:00", "21:30",
 ];
 
 // Helper function to normalize a time string to HH:MM format
 function normalizeTimeString(timeString) {
-  const [hour, minute] = timeString.split(':').map(Number);
-  return `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
+  const [hour, minute] = timeString.split(":").map(Number);
+  return `${hour.toString().padStart(2, "0")}:${minute.toString().padStart(2, "0")}`;
 }
 
 // Helper function to get a course starting at a given time slot for a specific day
 function getCourseStartingAt(dayKey, timeSlot) {
   const coursesForDay = coursesByDay[dayKey] || [];
   const normalizedTimeSlot = normalizeTimeString(timeSlot);
-  
+
   // First, try an exact match
   const exactMatch = coursesForDay.find(course => {
     if (!course.start) return false;
-    
+
     try {
       // Parse the course start time
       const startTime = new Date(course.start);
-      
+
       // Convert to Taipei time explicitly
-      const options = { timeZone: 'Asia/Taipei' };
-      const taipeiDateTime = startTime.toLocaleString('en-US', options);
+      const options = { timeZone: "Asia/Taipei" };
+      const taipeiDateTime = startTime.toLocaleString("en-US", options);
       const taipeiTime = new Date(taipeiDateTime);
-      
+
       // Format hour and minute with leading zeros
-      const courseHour = taipeiTime.getHours().toString().padStart(2, '0');
-      const courseMinute = taipeiTime.getMinutes().toString().padStart(2, '0');
+      const courseHour = taipeiTime.getHours().toString().padStart(2, "0");
+      const courseMinute = taipeiTime.getMinutes().toString().padStart(2, "0");
       const courseTimeString = `${courseHour}:${courseMinute}`;
-      
+
       // Debug log
       console.log(`Course: ${course.title_zh}, Comparing: ${courseTimeString} with ${normalizedTimeSlot}`);
-      
+
       return courseTimeString === normalizedTimeSlot;
     } catch (e) {
       console.error(`Error in exact match for course: ${course.title_zh}`, e);
       return false;
     }
   });
-  
+
   if (exactMatch) return exactMatch;
-  
+
   // If no exact match, try a more flexible approach for specific courses we know are problematic
   return coursesForDay.find(course => {
     if (!course.start) return false;
-    
+
     // Special case for "Python Function：寫出會重複用的你自己"
-    if (course.title_zh === "Python Function：寫出會重複用的你自己" && 
-        timeSlot === "08:00" && dayKey === "Day2") {
+    if (course.title_zh === "Python Function：寫出會重複用的你自己" &&
+      timeSlot === "08:00" && dayKey === "Day2") {
       return true;
     }
-    
+
     // Special case for HTML+Next.js course
     if (course.title_zh?.includes("HTML") && course.title_zh?.includes("Next.js") &&
-        timeSlot === "08:00" && dayKey === "Day3") {
+      timeSlot === "08:00" && dayKey === "Day3") {
       return true;
     }
-    
+
     return false;
   });
 }
@@ -195,17 +195,17 @@ function getCourseStartingAt(dayKey, timeSlot) {
 // Calculate duration in slots
 function calculateDurationInSlots(course) {
   if (!course.start || !course.end) return 1;
-  
+
   // Convert start and end times to Taipei timezone
   const start = new Date(course.start);
   const end = new Date(course.end);
-  
-  const taipeiStart = new Date(start.toLocaleString('en-US', { timeZone: 'Asia/Taipei' }));
-  const taipeiEnd = new Date(end.toLocaleString('en-US', { timeZone: 'Asia/Taipei' }));
-  
+
+  const taipeiStart = new Date(start.toLocaleString("en-US", { timeZone: "Asia/Taipei" }));
+  const taipeiEnd = new Date(end.toLocaleString("en-US", { timeZone: "Asia/Taipei" }));
+
   // Calculate duration in minutes - using getTime() to ensure we get number values
   const durationMinutes = (taipeiEnd.getTime() - taipeiStart.getTime()) / (1000 * 60);
-  
+
   // Convert to number of 30-minute slots and ensure at least 1 slot
   return Math.max(1, Math.ceil(durationMinutes / 30));
 }
@@ -215,16 +215,16 @@ function formatDateDisplay(dateString) {
   if (!dateString) return "";
   try {
     // Create date in Taipei timezone
-  const date = new Date(dateString);
-    const taipeiDate = new Date(date.toLocaleString('en-US', { timeZone: 'Asia/Taipei' }));
-    
+    const date = new Date(dateString);
+    const taipeiDate = new Date(date.toLocaleString("en-US", { timeZone: "Asia/Taipei" }));
+
     if (isNaN(taipeiDate.getTime())) return "";
-    
+
     const month = taipeiDate.getMonth() + 1;
     const day = taipeiDate.getDate();
-  return `${month}/${day}`;
+    return `${month}/${day}`;
   } catch (e) {
-    console.error('Error formatting date:', e);
+    console.error("Error formatting date:", e);
     return "";
   }
 }
@@ -234,19 +234,18 @@ function getDayOfWeekDisplay(dateString) {
   if (!dateString) return "";
   try {
     // Create date in Taipei timezone
-  const date = new Date(dateString);
-    const taipeiDate = new Date(date.toLocaleString('en-US', { timeZone: 'Asia/Taipei' }));
-    
+    const date = new Date(dateString);
+    const taipeiDate = new Date(date.toLocaleString("en-US", { timeZone: "Asia/Taipei" }));
+
     if (isNaN(taipeiDate.getTime())) return "";
-    
-  const days = ["日", "一", "二", "三", "四", "五", "六"];
+
+    const days = ["日", "一", "二", "三", "四", "五", "六"];
     return days[taipeiDate.getDay()];
   } catch (e) {
-    console.error('Error getting day of week:', e);
+    console.error("Error getting day of week:", e);
     return "";
   }
 }
-
 ---
 <section class="container" id="schedule">
   <h2 class="emfont-UnboundedSans">{t.components.home.schedulePreview.title}</h2>
@@ -255,82 +254,92 @@ function getDayOfWeekDisplay(dateString) {
     <div class="table-container">
       <table>
         <thead>
-          <tr>
-            <th></th> {/* Empty for time column */}
-            {dynamicDayHeaders.map(header => (
-              <th>
-                <div class="day-header">Day {header.dayNum}</div>
-                <div class="date-header">{header.dateText}</div>
-              </th>
-            ))}
-          </tr>
+        <tr>
+          <th></th>
+          {dynamicDayHeaders.map(header => (
+            <th>
+              <div class="day-header">Day {header.dayNum}</div>
+              <div class="date-header">{header.dateText}</div>
+            </th>
+          ))}
+        </tr>
         </thead>
         <tbody>
-          {timeSlots.map((timeSlot, timeIndex) => {
-            return (
-              <tr>
-                <td class="time-cell">{timeSlot}</td>
-                {Object.keys(dayMap).map(dayKey => {
-                  // Skip if this cell is covered by a previous rowspan
-                  const coverageKey = `${dayKey}_${timeSlot}`;
-                  if (cellCoverage[dayKey][timeSlot]) {
-                    return null;
-                  }
+        {timeSlots.map((timeSlot, timeIndex) => {
+          return (
+            <tr>
+              <td class="time-cell">{timeSlot}</td>
+              {Object.keys(dayMap).map(dayKey => {
+                // Skip if this cell is covered by a previous rowspan
 
-                  const course = getCourseStartingAt(dayKey, timeSlot);
-                  if (course) {
-                    const rowspan = calculateDurationInSlots(course);
-                    // Mark future slots as covered
-                    if (rowspan > 1) {
-                      for (let i = 1; i < rowspan; i++) {
-                        const futureSlotIndex = timeIndex + i;
-                        if (futureSlotIndex < timeSlots.length) {
-                          const futureTimeSlot = timeSlots[futureSlotIndex];
-                          cellCoverage[dayKey][futureTimeSlot] = true;
-                        }
+                const coverageKey = `${dayKey}_${timeSlot}`;
+                if (cellCoverage[dayKey][timeSlot]) {
+                  return null;
+                }
+
+                const course = getCourseStartingAt(dayKey, timeSlot);
+                if (course) {
+                  const rowspan = calculateDurationInSlots(course);
+                  // Mark future slots as covered
+
+                  if (rowspan > 1) {
+                    for (let i = 1; i < rowspan; i++) {
+                      const futureSlotIndex = timeIndex + i;
+                      if (futureSlotIndex < timeSlots.length) {
+                        const futureTimeSlot = timeSlots[futureSlotIndex];
+                        cellCoverage[dayKey][futureTimeSlot] = true;
                       }
                     }
+                  }
 
-                    const isMeal = course.title_zh === "午餐" || course.title_zh === "晚餐";
-                    const hasDetails = course.description_zh || course.slide || course.co_write || course.record || course.speaker1;
-                    
-                    if (isMeal) {
-                      return (
-                        <td class="event-break-cell" rowspan={rowspan}>
-                          {course.title_zh}
-                        </td>
-                      );
-                    }
+                  const isMeal = course.title_zh === "午餐" || course.title_zh === "晚餐";
+                  const hasDetails = course.description_zh || course.slide || course.co_write || course.record || course.speaker1;
 
-                    // If the course ID is null, generate a stable ID based on title and time
-                    const courseId = course.id ? String(course.id) : 
-                      `course_${course.title_zh?.replace(/\s+/g, '_')}_${timeSlot.replace(':', '_')}`;
-
+                  if (isMeal) {
                     return (
-                      <td class={`course-cell type-${course.type?.toLowerCase() || 'default'}`} 
-                          data-course-id={hasDetails ? courseId : null} 
-                          rowspan={rowspan}>
-                        <div class="course-title">{course.title_zh?.split('\n')[0] || ''}</div>
-                        {course.title_zh?.split('\n')[1] && (
-                          <div class="course-subtitle">{course.title_zh.split('\n')[1]}</div>
-                        )}
-                        {hasDetails && (
-                          <div class="info-icon">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 20 20" fill="none">
-                              <path d="M9.89673 9.10425V13.3696" stroke="#201814" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                              <path d="M9.89673 5.70126L9.90604 5.69092" stroke="#201814" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                              <path d="M9.89665 18.0614C14.608 18.0614 18.4273 14.242 18.4273 9.53068C18.4273 4.81931 14.608 1 9.89665 1C5.18528 1 1.36597 4.81931 1.36597 9.53068C1.36597 14.242 5.18528 18.0614 9.89665 18.0614Z" stroke="#201814" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                            </svg>
-                          </div>
-                        )}
+                      <td class="event-break-cell" rowspan={rowspan}>
+                        {course.title_zh}
                       </td>
                     );
                   }
-                  return <td class="empty-cell"></td>;
-                })}
-              </tr>
-            );
-          })}
+
+                  // If the course ID is null, generate a stable ID based on title and time
+
+                  const courseId = course.id ? String(course.id) :
+                    `course_${course.title_zh?.replace(/\s+/g, "_")}_${timeSlot.replace(":", "_")}`;
+
+                  return (
+                    <td class={`course-cell type-${course.type?.toLowerCase() || "default"}`}
+                        data-course-id={hasDetails ? courseId : null}
+                        rowspan={rowspan}>
+                      <div class="course-title">{course.title_zh?.split("\n")[0] || ""}</div>
+                      {course.title_zh?.split("\n")[1] && (
+                        <div class="course-subtitle">{course.title_zh.split("\n")[1]}</div>
+                      )}
+                      {hasDetails && (
+                        <div class="info-icon">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 20 20"
+                               fill="none">
+                            <path d="M9.89673 9.10425V13.3696" stroke="#201814" stroke-width="2" stroke-linecap="round"
+                                  stroke-linejoin="round" />
+                            <path d="M9.89673 5.70126L9.90604 5.69092" stroke="#201814" stroke-width="2"
+                                  stroke-linecap="round" stroke-linejoin="round" />
+                            <path
+                              d="M9.89665 18.0614C14.608 18.0614 18.4273 14.242 18.4273 9.53068C18.4273 4.81931 14.608 1 9.89665 1C5.18528 1 1.36597 4.81931 1.36597 9.53068C1.36597 14.242 5.18528 18.0614 9.89665 18.0614Z"
+                              stroke="#201814" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                          </svg>
+                        </div>
+                      )}
+                    </td>
+                  );
+                }
+                return (
+                  <td class="empty-cell"></td>);
+
+              })}
+            </tr>
+          );
+        })}
         </tbody>
       </table>
     </div>
@@ -344,7 +353,7 @@ function getDayOfWeekDisplay(dateString) {
     <div class="modal-close-container">
       <span class="close">&times;</span>
     </div>
-    
+
     <img src={person.src} alt="Person" class="modal-person-image" />
     <h2 id="modalTitle"></h2>
     <h3 id="modalSubtitle"></h3>
@@ -353,7 +362,7 @@ function getDayOfWeekDisplay(dateString) {
     <div class="description-container">
       <p id="modalDescription"></p>
     </div>
-    
+
     <div class="section-title" id="speakerSectionTitle">講者介紹</div>
     <div class="description-container">
       <p id="speakerDescription"></p>
@@ -362,8 +371,8 @@ function getDayOfWeekDisplay(dateString) {
     <div id="modalLinks" class="modal-links">
       {/* Links will be populated here */}
     </div>
-    
-    <button class="close-button">close</button>
+
+    <button class="close-button">Close</button>
   </div>
 </div>
 
@@ -417,7 +426,7 @@ function getDayOfWeekDisplay(dateString) {
   tbody tr {
     box-sizing: border-box; /* Added for easier JS height manipulation */
   }
-  
+
   th:first-child, td:first-child { /* Time column */
     width: 80px;
     min-width: 80px;
@@ -477,17 +486,45 @@ function getDayOfWeekDisplay(dateString) {
   .course-cell[data-course-id]:not([data-course-id="null"]):hover {
     background-color: #d8dcdf; /* Darker hover for new base color */
     transform: translateY(-2px); /* Subtle lift effect */
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   }
 
   /* Type-specific colors, ensure these class names match lowercase 'type' from JSON */
-  .course-cell.type-main { background-color: #e9ecef; } /* Uniform light gray */
-  .course-cell.type-broad { background-color: #e9ecef; } /* Uniform light gray */
-  .course-cell.type-hackathon { background-color: #e9ecef; } /* Uniform light gray */
-  .course-cell.type-game { background-color: #e9ecef; } /* Uniform light gray */
-  .course-cell.type-community { background-color: #e9ecef; } /* Uniform light gray */
-  .course-cell.type-other { background-color: #e9ecef; } /* Uniform light gray */
-  .course-cell.type-default { background-color: #e9ecef; } /* Uniform light gray */
+  .course-cell.type-main {
+    background-color: #e9ecef;
+  }
+
+  /* Uniform light gray */
+  .course-cell.type-broad {
+    background-color: #e9ecef;
+  }
+
+  /* Uniform light gray */
+  .course-cell.type-hackathon {
+    background-color: #e9ecef;
+  }
+
+  /* Uniform light gray */
+  .course-cell.type-game {
+    background-color: #e9ecef;
+  }
+
+  /* Uniform light gray */
+  .course-cell.type-community {
+    background-color: #e9ecef;
+  }
+
+  /* Uniform light gray */
+  .course-cell.type-other {
+    background-color: #e9ecef;
+  }
+
+  /* Uniform light gray */
+  .course-cell.type-default {
+    background-color: #e9ecef;
+  }
+
+  /* Uniform light gray */
 
 
   .course-title {
@@ -523,6 +560,7 @@ function getDayOfWeekDisplay(dateString) {
     gap: 0.25rem;
     margin-top: 0.2rem;
   }
+
   .course-speaker .icon { /* If Icon component renders an svg inside a span or div */
     width: 14px;
     height: 14px;
@@ -539,7 +577,7 @@ function getDayOfWeekDisplay(dateString) {
   .empty-cell {
     background-color: #ffffff; /* Plain white for empty */
   }
-  
+
   .event-break-cell {
     background-color: #6c757d;
     color: white;
@@ -552,7 +590,7 @@ function getDayOfWeekDisplay(dateString) {
   .modal {
     display: none;
     position: fixed !important;
-    inset: 0 !important; 
+    inset: 0 !important;
     z-index: 2147483647 !important;
     width: 100vw !important;
     height: 100vh !important;
@@ -680,7 +718,7 @@ function getDayOfWeekDisplay(dateString) {
     font-size: 1rem;
     color: #d0d0d0;
   }
-  
+
   .info-item .icon {
     width: 20px;
     height: 20px;
@@ -737,12 +775,12 @@ function getDayOfWeekDisplay(dateString) {
     transform: translateY(-2px);
     border-color: #444;
   }
-  
+
   .modal-link:active {
     transform: translateY(0);
   }
-  
-  .modal-link .icon { 
+
+  .modal-link .icon {
     width: 18px;
     height: 18px;
     color: #c9a845;
@@ -761,16 +799,16 @@ function getDayOfWeekDisplay(dateString) {
     min-width: 140px;
     max-width: 220px;
   }
-  
+
   .modal-link-button:hover {
     background-color: #d8b754;
     transform: translateY(-2px);
   }
-  
+
   .modal-link-button .icon {
     color: #000;
   }
-  
+
   /* Bottom close button styles */
   .close-button {
     display: block;
@@ -789,7 +827,7 @@ function getDayOfWeekDisplay(dateString) {
     z-index: 10;
     overflow: hidden;
   }
-  
+
   .close-button::before {
     content: '';
     position: absolute;
@@ -847,40 +885,40 @@ function getDayOfWeekDisplay(dateString) {
       /* Prevent content from being cut off at the bottom */
       padding-bottom: calc(1.5rem + env(safe-area-inset-bottom, 20px));
     }
-    
-    #modalTitle { 
-      font-size: 1.5rem; 
+
+    #modalTitle {
+      font-size: 1.5rem;
       padding-right: 0; /* Remove padding as person image is hidden */
     }
-    
-    #modalSubtitle { 
-      font-size: 1rem; 
+
+    #modalSubtitle {
+      font-size: 1rem;
       margin-bottom: 1.5rem;
     }
 
     .modal-person-image {
       display: none; /* Hide person image on mobile */
     }
-    
+
     .modal-info {
       flex-direction: column;
       align-items: flex-start;
       gap: 0.8rem;
     }
-    
-    .info-item { 
-      font-size: 0.9rem; 
+
+    .info-item {
+      font-size: 0.9rem;
     }
-    
-    #modalDescription { 
-      font-size: 0.9rem; 
+
+    #modalDescription {
+      font-size: 0.9rem;
     }
-    
-    .modal-link { 
-      font-size: 0.85rem; 
+
+    .modal-link {
+      font-size: 0.85rem;
       padding: 0.5rem 0.8rem;
     }
-    
+
     .modal-link-button {
       padding: 0.5rem 1rem;
     }
@@ -919,7 +957,6 @@ function getDayOfWeekDisplay(dateString) {
   }
 
 
-
   .modal-person-image {
     position: absolute;
     top: 1.5rem;
@@ -935,7 +972,7 @@ function getDayOfWeekDisplay(dateString) {
     body {
       font-size: max(3.5vw, 1rem);
     }
-    
+
     table {
       font-size: max(0.9rem, 3vw);
     }
@@ -977,52 +1014,52 @@ function getDayOfWeekDisplay(dateString) {
 </style>
 
 <script>
-  document.addEventListener('astro:page-load', () => {
+  document.addEventListener("astro:page-load", () => {
     // Find the modal and move it to body
-    const modalElement = document.getElementById('courseModal');
+    const modalElement = document.getElementById("courseModal");
     if (modalElement) {
       // Move modal to body to avoid z-index issues
       document.body.appendChild(modalElement);
     }
 
-    const courseElements = document.querySelectorAll('.course-cell');
-    const closeBtnElement = modalElement?.querySelector('.close'); // Query within modal
+    const courseElements = document.querySelectorAll(".course-cell");
+    const closeBtnElement = modalElement?.querySelector(".close"); // Query within modal
 
     if (!modalElement) {
-      console.error('Schedule Modal element not found.');
+      console.error("Schedule Modal element not found.");
       return;
     }
 
     // Function to fetch course data by ID
     const getCourseById = async (id) => {
       try {
-        const res = await fetch(new URL('../../assets/data/schedule.json', import.meta.url).href);
+        const res = await fetch(new URL("../../assets/data/schedule.json", import.meta.url).href);
         if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
         const data = await res.json() as any[];
-        
+
         // Handle both numeric IDs and our custom generated IDs
-        if (id.startsWith('course_')) {
+        if (id.startsWith("course_")) {
           // For custom IDs, extract the course title and time
-          const parts = id.split('_');
-          const timeSlot = parts[parts.length - 2] + ':' + parts[parts.length - 1];
+          const parts = id.split("_");
+          const timeSlot = parts[parts.length - 2] + ":" + parts[parts.length - 1];
           // Join all parts except the last two (which are the time) to get the title
-          const title = parts.slice(1, parts.length - 2).join('_').replace(/_/g, ' ');
-          
+          const title = parts.slice(1, parts.length - 2).join("_").replace(/_/g, " ");
+
           // Find the course with matching title and time
           return data.find(course => {
             if (!course.start) return false;
-            
-            const courseTitle = course.title_zh?.split('\n')[0] || '';
+
+            const courseTitle = course.title_zh?.split("\n")[0] || "";
             if (courseTitle.includes(title)) {
               // Check if time approximately matches
               const startTime = new Date(course.start);
-              const taipeiTime = new Date(startTime.toLocaleString('en-US', { timeZone: 'Asia/Taipei' }));
+              const taipeiTime = new Date(startTime.toLocaleString("en-US", { timeZone: "Asia/Taipei" }));
               const courseHour = taipeiTime.getHours();
               const courseMinute = taipeiTime.getMinutes();
-              
+
               // Convert timeSlot to hours and minutes
-              const [slotHour, slotMinute] = timeSlot.split(':').map(Number);
-              
+              const [slotHour, slotMinute] = timeSlot.split(":").map(Number);
+
               return Math.abs(courseHour - slotHour) <= 1; // Allow 1 hour difference to handle edge cases
             }
             return false;
@@ -1033,43 +1070,47 @@ function getDayOfWeekDisplay(dateString) {
           return data.find(course => String(course.id) === searchId);
         }
       } catch (error) {
-        console.error('Error fetching course data:', error);
+        console.error("Error fetching course data:", error);
         return null;
       }
     };
 
     const formatDateTime = (start, end) => {
-      if (!start || !end) return 'N/A';
+      if (!start || !end) return "N/A";
       try {
         const startDate = new Date(start);
         const endDate = new Date(end);
-        const formatTime = (date) => date.toLocaleTimeString('zh-TW', { hour: '2-digit', minute: '2-digit', hour12: false });
+        const formatTime = (date) => date.toLocaleTimeString("zh-TW", {
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: false,
+        });
         return `${formatTime(startDate)} - ${formatTime(endDate)}`;
       } catch (e) {
-        return 'Invalid date';
+        return "Invalid date";
       }
     };
 
     const openModal = async (courseId) => {
       console.log("Opening modal for course ID:", courseId);
-      
+
       // Special handling for custom IDs
-      if (courseId.startsWith('course_')) {
+      if (courseId.startsWith("course_")) {
         // Get all courses
-        const res = await fetch(new URL('../../assets/data/schedule.json', import.meta.url).href);
+        const res = await fetch(new URL("../../assets/data/schedule.json", import.meta.url).href);
         if (!res.ok) {
           console.error(`HTTP error when fetching courses! status: ${res.status}`);
           return;
         }
         const allCourses = await res.json();
-        
+
         // For custom IDs, try to find by title
-        const parts = courseId.split('_');
-        const timeSlot = parts[parts.length - 2] + ':' + parts[parts.length - 1];
-        
+        const parts = courseId.split("_");
+        const timeSlot = parts[parts.length - 2] + ":" + parts[parts.length - 1];
+
         // Extract the title part from the custom ID (all parts except the time parts)
-        const titlePart = parts.slice(1, parts.length - 2).join('_').replace(/_/g, ' ');
-        
+        const titlePart = parts.slice(1, parts.length - 2).join("_").replace(/_/g, " ");
+
         // Find course by partial title match
         let course = null;
         for (const c of allCourses) {
@@ -1078,12 +1119,12 @@ function getDayOfWeekDisplay(dateString) {
             break;
           }
         }
-        
+
         // If no match by title, try finding by room and time as fallback
         if (!course) {
-          const room = courseId.includes('Day2') ? 'Day2' : 
-                       courseId.includes('Day3') ? 'Day3' : null;
-                       
+          const room = courseId.includes("Day2") ? "Day2" :
+            courseId.includes("Day3") ? "Day3" : null;
+
           if (room) {
             console.log(`Trying to find course by room ${room} and time ${timeSlot}`);
             for (const c of allCourses) {
@@ -1092,7 +1133,7 @@ function getDayOfWeekDisplay(dateString) {
                 const startTime = c.start ? new Date(c.start) : null;
                 if (startTime) {
                   const startHour = startTime.getHours();
-                  const slotHour = parseInt(timeSlot.split(':')[0], 10);
+                  const slotHour = parseInt(timeSlot.split(":")[0], 10);
                   if (startHour === slotHour) {
                     course = c;
                     break;
@@ -1102,114 +1143,114 @@ function getDayOfWeekDisplay(dateString) {
             }
           }
         }
-        
+
         // Special case for HTML + Next.js course
-        if (!course && titlePart.includes('HTML')) {
+        if (!course && titlePart.includes("HTML")) {
           for (const c of allCourses) {
-            if (c.title_zh && c.title_zh.includes('HTML') && c.title_zh.includes('Next.js')) {
+            if (c.title_zh && c.title_zh.includes("HTML") && c.title_zh.includes("Next.js")) {
               course = c;
               break;
             }
           }
         }
-        
+
         if (!course) {
           console.error(`Could not find course for custom ID: ${courseId}`);
           return;
         }
-        
+
         displayModalContent(course);
       } else {
         const course = await getCourseById(courseId);
         if (!course || !modalElement) return;
-        
+
         displayModalContent(course);
       }
-      
+
       // Display modal with flex layout
-      modalElement.style.display = 'flex';
-      modalElement.style.alignItems = 'center';
-      modalElement.style.justifyContent = 'center';
-      document.body.style.overflow = 'hidden';
+      modalElement.style.display = "flex";
+      modalElement.style.alignItems = "center";
+      modalElement.style.justifyContent = "center";
+      document.body.style.overflow = "hidden";
     };
 
     // Function to display modal content
     function displayModalContent(course) {
       if (!modalElement) return;
-      
-      const modalTitleEl = modalElement.querySelector('#modalTitle');
-      const modalSubtitleEl = modalElement.querySelector('#modalSubtitle');
-      const modalSpeakerEl = modalElement.querySelector('#modalSpeaker');
-      const modalTimeEl = modalElement.querySelector('#modalTime');
-      const modalTypeEl = modalElement.querySelector('#modalType');
-      const modalDescriptionEl = modalElement.querySelector('#modalDescription');
-      const linksContainerEl = modalElement.querySelector('#modalLinks');
 
-      if (modalTitleEl) modalTitleEl.textContent = course.title_zh?.split('\n')[0] || '';
-      if (modalSubtitleEl) modalSubtitleEl.textContent = course.title_zh?.split('\n')[1] || '';
-      
-      const speakerText = [course.speaker1, course.speaker2, course.speaker3, course.speaker4, course.speaker5].filter(Boolean).join(', ');
-      if (modalSpeakerEl) modalSpeakerEl.textContent = speakerText ? `主講人：${speakerText}` : '主講人：N/A';
-      
+      const modalTitleEl = modalElement.querySelector("#modalTitle");
+      const modalSubtitleEl = modalElement.querySelector("#modalSubtitle");
+      const modalSpeakerEl = modalElement.querySelector("#modalSpeaker");
+      const modalTimeEl = modalElement.querySelector("#modalTime");
+      const modalTypeEl = modalElement.querySelector("#modalType");
+      const modalDescriptionEl = modalElement.querySelector("#modalDescription");
+      const linksContainerEl = modalElement.querySelector("#modalLinks");
+
+      if (modalTitleEl) modalTitleEl.textContent = course.title_zh?.split("\n")[0] || "";
+      if (modalSubtitleEl) modalSubtitleEl.textContent = course.title_zh?.split("\n")[1] || "";
+
+      const speakerText = [course.speaker1, course.speaker2, course.speaker3, course.speaker4, course.speaker5].filter(Boolean).join(", ");
+      if (modalSpeakerEl) modalSpeakerEl.textContent = speakerText ? `主講人：${speakerText}` : "主講人：N/A";
+
       if (modalTimeEl) modalTimeEl.textContent = formatDateTime(course.start, course.end);
-      if (modalTypeEl) modalTypeEl.textContent = course.type || 'N/A';
-      
+      if (modalTypeEl) modalTypeEl.textContent = course.type || "N/A";
+
       // Always provide some content even if description is empty
       if (modalDescriptionEl) {
-        modalDescriptionEl.innerHTML = course.description_zh?.replace(/\n/g, '<br>') || '暫無課程介紹';
+        modalDescriptionEl.innerHTML = course.description_zh?.replace(/\n/g, "<br>") || "暫無課程介紹";
       }
-      
+
       // Handle speaker section
-      const speakerSectionTitleEl = modalElement.querySelector('#speakerSectionTitle');
-      const speakerDescriptionEl = modalElement.querySelector('#speakerDescription');
-      
+      const speakerSectionTitleEl = modalElement.querySelector("#speakerSectionTitle");
+      const speakerDescriptionEl = modalElement.querySelector("#speakerDescription");
+
       // Update speaker section title with speaker name
       if (speakerSectionTitleEl && speakerText) {
-        speakerSectionTitleEl.textContent = `講者介紹 - ${speakerText.replace('主講人：', '')}`;
+        speakerSectionTitleEl.textContent = `講者介紹 - ${speakerText.replace("主講人：", "")}`;
       } else if (speakerSectionTitleEl) {
-        speakerSectionTitleEl.textContent = '講者介紹';
+        speakerSectionTitleEl.textContent = "講者介紹";
       }
-      
+
       // For now, use a placeholder for speaker description
       if (speakerDescriptionEl) {
-        if (speakerText && speakerText !== '主講人：N/A') {
-          speakerDescriptionEl.innerHTML = `${speakerText.replace('主講人：', '')}是本課程的講師。<br>更多講者資訊將在未來更新。`;
+        if (speakerText && speakerText !== "主講人：N/A") {
+          speakerDescriptionEl.innerHTML = `${speakerText.replace("主講人：", "")}是本課程的講師。<br>更多講者資訊將在未來更新。`;
         } else {
-          speakerDescriptionEl.innerHTML = '無講者資訊';
+          speakerDescriptionEl.innerHTML = "無講者資訊";
         }
-        
+
         // Apply same styling as modalDescription
-        speakerDescriptionEl.classList.add('description-text');
+        speakerDescriptionEl.classList.add("description-text");
       }
-      
+
       if (linksContainerEl) {
-        linksContainerEl.innerHTML = ''; // Clear previous links
+        linksContainerEl.innerHTML = ""; // Clear previous links
         // Simplified slide button
         if (course.slide) {
-          const slideBtn = document.createElement('a');
+          const slideBtn = document.createElement("a");
           slideBtn.href = course.slide;
-          slideBtn.target = '_blank';
-          slideBtn.className = 'modal-link modal-link-button';
-          slideBtn.textContent = '課程簡報';
+          slideBtn.target = "_blank";
+          slideBtn.className = "modal-link modal-link-button";
+          slideBtn.textContent = "課程簡報";
           linksContainerEl.appendChild(slideBtn);
         }
-        
+
         // Simplified approach to create buttons
         if (course.co_write) {
-          const coWriteBtn = document.createElement('a');
+          const coWriteBtn = document.createElement("a");
           coWriteBtn.href = course.co_write;
-          coWriteBtn.target = '_blank';
-          coWriteBtn.className = 'modal-link';
-          coWriteBtn.textContent = '共筆';
+          coWriteBtn.target = "_blank";
+          coWriteBtn.className = "modal-link";
+          coWriteBtn.textContent = "共筆";
           linksContainerEl.appendChild(coWriteBtn);
         }
-        
+
         if (course.record) {
-          const recordBtn = document.createElement('a');
+          const recordBtn = document.createElement("a");
           recordBtn.href = course.record;
-          recordBtn.target = '_blank';
-          recordBtn.className = 'modal-link';
-          recordBtn.textContent = '錄影';
+          recordBtn.target = "_blank";
+          recordBtn.className = "modal-link";
+          recordBtn.textContent = "錄影";
           linksContainerEl.appendChild(recordBtn);
         }
       }
@@ -1218,14 +1259,14 @@ function getDayOfWeekDisplay(dateString) {
     // Close modal function
     const closeModal = () => {
       if (modalElement) {
-        modalElement.style.display = 'none';
-        document.body.style.overflow = '';
+        modalElement.style.display = "none";
+        document.body.style.overflow = "";
       }
     };
 
     courseElements.forEach(element => {
-      element.addEventListener('click', () => {
-        const courseId = element.getAttribute('data-course-id');
+      element.addEventListener("click", () => {
+        const courseId = element.getAttribute("data-course-id");
         // Only open modal if courseId exists and is not "null"
         if (courseId && courseId !== "null") {
           openModal(courseId);
@@ -1234,36 +1275,36 @@ function getDayOfWeekDisplay(dateString) {
     });
 
     if (closeBtnElement) {
-      closeBtnElement.addEventListener('click', closeModal);
+      closeBtnElement.addEventListener("click", closeModal);
     }
-    
+
     // Close button at the bottom
-    const closeButtonElement = modalElement.querySelector('.close-button');
+    const closeButtonElement = modalElement.querySelector(".close-button");
     if (closeButtonElement) {
-      closeButtonElement.addEventListener('click', closeModal);
+      closeButtonElement.addEventListener("click", closeModal);
     }
 
     // Click outside to close
-    window.addEventListener('click', (event) => {
+    window.addEventListener("click", (event) => {
       if (event.target === modalElement) {
         closeModal();
       }
     });
 
     // ESC key to close
-    document.addEventListener('keydown', (event) => {
-      if (event.key === 'Escape' && modalElement.style.display === 'flex') {
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && modalElement.style.display === "flex") {
         closeModal();
       }
     });
 
     // Function to adjust row heights to be uniform
     const adjustRowHeights = () => {
-      const tableBody = document.querySelector('.schedule-table tbody');
+      const tableBody = document.querySelector(".schedule-table tbody");
       if (!tableBody) return;
 
       // Get all rows, including the lunch break row
-      const allRows = Array.from(tableBody.querySelectorAll('tr'));
+      const allRows = Array.from(tableBody.querySelectorAll("tr"));
 
       if (allRows.length === 0) return;
 
@@ -1271,11 +1312,12 @@ function getDayOfWeekDisplay(dateString) {
 
       // First pass: reset heights and measure natural height of each row
       allRows.forEach(row => {
-        row.style.height = ''; // Reset height
+        row.style.height = ""; // Reset height
       });
 
       // Force a reflow to ensure heights are recalculated accurately after reset
-      if ((tableBody as HTMLElement).offsetParent !== null) { /* Reading offsetParent to help trigger reflow */}
+      if ((tableBody as HTMLElement).offsetParent !== null) { /* Reading offsetParent to help trigger reflow */
+      }
 
       allRows.forEach(row => {
         const rowHeight = row.offsetHeight;

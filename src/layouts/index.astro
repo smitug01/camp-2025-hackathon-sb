@@ -72,7 +72,11 @@ const iconUrl = new URL(icon.src, Astro.url.origin).href;
 
     <meta name="msapplication-TileColor" content="#0048da" />
     <link rel="preload" as="image" href={iconUrl} />
-    <link rel="shortcut icon" href="/2025/favicon.png" type="image/png" />
+    <link
+      rel="shortcut icon"
+      href="/2025/favicon.png"
+      type="image/png"
+    />
     <link rel="icon" type="image/png" href="/2025/favicon.png" />
     <link rel="apple-touch-icon" href={iconUrl} />
     <link rel="apple-touch-icon-precomposed" href={iconUrl} />
@@ -159,6 +163,7 @@ const iconUrl = new URL(icon.src, Astro.url.origin).href;
           opacity: 1;
         }
       }
+
       @keyframes transitionFadeOut {
         from {
           opacity: 1;
@@ -167,10 +172,12 @@ const iconUrl = new URL(icon.src, Astro.url.origin).href;
           opacity: 0;
         }
       }
+
       .body-container {
         position: relative;
         z-index: 2;
       }
+
       #q5Canvas0 {
         position: fixed;
         top: 0;
@@ -196,6 +203,7 @@ const iconUrl = new URL(icon.src, Astro.url.origin).href;
     <script>
       window.addEventListener("load", function () {
         // Google Tag Manager
+
         (function (w, d, s, l, i) {
           w[l] = w[l] || [];
           w[l].push({
@@ -212,6 +220,7 @@ const iconUrl = new URL(icon.src, Astro.url.origin).href;
         })(window, document, "script", "dataLayer", "GTM-NKHHNVV");
 
         // Add noscript iframe dynamically
+
         var noscript = document.createElement("noscript");
         var iframe = document.createElement("iframe");
         iframe.src =
