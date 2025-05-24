@@ -3,11 +3,21 @@ import { getLocale } from "../../i18n";
 import { Icon } from "astro-icon/components";
 import scheduleData from "../../assets/data/schedule.json";
 import person from "../../assets/img/modal/image-11.png";
+import {
+  generateCourseId,
+  isMealCourse,
+  hasCourseDetails,
+  calculateDurationInSlots,
+  formatCourseTime,
+  getCourseStartingAt,
+  updateCellCoverage
+} from "../../utils/schedule";
+import type { Course, DayMap, CellCoverage, CoursesByDay } from '../../types/schedule';
 
 const t = getLocale(Astro.url);
 
 // Day mapping for rooms
-const dayMap = {
+const dayMap: DayMap = {
   "Day1": "1",
   "Day2": "2",
   "Day3": "3",
@@ -18,14 +28,13 @@ const dayMap = {
 const dayKeys = Object.keys(dayMap);
 
 // Group courses by day
-const coursesByDay = {};
+const coursesByDay: CoursesByDay = {};
 dayKeys.forEach(dayKey => {
-  // Convert course dates to local timezone for comparison
   coursesByDay[dayKey] = scheduleData.filter(course => course.room === dayKey);
 });
 
 // Track cells that should be skipped due to rowspan
-const cellCoverage = {};
+const cellCoverage: CellCoverage = {};
 dayKeys.forEach(dayKey => {
   cellCoverage[dayKey] = {};
 });
@@ -39,45 +48,15 @@ const dynamicDayHeaders = [
   { dayNum: "5", dateText: "7/13 日" },
 ];
 
-// Time slots for rows (更新時間槽，包含所有可能的時間)
+// Time slots for rows
 const timeSlots = [
   "08:00", "08:30", "09:00", "09:30", "10:00", "10:30", "11:00", "11:30",
   "12:00", "12:30", "13:00", "13:30", "14:00", "14:30", "15:00", "15:30",
   "16:00", "16:30", "17:00", "17:30", "18:00", "18:30", "19:00", "19:30",
   "20:00", "20:30", "21:00",
 ];
-
-// Helper function to get a course starting at a given time slot for a specific day
-function getCourseStartingAt(dayKey, timeSlot) {
-  const coursesForDay = coursesByDay[dayKey] || [];
-  const normalizedTimeSlot = timeSlot;
-
-  return coursesForDay.find(course => {
-    if (!course.start) return false;
-
-    const courseTime = new Date(course.start.toLocaleString("en-US", { timeZone: "Asia/Taipei" }));
-
-    const courseTimeString = courseTime.toLocaleTimeString("zh-TW", {
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: false,
-      timeZone: "Asia/Taipei",
-    });
-
-    return courseTimeString === normalizedTimeSlot;
-  });
-}
-
-// Calculate duration in slots
-function calculateDurationInSlots(course) {
-  if (!course.start || !course.end) return console.error(`Undefined course start or end ${course.id}`);
-
-  const start = new Date(course.start);
-  const end = new Date(course.end);
-
-  return Math.ceil((end - start) / (1000 * 60 * 30));
-}
 ---
+
 <section class="container" id="schedule">
   <h2 class="emfont-UnboundedSans">{t.components.home.schedulePreview.title}</h2>
 
@@ -85,19 +64,18 @@ function calculateDurationInSlots(course) {
     <div class="table-container">
       <table>
         <thead>
-        <tr>
-          <th></th>
-          {dynamicDayHeaders.map(header => (
-            <th>
-              <div class="day-header">Day {header.dayNum}</div>
-              <div class="date-header">{header.dateText}</div>
-            </th>
-          ))}
-        </tr>
+          <tr>
+            <th></th>
+            {dynamicDayHeaders.map(header => (
+              <th>
+                <div class="day-header">Day {header.dayNum}</div>
+                <div class="date-header">{header.dateText}</div>
+              </th>
+            ))}
+          </tr>
         </thead>
         <tbody>
-        {timeSlots.map((timeSlot, timeIndex) => {
-          return (
+          {timeSlots.map((timeSlot, timeIndex) => (
             <tr>
               <td class="time-cell">{timeSlot}</td>
               {Object.keys(dayMap).map(dayKey => {
@@ -105,69 +83,49 @@ function calculateDurationInSlots(course) {
                   return null;
                 }
 
-                const course = getCourseStartingAt(dayKey, timeSlot);
+                const course = getCourseStartingAt(coursesByDay[dayKey], timeSlot);
                 if (course) {
                   const rowspan = calculateDurationInSlots(course);
-                  // Mark future slots as covered
+                  if (typeof rowspan === 'number') {
+                    updateCellCoverage(cellCoverage, dayKey, timeIndex, rowspan, timeSlots);
 
-                  if (rowspan > 1) {
-                    for (let i = 1; i < rowspan; i++) {
-                      const futureSlotIndex = timeIndex + i;
-                      if (futureSlotIndex < timeSlots.length) {
-                        const futureTimeSlot = timeSlots[futureSlotIndex];
-                        cellCoverage[dayKey][futureTimeSlot] = true;
-                      }
+                    if (isMealCourse(course)) {
+                      return (
+                        <td class="event-break-cell" rowspan={rowspan}>
+                          {course.title_zh}
+                        </td>
+                      );
                     }
-                  }
 
-                  const isMeal = course.title_zh === "午餐" || course.title_zh === "晚餐";
-                  const hasDetails = course.description_zh || course.slide || course.co_write || course.record || course.speaker1;
+                    const courseId = generateCourseId(course, timeSlot);
+                    const hasDetails = hasCourseDetails(course);
 
-                  if (isMeal) {
                     return (
-                      <td class="event-break-cell" rowspan={rowspan}>
-                        {course.title_zh}
+                      <td class={`course-cell type-${course.type?.toLowerCase() || "default"}`}
+                          data-course-id={hasDetails ? courseId : null}
+                          rowspan={rowspan}>
+                        <div class="course-title">{course.title_zh?.split("\n")[0] || ""}</div>
+                        {course.title_zh?.split("\n")[1] && (
+                          <div class="course-subtitle">{course.title_zh.split("\n")[1]}</div>
+                        )}
+                        {hasDetails && (
+                          <div class="info-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 20 20" fill="none">
+                              <path d="M9.89673 9.10425V13.3696" stroke="#201814" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                              <path d="M9.89673 5.70126L9.90604 5.69092" stroke="#201814" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                              <path d="M9.89665 18.0614C14.608 18.0614 18.4273 14.242 18.4273 9.53068C18.4273 4.81931 14.608 1 9.89665 1C5.18528 1 1.36597 4.81931 1.36597 9.53068C1.36597 14.242 5.18528 18.0614 9.89665 18.0614Z" stroke="#201814" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                          </div>
+                        )}
                       </td>
                     );
                   }
-
-                  // If the course ID is null, generate a stable ID based on title and time
-
-                  const courseId = course.id ? String(course.id) :
-                    `course_${course.title_zh?.replace(/\s+/g, "_")}_${timeSlot.replace(":", "_")}`;
-
-                  return (
-                    <td class={`course-cell type-${course.type?.toLowerCase() || "default"}`}
-                        data-course-id={hasDetails ? courseId : null}
-                        rowspan={rowspan}>
-                      <div class="course-title">{course.title_zh?.split("\n")[0] || ""}</div>
-                      {course.title_zh?.split("\n")[1] && (
-                        <div class="course-subtitle">{course.title_zh.split("\n")[1]}</div>
-                      )}
-                      {hasDetails && (
-                        <div class="info-icon">
-                          <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 20 20"
-                               fill="none">
-                            <path d="M9.89673 9.10425V13.3696" stroke="#201814" stroke-width="2" stroke-linecap="round"
-                                  stroke-linejoin="round" />
-                            <path d="M9.89673 5.70126L9.90604 5.69092" stroke="#201814" stroke-width="2"
-                                  stroke-linecap="round" stroke-linejoin="round" />
-                            <path
-                              d="M9.89665 18.0614C14.608 18.0614 18.4273 14.242 18.4273 9.53068C18.4273 4.81931 14.608 1 9.89665 1C5.18528 1 1.36597 4.81931 1.36597 9.53068C1.36597 14.242 5.18528 18.0614 9.89665 18.0614Z"
-                              stroke="#201814" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                          </svg>
-                        </div>
-                      )}
-                    </td>
-                  );
                 }
 
-                return (
-                  <td class="empty-cell"></td>);
+                return <td class="empty-cell"></td>;
               })}
             </tr>
-          );
-        })}
+          ))}
         </tbody>
       </table>
     </div>
@@ -820,58 +778,33 @@ function calculateDurationInSlots(course) {
 
 <script>
   import data from "../../assets/data/schedule.json";
+  import { formatCourseTime } from "../../utils/schedule";
 
   document.addEventListener("astro:page-load", () => {
-    // Find the modal and move it to body
     const modalElement = document.getElementById("courseModal");
     if (modalElement) {
-      // Move modal to body to avoid z-index issues
       document.body.appendChild(modalElement);
     }
 
     const courseElements = document.querySelectorAll(".course-cell");
-    const closeBtnElement = modalElement?.querySelector(".close"); // Query within modal
+    const closeBtnElement = modalElement?.querySelector(".close");
 
     if (!modalElement) {
       console.error("Schedule Modal element not found.");
       return;
     }
 
-    // Function to fetch course data by ID
-    const getCourseById = async (id) => {
-      return data.find(course => course.id === id);
-    };
-
-    const formatDateTime = (start, end) => {
-      if (!start || !end) return "N/A";
-      const startDate = new Date(start);
-      const endDate = new Date(end);
-      const formatTime = (date) => date.toLocaleTimeString("zh-TW", {
-        hour: "2-digit",
-        minute: "2-digit",
-        hour12: false,
-        timezone: "Asia/Taipei",
-      });
-      return `${formatTime(startDate)} - ${formatTime(endDate)}`;
-    };
-
     const openModal = async (courseId) => {
       const course = data.find(k => k.id === courseId);
-
       if (!course) console.error(`Unable to find ${courseId}`);
-
       displayModalContent(course);
-
-      // Display modal with flex layout
       modalElement.style.display = "flex";
       modalElement.style.alignItems = "center";
       modalElement.style.justifyContent = "center";
       document.body.style.overflow = "hidden";
     };
 
-    // Function to display modal content
     function displayModalContent(course) {
-      console.log(course);
       if (!modalElement) return;
 
       const modalTitleEl = modalElement.querySelector("#modalTitle");
@@ -885,43 +818,38 @@ function calculateDurationInSlots(course) {
       if (modalTitleEl) modalTitleEl.textContent = course.title_zh?.split("\n")[0] || "";
       if (modalSubtitleEl) modalSubtitleEl.textContent = course.title_zh?.split("\n")[1] || "";
 
-      const speakerText = [course.speaker1, course.speaker2, course.speaker3, course.speaker4, course.speaker5].filter(Boolean).join(", ");
+      const speakerText = [course.speaker1, course.speaker2, course.speaker3, course.speaker4, course.speaker5]
+        .filter(Boolean)
+        .join(", ");
       if (modalSpeakerEl) modalSpeakerEl.textContent = speakerText ? `主講人：${speakerText}` : "主講人：N/A";
 
-      if (modalTimeEl) modalTimeEl.textContent = formatDateTime(course.start, course.end);
+      if (modalTimeEl) modalTimeEl.textContent = formatCourseTime(course.start, course.end);
       if (modalTypeEl) modalTypeEl.textContent = course.type || "N/A";
 
-      // Always provide some content even if description is empty
       if (modalDescriptionEl) {
         modalDescriptionEl.innerHTML = course.description_zh?.replace(/\n/g, "<br>") || "暫無課程介紹";
       }
 
-      // Handle speaker section
       const speakerSectionTitleEl = modalElement.querySelector("#speakerSectionTitle");
       const speakerDescriptionEl = modalElement.querySelector("#speakerDescription");
 
-      // Update speaker section title with speaker name
       if (speakerSectionTitleEl && speakerText) {
         speakerSectionTitleEl.textContent = `講者介紹 - ${speakerText.replace("主講人：", "")}`;
       } else if (speakerSectionTitleEl) {
         speakerSectionTitleEl.textContent = "講者介紹";
       }
 
-      // For now, use a placeholder for speaker description
       if (speakerDescriptionEl) {
         if (speakerText && speakerText !== "主講人：N/A") {
           speakerDescriptionEl.innerHTML = `${speakerText.replace("主講人：", "")}是本課程的講師。<br>更多講者資訊將在未來更新。`;
         } else {
           speakerDescriptionEl.innerHTML = "無講者資訊";
         }
-
-        // Apply same styling as modalDescription
         speakerDescriptionEl.classList.add("description-text");
       }
 
       if (linksContainerEl) {
-        linksContainerEl.innerHTML = ""; // Clear previous links
-        // Simplified slide button
+        linksContainerEl.innerHTML = "";
         if (course.slide) {
           const slideBtn = document.createElement("a");
           slideBtn.href = course.slide;
@@ -931,7 +859,6 @@ function calculateDurationInSlots(course) {
           linksContainerEl.appendChild(slideBtn);
         }
 
-        // Simplified approach to create buttons
         if (course.co_write) {
           const coWriteBtn = document.createElement("a");
           coWriteBtn.href = course.co_write;
@@ -952,7 +879,6 @@ function calculateDurationInSlots(course) {
       }
     }
 
-    // Close modal function
     const closeModal = () => {
       if (modalElement) {
         modalElement.style.display = "none";
@@ -963,7 +889,6 @@ function calculateDurationInSlots(course) {
     courseElements.forEach(element => {
       element.addEventListener("click", () => {
         const courseId = element.getAttribute("data-course-id");
-        // Only open modal if courseId exists and is not "null"
         if (courseId && courseId !== "null") {
           openModal(courseId);
         }
@@ -974,20 +899,17 @@ function calculateDurationInSlots(course) {
       closeBtnElement.addEventListener("click", closeModal);
     }
 
-    // Close button at the bottom
     const closeButtonElement = modalElement.querySelector(".close-button");
     if (closeButtonElement) {
       closeButtonElement.addEventListener("click", closeModal);
     }
 
-    // Click outside to close
     window.addEventListener("click", (event) => {
       if (event.target === modalElement) {
         closeModal();
       }
     });
 
-    // ESC key to close
     document.addEventListener("keydown", (event) => {
       if (event.key === "Escape" && modalElement.style.display === "flex") {
         closeModal();
