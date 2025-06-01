@@ -192,7 +192,7 @@ const enStrings = {
             title: "Four-person Group",
             price: "NTD 8000/person",
           },
-          signupNow: "Register Now",
+          signupNow: "Registration Ended",
         },
         calendar: {
           title: "Add SITCON Camp Important Dates to Calendar",

@@ -173,7 +173,7 @@ const zhStrings = {
           dual: { title: "兩人團報", price: "8500元/人" },
           tri: { title: "三人團報", price: "8250元/人" },
           quad: { title: "四人團報", price: "8000元/人" },
-          signupNow: "立即報名",
+          signupNow: "報名已截止",
         },
         calendar: {
           title: "將 SITCON Camp 重要日程加入行事曆",

@@ -48,12 +48,12 @@ const currentLocation = Astro.url.pathname;
       </li>
       <li><a href={l("/coc")}>{t.components.nav.coc}</a></li>
       <li><a href={l("/about")}>{t.components.nav.team}</a></li>
-      <li>
+      <!-- <li>
         <a
           href="https://sitcon.kktix.cc/events/sitcon-camp2025"
           target="_blank">{t.components.home.info.price.signupNow}</a
         >
-      </li>
+      </li> -->
       <li>
         <a href={l("/", true)}
           >{extractLocale(Astro.url) === "en" ? "中文" : "EN"}</a
