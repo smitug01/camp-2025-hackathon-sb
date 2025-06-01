@@ -64,7 +64,7 @@ export default [
         { name: "諾諾", title: "組員", emailHash: "3994f6a8fef508df2fc4acdc7931557b" },
         { name: "滷味", title: "組員", emailHash: "7319f02d14618ce536c4b8c62542f027" },
         { name: "77", title: "組員", emailHash: "a65580fddf03a5a487dbba8f16e7b7f7" },
-        { name: "ffting", title: "組員", emailHash: "8c16a9f128bcda3d96035e401241f37e" },
+        { name: "ffting", title: "組員", emailHash: "5471d3b548353d5c35fc873fb2422e3f" },
         { name: "好冷吶", title: "組員", emailHash: "88f80e840a74e4bd10a12c375e4b38c3" },
         { name: "萊姆", title: "組員", emailHash: "e6548ad6de87fbfe755ac88dff6c4829" },
         { name: "阿玉", title: "組員", emailHash: "749cfae0b8ee5e52ed48909953de5df5" },
