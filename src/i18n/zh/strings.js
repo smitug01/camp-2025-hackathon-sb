@@ -157,8 +157,8 @@ const zhStrings = {
           text: ["07/09（三）~ 07/13（日）", "五天四夜（含住宿）"],
         },
         signup: {
-          title: "報名日期",
-          text: ["即日起 ~ 2025/5/31（六）", "23:59 止"],
+          title: "晚鳥票報名日期",
+          text: ["即日起 ~ 2025/6/20（六）", "23:59 止"],
         },
         place: {
           title: "活動地點",
@@ -173,7 +173,7 @@ const zhStrings = {
           dual: { title: "兩人團報", price: "8500元/人" },
           tri: { title: "三人團報", price: "8250元/人" },
           quad: { title: "四人團報", price: "8000元/人" },
-          signupNow: "報名已截止",
+          signupNow: "立即報名",
         },
         calendar: {
           title: "將 SITCON Camp 重要日程加入行事曆",

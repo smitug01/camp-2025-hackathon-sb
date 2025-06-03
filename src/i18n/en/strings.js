@@ -165,7 +165,7 @@ const enStrings = {
         },
         signup: {
           title: "Registration Period",
-          text: ["From now until 2025/5/31 (Sat)", "Deadline: 23:59"],
+          text: ["From now until 2025/6/20 (Sat)", "Deadline: 23:59"],
         },
         place: {
           title: "Event Location",
@@ -192,7 +192,7 @@ const enStrings = {
             title: "Four-person Group",
             price: "NTD 8000/person",
           },
-          signupNow: "Registration Ended",
+          signupNow: "Sign Up Now",
         },
         calendar: {
           title: "Add SITCON Camp Important Dates to Calendar",
