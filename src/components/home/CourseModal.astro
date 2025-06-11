@@ -8,23 +8,23 @@ export interface Props {
 ---
 
 <!-- Course Detail Modal Structure -->
-<div id="courseModal" class="modal">
+<div id="courseModal" class="modal ">
   <div class="modal-content">
     <div class="modal-close-container">
       <span class="close">&times;</span>
     </div>
     <img src={person.src} alt="Person" class="modal-person-image" />
-    <h2 id="modalTitle"></h2>
-    <h3 id="modalSubtitle"></h3>
-    <div class="section-title">課程介紹</div>
+    <h2 id="modalTitle" class="emfont-NotoSansTC-600"></h2>
+    <h3 id="modalSubtitle" class="emfont-NotoSansTC-600"></h3>
+    <div class="section-title emfont-NotoSansTC-600">課程介紹</div>
     <div class="description-container">
       <p id="modalDescription"></p>
     </div>
-    <div class="section-title" id="speakerSectionTitle">講者介紹</div>
+    <div class="section-title emfont-NotoSansTC-600" id="speakerSectionTitle">講者介紹</div>
     <div class="description-container">
       <p id="speakerDescription"></p>
     </div>
-    <div id="modalLinks" class="modal-links"></div>
+    <div id="modalLinks" class="modal-links emfont-NotoSansTC-500"></div>
     <button class="close-button">Close</button>
   </div>
 </div>
@@ -128,7 +128,7 @@ export interface Props {
     margin-right: 10px;
     padding-right: 100px;
     position: relative;
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    
   }
 
   #modalSubtitle {
@@ -137,7 +137,7 @@ export interface Props {
     font-size: 1.2rem;
     color: #EAB99F;
     text-align: left;
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    
   }
 
   .modal-info {
@@ -301,7 +301,6 @@ export interface Props {
     margin-top: 1.5rem;
     padding-bottom: 0.5rem;
     border-bottom: 1px solid #333;
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
   }
 
   .modal-person-image {
@@ -420,6 +419,12 @@ export interface Props {
         document.body.appendChild(modalElement);
     }
 
+    emfont.init({
+      forceMin: true,
+      root:modalElement,
+      cache: false
+    });
+
     const displayModalContent = (course) => {
       if (!modalElement || !course) return;
 
@@ -480,6 +485,11 @@ export interface Props {
           linksContainerEl.appendChild(recordBtn);
         }
       }
+
+       emfont.init({
+      forceMin: true,
+    });
+    console.log("opened")
     };
 
     const openModalWithCourseId = (courseId) => {
