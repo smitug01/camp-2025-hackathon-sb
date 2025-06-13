@@ -1,5 +1,5 @@
 ---
-import type { Course } from '../../types/schedule';
+import type { Course } from "../../types/schedule";
 import person from "../../assets/img/modal/image-11.png";
 
 export interface Props {
@@ -8,8 +8,8 @@ export interface Props {
 ---
 
 <!-- Course Detail Modal Structure -->
-<div id="courseModal" class="modal ">
-  <div class="modal-content">
+<div id="courseModal" class="modal">
+  <div id="modalContent" class="modal-content">
     <div class="modal-close-container">
       <span class="close">&times;</span>
     </div>
@@ -35,32 +35,34 @@ export interface Props {
     display: none;
     position: fixed !important;
     inset: 0 !important;
-    z-index: 2147483647 !important;
-    width: 100vw !important;
-    height: 100dvh !important;
+    z-index: 9999999 !important;
+    width: 100vw;
+    height: 100dvh;
     overflow: auto;
-    background-color: rgba(0, 0, 0, 0.7);
-    backdrop-filter: blur(5px);
+    background-color: transparent;
+    backdrop-filter: blur(0px);
     isolation: isolate;
     align-items: flex-start;
     justify-content: center;
     padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+    transition: .3s ease-out;
   }
 
   .modal-content {
-    background-color: #000;
-    color: #fff;
-    padding: 1.5rem 3rem 3rem;
+    background-color: #028fdb;
+    color: #efefef;
+    padding: 3rem;
     border-radius: 8px;
     max-width: 800px;
     width: 90%;
     position: relative !important;
-    margin: 2vh auto;
-    border-left: 4px solid #c9a845;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+    margin: auto;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
     max-height: 96dvh;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
+    transform: scale(0);
+    transition: transform .3s cubic-bezier(.5, 1, .1, 1.20);
   }
 
   .modal-close-container {
@@ -128,7 +130,7 @@ export interface Props {
     margin-right: 10px;
     padding-right: 100px;
     position: relative;
-    
+
   }
 
   #modalSubtitle {
@@ -137,7 +139,6 @@ export interface Props {
     font-size: 1.2rem;
     color: #EAB99F;
     text-align: left;
-    
   }
 
   .modal-info {
@@ -146,7 +147,7 @@ export interface Props {
     gap: 1rem 2rem;
     margin-bottom: 2rem;
     padding-bottom: 1rem;
-    border-bottom: 1px solid #333;
+    border-bottom: 1px solid #a2a2a2;
   }
 
   .info-item {
@@ -172,7 +173,6 @@ export interface Props {
   #modalDescription {
     line-height: 1.8;
     font-size: 1rem;
-    color: #c0c0c0;
   }
 
   .description-text {
@@ -196,7 +196,7 @@ export interface Props {
     gap: 0.6rem;
     padding: 0.85rem 1.4rem;
     background-color: #1e1e1e;
-    border: 1px solid #333;
+    border: 1px solid #a2a2a2;
     border-radius: 8px;
     text-decoration: none;
     color: #fff;
@@ -227,7 +227,6 @@ export interface Props {
   .modal-link-button {
     background-color: #c9a845;
     border: none;
-    color: #000;
     padding: 0.85rem 1.6rem;
     font-size: 1.05rem;
     font-weight: 600;
@@ -244,7 +243,7 @@ export interface Props {
   }
 
   .modal-link-button .icon {
-    color: #000;
+    color: #fff;
   }
 
   .close-button {
@@ -252,10 +251,10 @@ export interface Props {
     width: 140px;
     margin: 2rem auto 0;
     padding: 0.8rem 1.5rem;
-    background-color: transparent;
+    background-color: #f0f0f0;
     border: 2px solid rgba(255, 255, 255, 0.2);
     border-radius: 8px;
-    color: #fff;
+    color: black;
     font-size: 1rem;
     text-align: center;
     cursor: pointer;
@@ -265,23 +264,8 @@ export interface Props {
     overflow: hidden;
   }
 
-  .close-button::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: #c9a845;
-    transform: scaleX(0);
-    transform-origin: right;
-    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    z-index: -1;
-  }
-
   .close-button:hover {
-    border-color: #c9a845;
-    color: #000;
+    scale: 110%;
   }
 
   .close-button:hover::before {
@@ -300,7 +284,7 @@ export interface Props {
     margin-bottom: 1rem;
     margin-top: 1.5rem;
     padding-bottom: 0.5rem;
-    border-bottom: 1px solid #333;
+    border-bottom: 1px solid #a2a2a2;
   }
 
   .modal-person-image {
@@ -392,6 +376,10 @@ export interface Props {
       padding: 0.6rem 1.2rem;
       font-size: 0.9rem;
     }
+
+    .close-button:hover {
+      scale: unset;
+    }
   }
 </style>
 
@@ -401,6 +389,7 @@ export interface Props {
 
   document.addEventListener("astro:page-load", () => {
     const modalElement = document.getElementById("courseModal");
+    const modalContent = document.getElementById("modalContent");
     const closeBtnElement = modalElement?.querySelector(".close");
     const closeButtonBottomElement = modalElement?.querySelector(".close-button");
 
@@ -412,17 +401,17 @@ export interface Props {
       console.error("CourseModal element not found.");
       return;
     }
-    
+
     // Ensure modal is appended to body to avoid z-index issues with other page elements
     // This is important if the <CourseModal /> tag is not at the root of the body in the final DOM
     if (modalElement.parentElement !== document.body) {
-        document.body.appendChild(modalElement);
+      document.body.appendChild(modalElement);
     }
 
     emfont.init({
       forceMin: true,
-      root:modalElement,
-      cache: false
+      root: modalElement,
+      cache: false,
     });
 
     const displayModalContent = (course) => {
@@ -437,7 +426,7 @@ export interface Props {
 
       if (modalTitleEl) modalTitleEl.textContent = course.title_zh?.split("\n")[0] || "";
       if (modalSubtitleEl) modalSubtitleEl.textContent = course.title_zh?.split("\n")[1] || "";
-      
+
       const speakerText = [course.speaker1, course.speaker2, course.speaker3, course.speaker4, course.speaker5]
         .filter(Boolean)
         .join(", ");
@@ -459,7 +448,7 @@ export interface Props {
       }
 
       if (linksContainerEl) {
-        linksContainerEl.innerHTML = ""; 
+        linksContainerEl.innerHTML = "";
         if (course.slide) {
           const slideBtn = document.createElement("a");
           slideBtn.href = course.slide;
@@ -486,10 +475,10 @@ export interface Props {
         }
       }
 
-       emfont.init({
-      forceMin: true,
-    });
-    console.log("opened")
+      emfont.init({
+        forceMin: true,
+      });
+      console.log("opened");
     };
 
     const openModalWithCourseId = (courseId) => {
@@ -498,6 +487,11 @@ export interface Props {
         displayModalContent(course);
         modalElement.style.display = "flex";
         document.body.style.overflow = "hidden";
+        setTimeout(() => {
+          modalElement.style.backgroundColor = "rgba(0, 0, 0, 0.5)";
+          modalElement.style.backdropFilter = "blur(5px)";
+          modalContent.style.transform = "scale(1)";
+        }, 100);
       } else {
         console.error(`Course with ID ${courseId} not found.`);
       }
@@ -505,13 +499,20 @@ export interface Props {
 
     const closeModal = () => {
       if (modalElement) {
-        modalElement.style.display = "none";
+        modalContent.style.transform = "scale(0)";
+        modalElement.style.backdropFilter = "blur(0px)";
+        modalContent.style.transition = "transform .3s cubic-bezier(.5, 1, 0, 1)";
+        modalElement.style.backgroundColor = "transparent";
+        setTimeout(() => {
+          modalElement.style.display = "none";
+          modalContent.style.transition = "transform .3s cubic-bezier(.5, 1, .1, 1.20)";
+        }, 300);
         document.body.style.overflow = "";
       }
     };
 
     // Listen for a custom event to open the modal
-    document.addEventListener('openCourseModal', (event: Event) => {
+    document.addEventListener("openCourseModal", (event: Event) => {
       const customEvent = event as CustomEvent;
       const courseId = customEvent.detail?.courseId;
       if (courseId) {
