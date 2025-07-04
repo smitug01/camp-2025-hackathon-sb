@@ -77,7 +77,8 @@ export default [
         { name: "Leo", title: "組員", emailHash: "9d3d94670521277a654d0096e8867fc5" },
         { name: "Sam", title: "組員", emailHash: "abc5aa47604ff78d8d608f79f2b3c9b3" },
         { name: "Wolf Yuan", title: "組員", emailHash: "dd35081a31561e03cd133d272f4faf30" },
-        { name: "Ya", title: "組員", emailHash: "69986fbca5d2211a55683b3876c14339" }
+        { name: "Ya", title: "組員", emailHash: "69986fbca5d2211a55683b3876c14339" },
+        {name: "TC",title: "組員",emailHash: "9ae8ff2c7e70c5a72b26898f6d2d066f"}
       ]
     },
     {
