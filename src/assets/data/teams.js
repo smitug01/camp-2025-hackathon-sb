@@ -61,7 +61,6 @@ export default [
         { name: "OsGa", title: "組長", emailHash: "4d9d9aa7e031eba958fd9ae26f9dacee" },
         { name: "咪路", title: "副組長", emailHash: "0d3eba022a4e0eda175441d9cf1e9061" },
         { name: "小婕", title: "組員", emailHash: "2239772629220355486977364003cff3" },
-        { name: "諾諾", title: "組員", emailHash: "3994f6a8fef508df2fc4acdc7931557b" },
         { name: "滷味", title: "組員", emailHash: "7319f02d14618ce536c4b8c62542f027" },
         { name: "77", title: "組員", emailHash: "a65580fddf03a5a487dbba8f16e7b7f7" },
         { name: "ffting", title: "組員", emailHash: "5471d3b548353d5c35fc873fb2422e3f" },
