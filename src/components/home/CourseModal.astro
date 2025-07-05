@@ -482,20 +482,30 @@ import person from "../../assets/img/modal/image-11.png";
         speakerSectionTitleEl.textContent = "講者介紹";
       }
       if (speakerDescriptionEl) {
-        const speakerDescs = [
-          course.speaker1Desc,
-          course.speaker2Desc,
-          course.speaker3Desc,
-          course.speaker4Desc,
-          course.speaker5Desc
-        ];
-        const speakerNames = [course.speaker1, course.speaker2, course.speaker3, course.speaker4, course.speaker5];
-        const validDescs = speakerDescs.map((desc, idx) => desc ? { name: speakerNames[idx], desc } : null).filter(Boolean);
+        // Create a mapping of speaker names to descriptions from all schedule data
+        const speakerDescMap = new Map();
+        scheduleData.forEach(course => {
+          if (course.speaker1 && course.speaker1Desc) speakerDescMap.set(course.speaker1, course.speaker1Desc);
+          if (course.speaker2 && course.speaker2Desc) speakerDescMap.set(course.speaker2, course.speaker2Desc);
+          if (course.speaker3 && course.speaker3Desc) speakerDescMap.set(course.speaker3, course.speaker3Desc);
+          if (course.speaker4 && course.speaker4Desc) speakerDescMap.set(course.speaker4, course.speaker4Desc);
+          if (course.speaker5 && course.speaker5Desc) speakerDescMap.set(course.speaker5, course.speaker5Desc);
+        });
+
+        const speakerNames = [course.speaker1, course.speaker2, course.speaker3, course.speaker4, course.speaker5]
+          .filter(Boolean);
+
+        // Use the speaker map to get descriptions from anywhere in the schedule
+        const validDescs = speakerNames.map(name => {
+          const desc = speakerDescMap.get(name);
+          return desc ? { name, desc } : null;
+        }).filter(Boolean);
+
         if (validDescs.length === 1) {
           speakerDescriptionEl.innerHTML = `<div class="speaker-name">${validDescs[0].name}</div>${renderMarkdown(validDescs[0].desc)}`;
         } else if (validDescs.length > 1) {
           speakerDescriptionEl.innerHTML = validDescs.map(({ name, desc }) =>
-            name ? `<div class="speaker-name">${name}</div>${renderMarkdown(desc)}` : renderMarkdown(desc)
+            `<div class="speaker-name">${name}</div>${renderMarkdown(desc)}`
           ).join("");
         } else if (speakerText) {
           speakerDescriptionEl.innerHTML = `${speakerText}是本課程的講師。<br>其他資訊可能得等你自己通靈`;
