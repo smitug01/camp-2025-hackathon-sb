@@ -348,9 +348,37 @@ import person from "../../assets/img/modal/image-11.png";
   }
 </style>
 
+<style is:global>
+  .speaker-name {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #E0E0E0;
+    margin-bottom: 0.5rem;
+    margin-top: 0.5rem;
+    padding-bottom: 0.3rem;
+    border-bottom: 1px solid rgb(162, 162, 162);
+  }
+</style>
+
 <script>
   import scheduleData from "../../assets/data/schedule.json"; // Full schedule data
   import { formatCourseTime } from "../../utils/schedule"; // Utility function
+  import { marked } from 'marked';
+
+  // Configure marked to open links in new tab
+  marked.use({
+    renderer: {
+      link({ tokens, href, text }) {
+        return `<a href="${href}" target="_blank" rel="noopener noreferrer">${text}</a>`;
+      }
+    }
+  });
+
+  // Function to render markdown content
+  function renderMarkdown(text) {
+    if (!text) return '';
+    return marked.parse(text);
+  }
 
   document.addEventListener("astro:page-load", () => {
     const modalElement = document.getElementById("courseModal");
@@ -397,10 +425,9 @@ import person from "../../assets/img/modal/image-11.png";
         .join("、");
 
       if (speakerSectionTitleEl) {
-        speakerSectionTitleEl.textContent = speakerText ? `講者介紹 - ${speakerText}` : "講者介紹";
+        speakerSectionTitleEl.textContent = "講者介紹";
       }
       if (speakerDescriptionEl) {
-        // Collect speaker descriptions
         const speakerDescs = [
           course.speaker1Desc,
           course.speaker2Desc,
@@ -411,9 +438,11 @@ import person from "../../assets/img/modal/image-11.png";
         const speakerNames = [course.speaker1, course.speaker2, course.speaker3, course.speaker4, course.speaker5];
         const validDescs = speakerDescs.map((desc, idx) => desc ? { name: speakerNames[idx], desc } : null).filter(Boolean);
         if (validDescs.length === 1) {
-          speakerDescriptionEl.innerHTML = validDescs[0].desc;
+          speakerDescriptionEl.innerHTML = `<div class="speaker-name">${validDescs[0].name}</div>${renderMarkdown(validDescs[0].desc)}`;
         } else if (validDescs.length > 1) {
-          speakerDescriptionEl.innerHTML = validDescs.map(({ name, desc }) => name ? `<b>${name}</b>：${desc}` : desc).join("<br>");
+          speakerDescriptionEl.innerHTML = validDescs.map(({ name, desc }) =>
+            name ? `<div class="speaker-name">${name}</div>${renderMarkdown(desc)}` : renderMarkdown(desc)
+          ).join("<br><br>");
         } else if (speakerText) {
           speakerDescriptionEl.innerHTML = `${speakerText}是本課程的講師。<br>其他資訊可能得等你自己通靈`;
         } else {
