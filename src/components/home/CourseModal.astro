@@ -1,13 +1,8 @@
 ---
 import type { Course } from "../../types/schedule";
 import person from "../../assets/img/modal/image-11.png";
-
-export interface Props {
-  // Props definition here if needed later
-}
 ---
 
-<!-- Course Detail Modal Structure -->
 <div id="courseModal" class="modal">
   <div id="modalContent" class="modal-content">
     <div class="modal-close-container">
@@ -74,12 +69,7 @@ export interface Props {
 
   .close {
     position: relative;
-    width: 40px;
-    height: 40px;
     cursor: pointer;
-    background: rgba(255, 255, 255, 0.1);
-    border: 2px solid rgba(255, 255, 255, 0.2);
-    border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -87,37 +77,12 @@ export interface Props {
     transform-origin: center;
   }
 
-  .close::before,
-  .close::after {
-    content: '';
-    position: absolute;
-    width: 20px;
-    height: 2px;
-    background-color: #fff;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  .close::before {
-    transform: rotate(45deg);
-  }
-
-  .close::after {
-    transform: rotate(-45deg);
-  }
-
   .close:hover {
-    background: rgba(255, 255, 255, 0.2);
-    border-color: rgba(255, 255, 255, 0.3);
-    transform: rotate(180deg);
-  }
-
-  .close:hover::before,
-  .close:hover::after {
-    background-color: #c9a845;
+    color: #ff4d4f;
   }
 
   .close:active {
-    transform: rotate(180deg) scale(0.9);
+    transform: scale(0.9);
   }
 
   #modalTitle {
