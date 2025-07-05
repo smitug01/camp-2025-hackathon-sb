@@ -178,7 +178,7 @@ export interface Props {
   .description-text {
     line-height: 1.8;
     font-size: 1rem;
-    color: #c0c0c0;
+    color: #efefef;
   }
 
   .modal-links {
@@ -429,14 +429,28 @@ export interface Props {
 
       const speakerText = [course.speaker1, course.speaker2, course.speaker3, course.speaker4, course.speaker5]
         .filter(Boolean)
-        .join(", ");
+        .join("、");
 
       if (speakerSectionTitleEl) {
         speakerSectionTitleEl.textContent = speakerText ? `講者介紹 - ${speakerText}` : "講者介紹";
       }
       if (speakerDescriptionEl) {
-        if (speakerText) {
-          speakerDescriptionEl.innerHTML = `${speakerText}是本課程的講師。<br>更多講者資訊將在未來更新。`;
+        // Collect speaker descriptions
+        const speakerDescs = [
+          course.speaker1Desc,
+          course.speaker2Desc,
+          course.speaker3Desc,
+          course.speaker4Desc,
+          course.speaker5Desc
+        ];
+        const speakerNames = [course.speaker1, course.speaker2, course.speaker3, course.speaker4, course.speaker5];
+        const validDescs = speakerDescs.map((desc, idx) => desc ? { name: speakerNames[idx], desc } : null).filter(Boolean);
+        if (validDescs.length === 1) {
+          speakerDescriptionEl.innerHTML = validDescs[0].desc;
+        } else if (validDescs.length > 1) {
+          speakerDescriptionEl.innerHTML = validDescs.map(({ name, desc }) => name ? `<b>${name}</b>：${desc}` : desc).join("<br>");
+        } else if (speakerText) {
+          speakerDescriptionEl.innerHTML = `${speakerText}是本課程的講師。<br>其他資訊可能得等你自己通靈`;
         } else {
           speakerDescriptionEl.innerHTML = "無講者資訊";
         }
@@ -531,4 +545,4 @@ export interface Props {
       if (event.key === "Escape" && modalElement.style.display === "flex") closeModal();
     });
   });
-</script> 
+</script>
