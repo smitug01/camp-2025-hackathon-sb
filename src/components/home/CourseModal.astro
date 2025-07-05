@@ -354,9 +354,63 @@ import person from "../../assets/img/modal/image-11.png";
     font-weight: 600;
     color: #E0E0E0;
     margin-bottom: 0.5rem;
-    margin-top: 0.5rem;
+    margin-top: 1rem;
     padding-bottom: 0.3rem;
-    border-bottom: 1px solid rgb(162, 162, 162);
+    border-bottom: 1px solid rgba(162, 162, 162, 0.7);
+    display: inline-block;
+  }
+
+  /* Styling for markdown elements in speaker descriptions */
+  #speakerDescription p {
+    margin-bottom: 1rem;
+    line-height: 1.6;
+  }
+
+  #speakerDescription a {
+    color: #EAB99F;
+    text-decoration: none;
+    border-bottom: 1px dotted #EAB99F;
+    transition: all 0.2s ease;
+  }
+
+  #speakerDescription a:hover {
+    color: #f0d3bf;
+    border-bottom-color: #f0d3bf;
+  }
+
+  #speakerDescription strong {
+    color: #fff;
+    font-weight: 600;
+  }
+
+  #speakerDescription em {
+    color: #d0d0d0;
+    font-style: italic;
+  }
+
+  #speakerDescription ul, #speakerDescription ol {
+    margin: 1rem 0;
+    padding-left: 1.5rem;
+  }
+
+  #speakerDescription li {
+    margin-bottom: 0.5rem;
+  }
+
+  #speakerDescription code {
+    background-color: rgba(0, 0, 0, 0.2);
+    padding: 0.2rem 0.4rem;
+    border-radius: 3px;
+    font-family: monospace;
+    font-size: 0.9em;
+  }
+
+  #speakerDescription blockquote {
+    border-left: 3px solid #EAB99F;
+    padding-left: 1rem;
+    margin-left: 0;
+    color: #d0d0d0;
+    font-style: italic;
   }
 </style>
 
@@ -442,7 +496,7 @@ import person from "../../assets/img/modal/image-11.png";
         } else if (validDescs.length > 1) {
           speakerDescriptionEl.innerHTML = validDescs.map(({ name, desc }) =>
             name ? `<div class="speaker-name">${name}</div>${renderMarkdown(desc)}` : renderMarkdown(desc)
-          ).join("<br><br>");
+          ).join("");
         } else if (speakerText) {
           speakerDescriptionEl.innerHTML = `${speakerText}是本課程的講師。<br>其他資訊可能得等你自己通靈`;
         } else {
