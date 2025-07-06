@@ -13,11 +13,11 @@ import person from "../../assets/img/modal/image-11.png";
     <h3 id="modalSubtitle" class="emfont-NotoSansTC-600"></h3>
     <div class="section-title emfont-NotoSansTC-600">課程介紹</div>
     <div class="description-container">
-      <p id="modalDescription"></p>
+      <p id="modalDescription" class="emfont-NotoSansTC-600"></p>
     </div>
     <div class="section-title emfont-NotoSansTC-600" id="speakerSectionTitle">講者介紹</div>
     <div class="description-container">
-      <p id="speakerDescription"></p>
+      <p id="speakerDescription" class="emfont-NotoSansTC-600"></p>
     </div>
     <div id="modalLinks" class="modal-links emfont-NotoSansTC-500"></div>
     <button class="close-button">Close</button>
@@ -463,6 +463,14 @@ import person from "../../assets/img/modal/image-11.png";
       document.body.appendChild(modalElement);
     }
 
+    marked.use({
+      renderer: {
+        link({ tokens, href, text }) {
+          return `<a href="${href}" target="_blank" rel="noopener noreferrer" class="emfont-NotoSansTC-400">${text}</a>`;
+        }
+      }
+    });
+
     emfont.init({
       forceMin: true,
       root: modalElement,
@@ -497,13 +505,14 @@ import person from "../../assets/img/modal/image-11.png";
           course.speaker4Desc,
           course.speaker5Desc
         ];
+
         const speakerNames = [course.speaker1, course.speaker2, course.speaker3, course.speaker4, course.speaker5];
         const validDescs = speakerDescs.map((desc, idx) => desc ? { name: speakerNames[idx], desc } : null).filter(Boolean);
         if (validDescs.length === 1) {
-          speakerDescriptionEl.innerHTML = `<div class="speaker-name">${validDescs[0].name}</div>${renderMarkdown(validDescs[0].desc)}`;
+          speakerDescriptionEl.innerHTML = `<div class="speaker-name emfont-NotoSansTC-600">${validDescs[0].name}</div>${renderMarkdown(validDescs[0].desc)}`;
         } else if (validDescs.length > 1) {
           speakerDescriptionEl.innerHTML = validDescs.map(({ name, desc }) =>
-            name ? `<div class="speaker-name">${name}</div>${renderMarkdown(desc)}` : renderMarkdown(desc)
+            name ? `<div class="speaker-name emfont-NotoSansTC-600">${name}</div>${renderMarkdown(desc)}` : renderMarkdown(desc)
           ).join("");
         } else if (speakerText) {
           speakerDescriptionEl.innerHTML = `${speakerText}是本課程的講師。<br>其他資訊可能得等你自己通靈`;
