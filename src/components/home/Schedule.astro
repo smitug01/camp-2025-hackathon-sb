@@ -8,16 +8,22 @@ import {
   calculateDurationInSlots,
   getCourseStartingAt,
   updateCellCoverage,
-  getCourseCellClasses
+  getCourseCellClasses,
 } from "../../utils/schedule";
-import { TIME_SLOTS, DAY_DEFINITIONS } from "../../constants/schedule";
-import type {CellCoverage, CoursesByDay, DayHeader } from '../../types/schedule';
-import CourseModal from './CourseModal.astro';
+import {
+  TIME_SLOTS,
+  DAY_DEFINITIONS,
+} from "../../constants/schedule";
+import type {
+  CellCoverage,
+  CoursesByDay,
+  DayHeader,
+} from "../../types/schedule";
+import CourseModal from "./CourseModal.astro";
 
 const t = getLocale(Astro.url);
 
-
-const dynamicDayHeaders: DayHeader[] = DAY_DEFINITIONS.map(day => ({
+const dynamicDayHeaders: DayHeader[] = DAY_DEFINITIONS.map((day) => ({
   dayNum: day.displayNum,
   dateText: day.dateText,
 }));
@@ -25,18 +31,22 @@ const dynamicDayHeaders: DayHeader[] = DAY_DEFINITIONS.map(day => ({
 const timeSlots = TIME_SLOTS;
 
 const coursesByDay: CoursesByDay = {};
-DAY_DEFINITIONS.forEach(dayDef => {
-  coursesByDay[dayDef.id] = scheduleData.filter(course => course.room === dayDef.id);
+DAY_DEFINITIONS.forEach((dayDef) => {
+  coursesByDay[dayDef.id] = scheduleData.filter(
+    (course) => course.room === dayDef.id,
+  );
 });
 
 const cellCoverage: CellCoverage = {};
-DAY_DEFINITIONS.forEach(dayDef => { 
-  cellCoverage[dayDef.id] = {}; 
+DAY_DEFINITIONS.forEach((dayDef) => {
+  cellCoverage[dayDef.id] = {};
 });
 ---
 
 <section class="container" id="schedule">
-  <h2 class="emfont-UnboundedSans">{t.components.home.schedulePreview.title}</h2>
+  <h2 class="emfont-UnboundedSans">
+    {t.components.home.schedulePreview.title}
+  </h2>
 
   <div class="schedule-table">
     <div class="table-container emfont-NotoSansTC-700">
@@ -44,65 +54,118 @@ DAY_DEFINITIONS.forEach(dayDef => {
         <thead>
           <tr>
             <th></th>
-            {dynamicDayHeaders.map(header => (
-              <th>
-                <div class="day-header">Day {header.dayNum}</div>
-                <div class="date-header">{header.dateText}</div>
-              </th>
-            ))}
+            {
+              dynamicDayHeaders.map((header) => (
+                <th>
+                  <div class="day-header">Day {header.dayNum}</div>
+                  <div class="date-header">{header.dateText}</div>
+                </th>
+              ))
+            }
           </tr>
         </thead>
         <tbody>
-          {timeSlots.map((timeSlot, timeIndex) => (
-            <tr>
-              <td class="time-cell">{timeSlot}</td>
-              {DAY_DEFINITIONS.map(dayDef => {
-                const dayKey = dayDef.id;
-                if (cellCoverage[dayKey]?.[timeSlot]) return null;
+          {
+            timeSlots.map((timeSlot, timeIndex) => (
+              <tr>
+                <td class="time-cell">{timeSlot}</td>
+                {DAY_DEFINITIONS.map((dayDef) => {
+                  const dayKey = dayDef.id;
+                  if (cellCoverage[dayKey]?.[timeSlot]) return null;
 
-                const course = getCourseStartingAt(coursesByDay[dayKey], timeSlot);
-                if (course) {
-                  const rowspan = calculateDurationInSlots(course);
-                  if (typeof rowspan === 'number') {
-                    updateCellCoverage(cellCoverage, dayKey, timeIndex, rowspan, timeSlots);
+                  const course = getCourseStartingAt(
+                    coursesByDay[dayKey],
+                    timeSlot,
+                  );
+                  if (course) {
+                    const rowspan = calculateDurationInSlots(course);
+                    if (typeof rowspan === "number") {
+                      updateCellCoverage(
+                        cellCoverage,
+                        dayKey,
+                        timeIndex,
+                        rowspan,
+                        timeSlots,
+                      );
 
-                    if (isMealCourse(course)) {
+                      if (isMealCourse(course)) {
+                        return (
+                          <td
+                            class="event-break-cell"
+                            rowspan={rowspan}
+                          >
+                            {course.title_zh}
+                          </td>
+                        );
+                      }
+
+                      const courseId = generateCourseId(
+                        course,
+                        timeSlot,
+                      );
+                      const courseHasDetails =
+                        hasCourseDetails(course);
+                      const cellClasses =
+                        getCourseCellClasses(course);
+
                       return (
-                        <td class="event-break-cell" rowspan={rowspan}>
-                          {course.title_zh}
+                        <td
+                          class={cellClasses}
+                          data-course-id={
+                            courseHasDetails ? courseId : null
+                          }
+                          rowspan={rowspan}
+                        >
+                          <div class="course-title">
+                            {course.title_zh?.split("\n")[0] || ""}
+                          </div>
+                          {course.title_zh?.split("\n")[1] && (
+                            <div class="course-subtitle">
+                              {course.title_zh.split("\n")[1]}
+                            </div>
+                          )}
+                          {courseHasDetails && (
+                            <div class="info-icon">
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="10"
+                                height="10"
+                                viewBox="0 0 20 20"
+                                fill="none"
+                              >
+                                <path
+                                  d="M9.89673 9.10425V13.3696"
+                                  stroke="#201814"
+                                  stroke-width="2"
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                />
+                                <path
+                                  d="M9.89673 5.70126L9.90604 5.69092"
+                                  stroke="#201814"
+                                  stroke-width="2"
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                />
+                                <path
+                                  d="M9.89665 18.0614C14.608 18.0614 18.4273 14.242 18.4273 9.53068C18.4273 4.81931 14.608 1 9.89665 1C5.18528 1 1.36597 4.81931 1.36597 9.53068C1.36597 14.242 5.18528 18.0614 9.89665 18.0614Z"
+                                  stroke="#201814"
+                                  stroke-width="2"
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                />
+                              </svg>
+                            </div>
+                          )}
                         </td>
                       );
                     }
-
-                    const courseId = generateCourseId(course, timeSlot);
-                    const courseHasDetails = hasCourseDetails(course);
-                    const cellClasses = getCourseCellClasses(course);
-
-                    return (
-                      <td class={cellClasses}
-                          data-course-id={courseHasDetails ? courseId : null}
-                          rowspan={rowspan}>
-                        <div class="course-title">{course.title_zh?.split("\n")[0] || ""}</div>
-                        {course.title_zh?.split("\n")[1] && (
-                          <div class="course-subtitle">{course.title_zh.split("\n")[1]}</div>
-                        )}
-                        {courseHasDetails && (
-                          <div class="info-icon">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 20 20" fill="none">
-                              <path d="M9.89673 9.10425V13.3696" stroke="#201814" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                              <path d="M9.89673 5.70126L9.90604 5.69092" stroke="#201814" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                              <path d="M9.89665 18.0614C14.608 18.0614 18.4273 14.242 18.4273 9.53068C18.4273 4.81931 14.608 1 9.89665 1C5.18528 1 1.36597 4.81931 1.36597 9.53068C1.36597 14.242 5.18528 18.0614 9.89665 18.0614Z" stroke="#201814" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                            </svg>
-                          </div>
-                        )}
-                      </td>
-                    );
                   }
-                }
-                return <td class="empty-cell"></td>;
-              })}
-            </tr>
-          ))}
+                  return <td class="empty-cell" />;
+                })}
+              </tr>
+            ))
+          }
         </tbody>
       </table>
     </div>
@@ -137,7 +200,8 @@ DAY_DEFINITIONS.forEach(dayDef => {
     table-layout: fixed;
   }
 
-  th, td {
+  th,
+  td {
     border: 1px solid #ccc;
     padding: 0.5rem;
     text-align: center;
@@ -146,13 +210,16 @@ DAY_DEFINITIONS.forEach(dayDef => {
     box-sizing: border-box;
   }
 
-  th:first-child, td:first-child { /* Time column */
+  th:first-child,
+  td:first-child {
+    /* Time column */
     width: 80px;
     min-width: 80px;
     padding: 0.5rem 0.25rem;
   }
 
-  th:not(:first-child), td:not(:first-child) {
+  th:not(:first-child),
+  td:not(:first-child) {
     width: calc((100% - 80px) / 5);
     padding: 0.5rem;
   }
@@ -181,7 +248,7 @@ DAY_DEFINITIONS.forEach(dayDef => {
     background-color: #f0f0f0;
     position: sticky;
     left: 0;
-    z-index: 5; 
+    z-index: 5;
     color: #201814;
     vertical-align: middle;
     font-size: 0.9rem !important;
@@ -218,10 +285,20 @@ DAY_DEFINITIONS.forEach(dayDef => {
 
   .course-title {
     font-weight: 600;
-    font-size: max(1vw, 0.9rem); 
+    /* font-size: max(1vw, 0.9rem); */
+    font-size: 1rem;
     margin-bottom: 0.3rem;
     color: #222;
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    font-family:
+      system-ui,
+      -apple-system,
+      BlinkMacSystemFont,
+      "Segoe UI",
+      Roboto,
+      Oxygen,
+      Ubuntu,
+      Cantarell,
+      sans-serif;
   }
 
   .course-cell.type-main .course-title,
@@ -234,10 +311,19 @@ DAY_DEFINITIONS.forEach(dayDef => {
   }
 
   .course-subtitle {
-    font-size: max(0.85vw, 0.75rem); 
+    font-size: max(0.85vw, 0.75rem);
     color: #333;
     margin-bottom: 0.3rem;
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    font-family:
+      system-ui,
+      -apple-system,
+      BlinkMacSystemFont,
+      "Segoe UI",
+      Roboto,
+      Oxygen,
+      Ubuntu,
+      Cantarell,
+      sans-serif;
   }
 
   .course-speaker {
@@ -277,16 +363,18 @@ DAY_DEFINITIONS.forEach(dayDef => {
 
   /* Removed Modal specific styles as they are now in CourseModal.astro */
 
-  @media (max-width: 900px) {}
+  @media (max-width: 900px) {
+  }
 
   @media (max-width: 768px) {
     body {
       font-size: max(3.5vw, 1rem);
     }
     table {
-      font-size: max(0.9rem, 3vw);
+      transform: translateX(-1rem);
     }
-    th:first-child, td:first-child {
+    th:first-child,
+    td:first-child {
       width: 70px;
       min-width: 70px;
       padding: 0.5rem 0.15rem;
@@ -295,7 +383,8 @@ DAY_DEFINITIONS.forEach(dayDef => {
       padding: 0.5rem 0.15rem;
       font-size: 0.9rem !important;
     }
-    th:not(:first-child), td:not(:first-child) {
+    /* th:not(:first-child),
+    td:not(:first-child) {
       width: calc((100% - 70px) / 5);
       font-size: max(0.9rem, 3vw);
     }
@@ -312,22 +401,24 @@ DAY_DEFINITIONS.forEach(dayDef => {
     }
     .event-break-cell {
       font-size: max(0.9rem, 3vw);
-    }
+    } */
   }
 </style>
 
 <script>
   document.addEventListener("astro:page-load", () => {
-    const courseCells = document.querySelectorAll('.course-cell[data-course-id]:not([data-course-id="null"])');
+    const courseCells = document.querySelectorAll(
+      '.course-cell[data-course-id]:not([data-course-id="null"])',
+    );
 
-    courseCells.forEach(cell => {
-      cell.addEventListener('click', () => {
-        const courseId = cell.getAttribute('data-course-id');
+    courseCells.forEach((cell) => {
+      cell.addEventListener("click", () => {
+        const courseId = cell.getAttribute("data-course-id");
         if (courseId) {
-          const event = new CustomEvent('openCourseModal', { 
+          const event = new CustomEvent("openCourseModal", {
             detail: { courseId },
             bubbles: true, // Optional: if you need the event to bubble up
-            composed: true // Optional: if you need the event to cross shadow DOM boundaries
+            composed: true, // Optional: if you need the event to cross shadow DOM boundaries
           });
           document.dispatchEvent(event);
         }
@@ -335,5 +426,3 @@ DAY_DEFINITIONS.forEach(dayDef => {
     });
   });
 </script>
-
-
