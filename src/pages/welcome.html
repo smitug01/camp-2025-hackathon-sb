@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="zh-Hant">
   <head>
     <meta charset="UTF-8" />
     <meta
@@ -39,12 +39,18 @@
         font-weight: bold;
       "
     >
-      <div style="background: #009df3; padding: 3rem 1rem">
+      <div
+        style="
+          background: linear-gradient(#009df3, #009df3);
+          padding: 3rem 1rem 1.5rem;
+          color: #fff;
+        "
+      >
         <img
           src="https://sitcon.camp/2025/welcome/title.png"
           style="max-width: min(90%, 400px); margin-top: 1rem"
         />
-        <h1 style="margin-block: 1rem 2rem">
+        <h1 style="margin: 1rem 0 2rem 0">
           準備好你在 SITCON Camp 的冒險了嗎？
         </h1>
         <p>
@@ -59,16 +65,21 @@
           style="
             font-family: monospace;
             border-radius: 0rem 1.25rem 0rem 0rem;
-            background: #fff066;
+            background: linear-gradient(#fff066, #fff066);
             padding: 1rem;
-            color: #000 !important;
+            color: #000;
             margin: 1.5rem 1rem;
           "
         >
-          /register 6027605121
+          /register {{ code }}
         </div>
         <p>
-          系統將於明天活動開始後開啟， 歡迎參閱網頁說明 也記得要加入：
+          系統將於明天活動開始後開啟。<br />歡迎參閱
+          <a
+            style="color: #fff"
+            href="https://camp.sitcon.party/tutorial"
+            >網頁說明</a
+          >，也記得要加入大群和小組群喔！
         </p>
         <a
           href="https://t.me/+cltPvnOGLOE5MDRi"
@@ -77,7 +88,7 @@
             padding: 1rem;
             border-radius: 0.75rem;
             border: 6px solid #43d9ff;
-            background: #fff;
+            background: linear-gradient(#fff, #fff);
             color: #50abfb;
             text-decoration: none;
             max-width: 15rem;
@@ -86,21 +97,20 @@
           >SITCON Camp 2025 大群</a
         >
         <a
-          href=""
+          href="https://camp.sitcon.party"
           style="
             display: block;
             padding: 1rem;
             border-radius: 0.75rem;
             border: 6px solid #43d9ff;
-            background: #fff;
+            background: linear-gradient(#fff, #fff);
             color: #50abfb;
             text-decoration: none;
             max-width: 15rem;
             margin: 1rem auto;
           "
-          >第三組小組群</a
+          >點數網頁系統</a
         >
-        <p style="color: #dbf2ff">（不要亂入到其它小隊群組喔！）</p>
       </div>
       <div style="background: #dfff60; padding: 2rem 1rem 1rem">
         <h2
@@ -125,7 +135,7 @@
             padding: 1.2rem;
           "
         >
-          <p style="font-size: 1.2rem; margin-block: 1rem">
+          <p style="font-size: 1.2rem; margin: 1rem 0">
             iOS 使用者可以使用捷徑設定自動登入
           </p>
           <a
@@ -146,7 +156,7 @@
             src="https://sitcon.camp/2025/welcome/shortcuts.png"
             style="max-width: 90%"
           />
-          <p style="padding: 0 1rem; margin-block: 1rem">
+          <p style="padding: 0 1rem; margin: 1rem 0">
             捷徑 → 自動化 → 新增 → Wi-Fi → 已加入網路 NYCU-Seminar
             時立即執行
           </p>
@@ -157,20 +167,18 @@
         <div
           style="
             display: flex;
-            gap: 2rem;
-            flex-wrap: wrap;
-            justify-content: center;
-            margin: 1.5rem 0 1rem;
+            margin: 1.5rem auto 1rem;
+            width: fit-content;
           "
         >
-          <div>
+          <div style="margin: 0 1rem">
             <img
               src="https://sitcon.camp/2025/welcome/tableware.png"
               style="display: block; margin: 0 auto 1rem; width: 5rem"
             />
             <p>請自備環保餐具</p>
           </div>
-          <div>
+          <div style="margin: 0 1rem">
             <img
               src="https://sitcon.camp/2025/welcome/slipper.png"
               style="display: block; margin: 0 auto 1rem; width: 5rem"
@@ -178,7 +186,7 @@
             <p>記得帶拖鞋</p>
           </div>
         </div>
-        <div>
+        <div style="margin: 0 1rem">
           <img
             src="https://sitcon.camp/2025/welcome/mail.png"
             style="display: block; margin: 0 auto 1rem; width: 5rem"
@@ -206,14 +214,21 @@
             href="https://www.flaticon.com/authors/freepik"
             style="color: #ffffffa1"
             >Freepik</a
-          ><br />看不到內容？您可以試著在
-          <a
-            href="https://sitcon.camp/2025/welcome"
-            style="color: #ffffffa1"
-            >瀏覽器中開啟</a
           >
         </p>
       </div>
     </div>
+    <script>
+      // get ?code= from URL
+      const urlParams = new URLSearchParams(window.location.search);
+      const code = urlParams.get("code");
+      // replace {{ code }} with the code from URL
+      if (code) {
+        const codeElement = document.querySelector(".code");
+        if (codeElement) {
+          codeElement.textContent = "/register " + code;
+        }
+      }
+    </script>
   </body>
 </html>
