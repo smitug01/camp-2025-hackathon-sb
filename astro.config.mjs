@@ -23,4 +23,10 @@ export default defineConfig({
     }),
     astroIcon(),
   ],
+  redirects: {
+    "/wifi": {
+      status: 302,
+      destination: "https://www.icloud.com/shortcuts/15c4a94693d84efabf8720a9b0854b03",
+    },
+  },
 });
