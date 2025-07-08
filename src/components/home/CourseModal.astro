@@ -556,7 +556,7 @@ import type { Course } from "../../types/schedule";
               speakerDescriptionEl.innerHTML = speakers.map(speaker => {
                 const imageHtml = speaker.id ? `<img src="/2025/speakers/${speaker.id}.webp" alt="${speaker.name}" class="speaker-inline-image" onerror="this.style.display='none';">` : "";
                 return `<div class="speaker-name emfont-NotoSansTC-600">${imageHtml}<span>${speaker.name}</span></div>`;
-              }).join("") + `<p>${speakerText}是本課程��講師。<br>其他資訊可能得等你自己通靈</p>`;
+              }).join("") + `<p>${speakerText}是本課程的講師。<br>其他資訊可能得等你自己通靈</p>`;
             }
           } else {
             // No speakers
