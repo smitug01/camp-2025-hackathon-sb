@@ -142,7 +142,7 @@
     "duration": "1 hr",
     "speaker1": "Ak",
     "speaker1Desc": "嗨嗨大家好，我是 Ak！\n\n目前就讀陽明交大資工，專長是自然語言處理，在高中時發了兩篇學術論文研究大型語言模型\n同時也熱衷於資訊社團，目前正在交大的軟體開發社（SDC）服務\n除此之外，也正研究前端開發，並在 SDC CommonGround Project 打造一個更理性的社群平台\n每天都在思考是我在訓練 AI，還是 AI 在訓練我，目前覺得是後者",
-    "slide": "",
+    "slide": "https://drive.google.com/file/d/1CzvfVUCcpTBggXpUdYW9Vh7QO3ubALqs/view",
     "id": "06d1c2",
     "title_en": "Breadth Course - Generative AI",
     "description_en": "Generative AI has been very popular in recent years, and its applications in life are becoming more and more common. However, the principle behind these eye-catching applications is not black magic, but a rigorous and interesting science. This breadth course will lead you to have a simple understanding of how the models behind text and images work, what theoretical basis they have, and what direction the academic community is moving towards. I look forward to deciphering the interesting principles behind generative AI!",
