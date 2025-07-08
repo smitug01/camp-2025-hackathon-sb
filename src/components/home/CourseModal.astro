@@ -495,67 +495,78 @@ import type { Course } from "../../types/schedule";
       if (modalTitleEl) modalTitleEl.textContent = course.title_zh?.split("\n")[0] || "";
       if (modalSubtitleEl) modalSubtitleEl.textContent = course.title_zh?.split("\n")[1] || "";
 
-      // Get speaker data
-      const speakers = [
-        { name: course.speaker1, id: course.speaker1id, desc: course.speaker1Desc },
-        { name: course.speaker2, id: course.speaker2id, desc: course.speaker2Desc },
-        { name: course.speaker3, id: course.speaker3id, desc: course.speaker3Desc },
-        { name: course.speaker4, id: course.speaker4id, desc: course.speaker4Desc },
-        { name: course.speaker5, id: course.speaker5id, desc: course.speaker5Desc }
-      ].filter(speaker => speaker.name && speaker.name.trim() !== "");
+      // Hide speaker section entirely for Game type events
+      if (course.type === "Game") {
+        if (speakerSectionTitleEl) speakerSectionTitleEl.style.display = "none";
+        if (speakerDescriptionEl) speakerDescriptionEl.style.display = "none";
+        if (modalPersonImageEl) modalPersonImageEl.style.display = "none";
+      } else {
+        // Show speaker section for non-Game events
+        if (speakerSectionTitleEl) speakerSectionTitleEl.style.display = "block";
+        if (speakerDescriptionEl) speakerDescriptionEl.style.display = "block";
 
-      const speakerText = speakers.map(speaker => speaker.name).join("、");
+        // Get speaker data
+        const speakers = [
+          { name: course.speaker1, id: course.speaker1id, desc: course.speaker1Desc },
+          { name: course.speaker2, id: course.speaker2id, desc: course.speaker2Desc },
+          { name: course.speaker3, id: course.speaker3id, desc: course.speaker3Desc },
+          { name: course.speaker4, id: course.speaker4id, desc: course.speaker4Desc },
+          { name: course.speaker5, id: course.speaker5id, desc: course.speaker5Desc }
+        ].filter(speaker => speaker.name && speaker.name.trim() !== "");
 
-      if (speakerSectionTitleEl) {
-        speakerSectionTitleEl.textContent = "講者介紹";
-      }
+        const speakerText = speakers.map(speaker => speaker.name).join("、");
 
-      // Handle speaker images and descriptions
-      if (speakerDescriptionEl) {
-        const speakersWithDesc = speakers.filter(speaker => speaker.desc && speaker.desc.trim() !== "");
-
-        if (speakers.length === 1) {
-          // Single speaker - show image in top-right position
-          const speaker = speakers[0];
-          if (modalPersonImageEl && speaker.id) {
-            modalPersonImageEl.src = `/2025/speakers/${speaker.id}.webp`;
-            modalPersonImageEl.style.display = "block";
-            modalPersonImageEl.onerror = () => {
-              modalPersonImageEl.style.display = "none";
-            };
-          }
-
-          // Show speaker description without inline image
-          if (speakersWithDesc.length > 0) {
-            speakerDescriptionEl.innerHTML = `<div class="speaker-name emfont-NotoSansTC-600">${speakersWithDesc[0].name}</div>${renderMarkdown(speakersWithDesc[0].desc)}`;
-          } else if (speakerText) {
-            speakerDescriptionEl.innerHTML = `<div class="speaker-name emfont-NotoSansTC-600">${speaker.name}</div>${speakerText}是本課程的講師。<br>其他資訊可能得等你自己通靈`;
-          }
-        } else if (speakers.length > 1) {
-          // Multiple speakers - hide top image and show inline images
-          if (modalPersonImageEl) {
-            modalPersonImageEl.style.display = "none";
-          }
-
-          if (speakersWithDesc.length > 0) {
-            speakerDescriptionEl.innerHTML = speakersWithDesc.map(speaker => {
-              const imageHtml = speaker.id ? `<img src="/2025/speakers/${speaker.id}.webp" alt="${speaker.name}" class="speaker-inline-image" onerror="this.style.display='none';">` : "";
-              return `<div class="speaker-name emfont-NotoSansTC-600">${imageHtml}<span>${speaker.name}</span></div>${renderMarkdown(speaker.desc)}`;
-            }).join("");
-          } else if (speakerText) {
-            speakerDescriptionEl.innerHTML = speakers.map(speaker => {
-              const imageHtml = speaker.id ? `<img src="/2025/speakers/${speaker.id}.webp" alt="${speaker.name}" class="speaker-inline-image" onerror="this.style.display='none';">` : "";
-              return `<div class="speaker-name emfont-NotoSansTC-600">${imageHtml}<span>${speaker.name}</span></div>`;
-            }).join("") + `<p>${speakerText}是本課程的講師。<br>其他資訊可能得等你自己通靈</p>`;
-          }
-        } else {
-          // No speakers
-          if (modalPersonImageEl) {
-            modalPersonImageEl.style.display = "none";
-          }
-          speakerDescriptionEl.innerHTML = "無講者資訊";
+        if (speakerSectionTitleEl) {
+          speakerSectionTitleEl.textContent = "講者介紹";
         }
-        speakerDescriptionEl.classList.add("description-text");
+
+        // Handle speaker images and descriptions
+        if (speakerDescriptionEl) {
+          const speakersWithDesc = speakers.filter(speaker => speaker.desc && speaker.desc.trim() !== "");
+
+          if (speakers.length === 1) {
+            // Single speaker - show image in top-right position
+            const speaker = speakers[0];
+            if (modalPersonImageEl && speaker.id) {
+              modalPersonImageEl.src = `/2025/speakers/${speaker.id}.webp`;
+              modalPersonImageEl.style.display = "block";
+              modalPersonImageEl.onerror = () => {
+                modalPersonImageEl.style.display = "none";
+              };
+            }
+
+            // Show speaker description without inline image
+            if (speakersWithDesc.length > 0) {
+              speakerDescriptionEl.innerHTML = `<div class="speaker-name emfont-NotoSansTC-600">${speakersWithDesc[0].name}</div>${renderMarkdown(speakersWithDesc[0].desc)}`;
+            } else if (speakerText) {
+              speakerDescriptionEl.innerHTML = `<div class="speaker-name emfont-NotoSansTC-600">${speaker.name}</div>${speakerText}是本課程的講師。<br>其他資訊可能得等你自己通靈`;
+            }
+          } else if (speakers.length > 1) {
+            // Multiple speakers - hide top image and show inline images
+            if (modalPersonImageEl) {
+              modalPersonImageEl.style.display = "none";
+            }
+
+            if (speakersWithDesc.length > 0) {
+              speakerDescriptionEl.innerHTML = speakersWithDesc.map(speaker => {
+                const imageHtml = speaker.id ? `<img src="/2025/speakers/${speaker.id}.webp" alt="${speaker.name}" class="speaker-inline-image" onerror="this.style.display='none';">` : "";
+                return `<div class="speaker-name emfont-NotoSansTC-600">${imageHtml}<span>${speaker.name}</span></div>${renderMarkdown(speaker.desc)}`;
+              }).join("");
+            } else if (speakerText) {
+              speakerDescriptionEl.innerHTML = speakers.map(speaker => {
+                const imageHtml = speaker.id ? `<img src="/2025/speakers/${speaker.id}.webp" alt="${speaker.name}" class="speaker-inline-image" onerror="this.style.display='none';">` : "";
+                return `<div class="speaker-name emfont-NotoSansTC-600">${imageHtml}<span>${speaker.name}</span></div>`;
+              }).join("") + `<p>${speakerText}是本課程��講師。<br>其他資訊可能得等你自己通靈</p>`;
+            }
+          } else {
+            // No speakers
+            if (modalPersonImageEl) {
+              modalPersonImageEl.style.display = "none";
+            }
+            speakerDescriptionEl.innerHTML = "無講者資訊";
+          }
+          speakerDescriptionEl.classList.add("description-text");
+        }
       }
 
       if (modalDescriptionEl) {
