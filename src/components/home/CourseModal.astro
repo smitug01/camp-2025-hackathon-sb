@@ -486,13 +486,13 @@ import type { Course } from "../../types/schedule";
     const displayModalContent = (course) => {
       if (!modalElement || !course) return;
 
-      const modalTitleEl = modalElement.querySelector("#modalTitle");
-      const modalSubtitleEl = modalElement.querySelector("#modalSubtitle");
-      const modalDescriptionEl = modalElement.querySelector("#modalDescription");
-      const linksContainerEl = modalElement.querySelector("#modalLinks");
-      const speakerSectionTitleEl = modalElement.querySelector("#speakerSectionTitle");
-      const speakerDescriptionEl = modalElement.querySelector("#speakerDescription");
-      const modalPersonImageEl = modalElement.querySelector("#modalPersonImage");
+      const modalTitleEl = modalElement.querySelector("#modalTitle") as HTMLElement;
+      const modalSubtitleEl = modalElement.querySelector("#modalSubtitle") as HTMLElement;
+      const modalDescriptionEl = modalElement.querySelector("#modalDescription") as HTMLElement;
+      const linksContainerEl = modalElement.querySelector("#modalLinks") as HTMLElement;
+      const speakerSectionTitleEl = modalElement.querySelector("#speakerSectionTitle") as HTMLElement;
+      const speakerDescriptionEl = modalElement.querySelector("#speakerDescription") as HTMLElement;
+      const modalPersonImageEl = modalElement.querySelector("#modalPersonImage") as HTMLImageElement;
 
       if (modalTitleEl) modalTitleEl.textContent = course.title_zh?.split("\n")[0] || "";
       if (modalSubtitleEl) modalSubtitleEl.textContent = course.title_zh?.split("\n")[1] || "";
@@ -502,8 +502,25 @@ import type { Course } from "../../types/schedule";
         if (speakerSectionTitleEl) speakerSectionTitleEl.style.display = "none";
         if (speakerDescriptionEl) speakerDescriptionEl.style.display = "none";
         if (modalPersonImageEl) modalPersonImageEl.style.display = "none";
+      } else if (course.type === "Community") {
+        // Handle Community type events - show booth list instead of speakers
+        if (speakerSectionTitleEl) {
+          speakerSectionTitleEl.style.display = "block";
+          speakerSectionTitleEl.textContent = "攤位列表";
+        }
+        if (speakerDescriptionEl) {
+          speakerDescriptionEl.style.display = "block";
+          if (course.expo && Array.isArray(course.expo) && course.expo.length > 0) {
+            const boothList = course.expo.map(booth => `<li>${booth}</li>`).join("");
+            speakerDescriptionEl.innerHTML = `<ul style="list-style-type: disc; padding-left: 1.5rem; line-height: 1.6;">${boothList}</ul>`;
+          } else {
+            speakerDescriptionEl.innerHTML = "暫無攤位資訊";
+          }
+          speakerDescriptionEl.classList.add("description-text");
+        }
+        if (modalPersonImageEl) modalPersonImageEl.style.display = "none";
       } else {
-        // Show speaker section for non-Game events
+        // Show speaker section for non-Game and non-Community events
         if (speakerSectionTitleEl) speakerSectionTitleEl.style.display = "block";
         if (speakerDescriptionEl) speakerDescriptionEl.style.display = "block";
 
@@ -551,12 +568,12 @@ import type { Course } from "../../types/schedule";
 
             if (speakersWithDesc.length > 0) {
               speakerDescriptionEl.innerHTML = speakersWithDesc.map(speaker => {
-                const imageHtml = speaker.id ? `<img src="/2025/speakers/${speaker.id}.webp" alt="${speaker.name}" class="speaker-inline-image" onerror="this.style.display='none';">` : "";
+                const imageHtml = speaker.id ? `<img src="/2025/speakers/${speaker.id}.webp" alt="${speaker.name}" class="speaker-inline-image">` : "";
                 return `<div class="speaker-name emfont-NotoSansTC-600">${imageHtml}<span>${speaker.name}</span></div>${renderMarkdown(speaker.desc)}`;
               }).join("");
             } else if (speakerText) {
               speakerDescriptionEl.innerHTML = speakers.map(speaker => {
-                const imageHtml = speaker.id ? `<img src="/2025/speakers/${speaker.id}.webp" alt="${speaker.name}" class="speaker-inline-image" onerror="this.style.display='none';">` : "";
+                const imageHtml = speaker.id ? `<img src="/2025/speakers/${speaker.id}.webp" alt="${speaker.name}" class="speaker-inline-image">` : "";
                 return `<div class="speaker-name emfont-NotoSansTC-600">${imageHtml}<span>${speaker.name}</span></div>`;
               }).join("") + `<p>${speakerText}是本課程的講師。<br>其他資訊可能得等你自己通靈</p>`;
             }
