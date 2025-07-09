@@ -27,6 +27,15 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
+      - name: Generate Schedule Json
+        uses: CCIP-App/schedule-json-generator-action@v2
+        with:
+          gcp-api-key: ${{ secrets.GCP_API_KEY }}
+          spreadsheet-key: "1XWZp_U8orXn0RPpb18xG93d0eu6SzWfyLDeaBNhfJn8"
+          default-avatar: "https://sitcon.org/2022/imgs/deafult_avatar.jpg"
+          avatar-base-url: "https://sitcon.camp/2024/speakers/"
+          output-path: ./public/schedule.json
+
       - name: Build
         run: pnpm build
 
@@ -36,6 +45,7 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./dist
           force_orphan: true
+
       - name: Trigger workflow in other repo
         uses: actions/github-script@v6
         with:
