@@ -24,7 +24,6 @@ import type { Course } from "../../types/schedule";
 </div>
 
 <style>
-  /* Modal styles (as previously defined) */
   .modal {
     display: none;
     position: fixed !important;
@@ -94,7 +93,6 @@ import type { Course } from "../../types/schedule";
     margin-right: 10px;
     padding-right: 100px;
     position: relative;
-
   }
 
   #modalSubtitle {
@@ -103,29 +101,6 @@ import type { Course } from "../../types/schedule";
     font-size: 1.2rem;
     color: #EAB99F;
     text-align: left;
-  }
-
-  .modal-info {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem 2rem;
-    margin-bottom: 2rem;
-    padding-bottom: 1rem;
-    border-bottom: 1px solid #a2a2a2;
-  }
-
-  .info-item {
-    display: flex;
-    align-items: center;
-    gap: 0.8rem;
-    font-size: 1rem;
-    color: #d0d0d0;
-  }
-
-  .info-item .icon {
-    width: 20px;
-    height: 20px;
-    color: #c9a845;
   }
 
   .description-container {
@@ -178,16 +153,6 @@ import type { Course } from "../../types/schedule";
     border-color: #444;
   }
 
-  .modal-link:active {
-    transform: translateY(0);
-  }
-
-  .modal-link .icon {
-    width: 18px;
-    height: 18px;
-    color: #c9a845;
-  }
-
   .modal-link-button {
     background-color: #c9a845;
     border: none;
@@ -204,10 +169,6 @@ import type { Course } from "../../types/schedule";
   .modal-link-button:hover {
     background-color: #d8b754;
     transform: translateY(-2px);
-  }
-
-  .modal-link-button .icon {
-    color: #fff;
   }
 
   .close-button {
@@ -230,15 +191,6 @@ import type { Course } from "../../types/schedule";
 
   .close-button:hover {
     scale: 110%;
-  }
-
-  .close-button:hover::before {
-    transform: scaleX(1);
-    transform-origin: left;
-  }
-
-  .close-button:active {
-    transform: scale(0.95);
   }
 
   .section-title {
@@ -275,9 +227,6 @@ import type { Course } from "../../types/schedule";
       overflow-y: auto;
       border-radius: 12px;
       margin: 0 0 env(safe-area-inset-bottom, 20px);
-    }
-
-    .modal-content {
       -webkit-overflow-scrolling: touch;
       overscroll-behavior-y: contain;
       padding-bottom: calc(1.5rem + env(safe-area-inset-bottom, 20px));
@@ -295,44 +244,6 @@ import type { Course } from "../../types/schedule";
 
     .modal-person-image {
       display: none;
-    }
-
-    .modal-info {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 0.8rem;
-    }
-
-    .info-item {
-      font-size: 0.9rem;
-    }
-
-    #modalDescription {
-      font-size: 0.9rem;
-    }
-
-    .modal-link {
-      font-size: 0.85rem;
-      padding: 0.5rem 0.8rem;
-    }
-
-    .modal-link-button {
-      padding: 0.5rem 1rem;
-    }
-
-    .modal-close-container {
-      top: 0.5rem;
-      right: 0.5rem;
-    }
-
-    .close {
-      width: 32px;
-      height: 32px;
-    }
-
-    .close::before,
-    .close::after {
-      width: 16px;
     }
 
     .close-button {
@@ -366,7 +277,6 @@ import type { Course } from "../../types/schedule";
     flex-shrink: 0;
   }
 
-  /* Styling for markdown elements in speaker descriptions */
   #speakerDescription p {
     margin-bottom: 1rem;
     line-height: 1.6;
@@ -419,7 +329,7 @@ import type { Course } from "../../types/schedule";
     font-style: italic;
   }
 
-  #speakerDescription h1{
+  #speakerDescription h1 {
     font-size: 1.5rem;
     font-weight: bold;
     margin-top: 1.5rem;
@@ -430,13 +340,12 @@ import type { Course } from "../../types/schedule";
 
 <script>
   import type { ScheduleData, Course, Speaker } from "../../types/schedule";
-  import { formatCourseTime } from "../../utils/schedule"; // Utility function
   import { marked } from 'marked';
 
   // Configure marked to open links in new tab
   marked.use({
     renderer: {
-      link({ tokens, href, text }) {
+      link({ href, text }) {
         return `<a href="${href}" target="_blank" rel="noopener noreferrer">${text}</a>`;
       }
     }
@@ -459,32 +368,21 @@ import type { Course } from "../../types/schedule";
       return;
     }
 
-    // Ensure modal is appended to body to avoid z-index issues with other page elements
+    // Ensure modal is appended to body to avoid z-index issues
     if (modalElement.parentElement !== document.body) {
       document.body.appendChild(modalElement);
     }
 
-    marked.use({
-      renderer: {
-        link({ tokens, href, text }) {
-          return `<a href="${href}" target="_blank" rel="noopener noreferrer" class="emfont-NotoSansTC-400">${text}</a>`;
-        }
-      }
-    });
-
     // Check if emfont is available before trying to use it
     const initEmfont = () => {
-      if (typeof emfont !== 'undefined') {
-        emfont.init({
+      if (typeof window !== 'undefined' && (window as any).emfont) {
+        (window as any).emfont.init({
           forceMin: true,
           root: modalElement,
           cache: false,
         });
       }
     };
-
-    // Initialize emfont if available
-    initEmfont();
 
     const displayModalContent = async (course: Course, scheduleData: ScheduleData) => {
       if (!modalElement || !course) return;
@@ -546,7 +444,7 @@ import type { Course } from "../../types/schedule";
             // Single speaker - show image in top-right position
             const speaker = speakers[0];
             if (modalPersonImageEl && speaker.id) {
-              // Fix image extension to .webp
+              // Use .webp extension
               modalPersonImageEl.src = `/2025/speakers/${speaker.id}.webp`;
               modalPersonImageEl.style.display = "block";
               modalPersonImageEl.onerror = () => {
@@ -568,13 +466,13 @@ import type { Course } from "../../types/schedule";
 
             if (speakersWithDesc.length > 0) {
               speakerDescriptionEl.innerHTML = speakersWithDesc.map(speaker => {
-                // Fix image extension to .webp
+                // Use .webp extension
                 const imageHtml = speaker.id ? `<img src="/2025/speakers/${speaker.id}.webp" alt="${speaker.zh.name}" class="speaker-inline-image">` : "";
                 return `<div class="speaker-name emfont-NotoSansTC-600">${imageHtml}<span>${speaker.zh.name}</span></div>${renderMarkdown(speaker.zh.bio)}`;
               }).join("");
             } else if (speakerText) {
               speakerDescriptionEl.innerHTML = speakers.map(speaker => {
-                // Fix image extension to .webp
+                // Use .webp extension
                 const imageHtml = speaker.id ? `<img src="/2025/speakers/${speaker.id}.webp" alt="${speaker.zh.name}" class="speaker-inline-image">` : "";
                 return `<div class="speaker-name emfont-NotoSansTC-600">${imageHtml}<span>${speaker.zh.name}</span></div>`;
               }).join("") + `<p>${speakerText}是本課程的講師。<br>其他資訊可能得等你自己通靈</p>`;
@@ -662,7 +560,7 @@ import type { Course } from "../../types/schedule";
         // Display the modal content first
         await displayModalContent(course, scheduleData);
 
-        // Show modal and trigger animations (restore original sequence)
+        // Show modal and trigger animations
         modalElement.style.display = "flex";
         document.body.style.overflow = "hidden";
         setTimeout(() => {
