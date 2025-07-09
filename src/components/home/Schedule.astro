@@ -1,6 +1,5 @@
 ---
 import { getLocale } from "../../i18n";
-import scheduleData from "../../assets/data/schedule.json";
 import {
   generateCourseId,
   isMealCourse,
@@ -18,10 +17,25 @@ import type {
   CellCoverage,
   CoursesByDay,
   DayHeader,
+  ScheduleData,
 } from "../../types/schedule";
 import CourseModal from "./CourseModal.astro";
 
 const t = getLocale(Astro.url);
+
+// Fetch schedule data dynamically from the API endpoint
+let scheduleData: ScheduleData;
+try {
+  const response = await fetch(`${Astro.site?.origin || 'http://localhost:4321'}/2025/schedule.json`);
+  if (!response.ok) {
+    throw new Error(`Failed to fetch schedule: ${response.status}`);
+  }
+  scheduleData = await response.json();
+} catch (error) {
+  console.error('Error fetching schedule data:', error);
+  // Fallback to local data for development
+  scheduleData = await import("../../../public/schedule-new.json").then(m => m.default);
+}
 
 const dynamicDayHeaders: DayHeader[] = DAY_DEFINITIONS.map((day) => ({
   dayNum: day.displayNum,
@@ -32,7 +46,7 @@ const timeSlots = TIME_SLOTS;
 
 const coursesByDay: CoursesByDay = {};
 DAY_DEFINITIONS.forEach((dayDef) => {
-  coursesByDay[dayDef.id] = scheduleData.filter(
+  coursesByDay[dayDef.id] = scheduleData.sessions.filter(
     (course) => course.room === dayDef.id,
   );
 });
@@ -94,7 +108,7 @@ DAY_DEFINITIONS.forEach((dayDef) => {
                             class="event-break-cell"
                             rowspan={rowspan}
                           >
-                            {course.title_zh}
+                            {course.zh.title}
                           </td>
                         );
                       }
@@ -117,11 +131,11 @@ DAY_DEFINITIONS.forEach((dayDef) => {
                           rowspan={rowspan}
                         >
                           <div class="course-title">
-                            {course.title_zh?.split("\n")[0] || ""}
+                            {course.zh.title?.split("\n")[0] || ""}
                           </div>
-                          {course.title_zh?.split("\n")[1] && (
+                          {course.zh.title?.split("\n")[1] && (
                             <div class="course-subtitle">
-                              {course.title_zh.split("\n")[1]}
+                              {course.zh.title.split("\n")[1]}
                             </div>
                           )}
                           {courseHasDetails && (

@@ -13,14 +13,14 @@ const createDateInterpretedAsTaipei = (dateTimeString: string): Date => {
  */
 export const generateCourseId = (course: Course, timeSlot: string): string => {
   return course.id ? String(course.id) : 
-    `course_${course.title_zh?.replace(/\s+/g, "_")}_${timeSlot.replace(":", "_")}`;
+    `course_${course.zh.title?.replace(/\s+/g, "_")}_${timeSlot.replace(":", "_")}`;
 };
 
 /**
  * Check if a course is a meal break
  */
 export const isMealCourse = (course: Course): boolean => {
-  return course.title_zh === MEAL_LUNCH || course.title_zh === MEAL_DINNER;
+  return course.zh.title === MEAL_LUNCH || course.zh.title === MEAL_DINNER;
 };
 
 /**
@@ -28,11 +28,11 @@ export const isMealCourse = (course: Course): boolean => {
  */
 export const hasCourseDetails = (course: Course): boolean => {
   return Boolean(
-    course.description_zh || 
-    course.slide || 
+    course.zh.description ||
+    course.slide ||
     course.co_write || 
     course.record || 
-    course.speaker1
+    course.speakers?.length > 0
   );
 };
 
@@ -80,8 +80,8 @@ export const formatCourseTime = (startStr: string, endStr: string): string => {
  * Get a course starting at a specific time slot
  */
 export const getCourseStartingAt = (courses: Course[], timeSlot: string): Course | undefined => {
-  return courses.find(course => {
-    if (!course.start) return false;
+  for (const course of courses) {
+    if (!course.start) continue;
 
     const courseDate = createDateInterpretedAsTaipei(course.start);
     
@@ -92,8 +92,11 @@ export const getCourseStartingAt = (courses: Course[], timeSlot: string): Course
       timeZone: "Asia/Taipei",
     });
 
-    return courseTimeStringInTaipei === timeSlot;
-  });
+    if (courseTimeStringInTaipei === timeSlot) {
+      return course;
+    }
+  }
+  return undefined;
 };
 
 /**
@@ -125,7 +128,8 @@ export const getCourseCellClasses = (course: Course): string => {
   const type = course.type?.toLowerCase();
 
   // Check if the type is a valid key in COURSE_TYPES
-  const isValidType = Object.values(COURSE_TYPES).includes(type as typeof COURSE_TYPES[keyof typeof COURSE_TYPES]);
+  const courseTypeValues = Object.keys(COURSE_TYPES).map(key => COURSE_TYPES[key as keyof typeof COURSE_TYPES]);
+  const isValidType = courseTypeValues.indexOf(type as any) !== -1;
 
   if (type && isValidType) {
     classes += ` type-${type}`;
@@ -133,4 +137,4 @@ export const getCourseCellClasses = (course: Course): string => {
     classes += ` type-${COURSE_TYPES.DEFAULT}`;
   }
   return classes;
-}; 
+};
