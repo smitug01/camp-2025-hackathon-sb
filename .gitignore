@@ -27,3 +27,4 @@ pnpm-debug.log*
 astro_tmp_pages_*
 
 *.swp
+bun.lock

@@ -26,7 +26,7 @@ const t = getLocale(Astro.url);
 // Fetch schedule data dynamically from the API endpoint
 let scheduleData: ScheduleData;
 try {
-  const response = await fetch(`${Astro.site?.origin || 'http://localhost:4321'}/2025/schedule.json`);
+  const response = await fetch('https://sitcon.camp/2025/schedule.json');
   if (!response.ok) {
     throw new Error(`Failed to fetch schedule: ${response.status}`);
   }
