@@ -7,7 +7,6 @@ import type { Course } from "../../types/schedule";
     <div class="modal-close-container">
       <span class="close">&times;</span>
     </div>
-    <img id="modalPersonImage" src="" alt="Speaker" class="modal-person-image" style="display: none;" />
     <h2 id="modalTitle" class="emfont-NotoSansTC-600"></h2>
     <h3 id="modalSubtitle" class="emfont-NotoSansTC-600"></h3>
     <div class="section-title emfont-NotoSansTC-600">課程介紹</div>
@@ -45,12 +44,12 @@ import type { Course } from "../../types/schedule";
     background-color: #028fdb;
     color: #efefef;
     padding: 3rem;
-    border-radius: 8px;
+    border-radius: 16px;
     max-width: 800px;
     width: 90%;
     position: relative !important;
     margin: auto;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
     max-height: 96dvh;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
@@ -203,17 +202,6 @@ import type { Course } from "../../types/schedule";
     border-bottom: 1px solid #a2a2a2;
   }
 
-  .modal-person-image {
-    position: absolute;
-    top: 1.5rem;
-    right: 3.5rem;
-    width: 90px;
-    height: 90px;
-    border-radius: 50%;
-    object-fit: cover;
-    z-index: 5;
-  }
-
   @media (max-width: 600px) {
     .modal {
       padding: 0;
@@ -221,20 +209,21 @@ import type { Course } from "../../types/schedule";
     }
 
     .modal-content {
-      padding: 1.5rem;
-      width: 90%;
+      padding: 2rem 1.5rem;
+      width: 95%;
       max-height: 90dvh;
       overflow-y: auto;
-      border-radius: 12px;
-      margin: 0 0 env(safe-area-inset-bottom, 20px);
+      border-radius: 18px;
+      margin: 2rem 0 env(safe-area-inset-bottom, 20px);
       -webkit-overflow-scrolling: touch;
       overscroll-behavior-y: contain;
-      padding-bottom: calc(1.5rem + env(safe-area-inset-bottom, 20px));
+      padding-bottom: calc(2rem + env(safe-area-inset-bottom, 20px));
     }
 
     #modalTitle {
       font-size: 1.5rem;
       padding-right: 0;
+      line-height: 1.3;
     }
 
     #modalSubtitle {
@@ -242,8 +231,13 @@ import type { Course } from "../../types/schedule";
       margin-bottom: 1.5rem;
     }
 
-    .modal-person-image {
-      display: none;
+    .section-title {
+      font-size: 1.2rem;
+      margin-top: 1.2rem;
+    }
+
+    .description-container {
+      margin-bottom: 1.5rem;
     }
 
     .close-button {
@@ -263,18 +257,30 @@ import type { Course } from "../../types/schedule";
     font-size: 1.618rem !important;
     font-weight: 600;
     color: #efefef;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.8rem;
     display: flex !important;
     place-items: center;
-    gap: 0.75rem !important;
+    gap: 1rem !important;
   }
 
   #speakerDescription .speaker-inline-image {
-    width: 40px;
-    height: 40px;
+    width: 55px;
+    height: 55px;
     border-radius: 50%;
     object-fit: cover;
     flex-shrink: 0;
+  }
+
+  @media (max-width: 600px) {
+    #speakerDescription .speaker-name {
+      font-size: 1.4rem !important;
+      gap: 0.75rem !important;
+    }
+    
+    #speakerDescription .speaker-inline-image {
+      width: 45px;
+      height: 45px;
+    }
   }
 
   #speakerDescription p {
@@ -354,7 +360,12 @@ import type { Course } from "../../types/schedule";
   // Function to render markdown content
   function renderMarkdown(text) {
     if (!text) return '';
-    return marked.parse(text);
+    try {
+      return marked.parse(text);
+    } catch (e) {
+      console.error('Error parsing markdown:', e);
+      return text; // Fallback to plain text
+    }
   }
 
   document.addEventListener("astro:page-load", () => {
@@ -393,7 +404,6 @@ import type { Course } from "../../types/schedule";
       const linksContainerEl = modalElement.querySelector("#modalLinks") as HTMLElement;
       const speakerSectionTitleEl = modalElement.querySelector("#speakerSectionTitle") as HTMLElement;
       const speakerDescriptionEl = modalElement.querySelector("#speakerDescription") as HTMLElement;
-      const modalPersonImageEl = modalElement.querySelector("#modalPersonImage") as HTMLImageElement;
 
       if (modalTitleEl) modalTitleEl.textContent = course.zh.title?.split("\n")[0] || "";
       if (modalSubtitleEl) modalSubtitleEl.textContent = course.zh.title?.split("\n")[1] || "";
@@ -402,7 +412,6 @@ import type { Course } from "../../types/schedule";
       if (course.type === "Game") {
         if (speakerSectionTitleEl) speakerSectionTitleEl.style.display = "none";
         if (speakerDescriptionEl) speakerDescriptionEl.style.display = "none";
-        if (modalPersonImageEl) modalPersonImageEl.style.display = "none";
       } else if (course.type === "Community") {
         // Handle Community type events - show booth list instead of speakers
         if (speakerSectionTitleEl) {
@@ -427,7 +436,6 @@ import type { Course } from "../../types/schedule";
           }
           speakerDescriptionEl.classList.add("description-text");
         }
-        if (modalPersonImageEl) modalPersonImageEl.style.display = "none";
       } else {
         // Show speaker section for non-Game and non-Community events
         if (speakerSectionTitleEl) speakerSectionTitleEl.style.display = "block";
@@ -449,29 +457,18 @@ import type { Course } from "../../types/schedule";
           const speakersWithDesc = speakers?.filter(speaker => speaker.zh.bio && speaker.zh.bio.trim() !== "") || [];
 
           if (speakers && speakers.length === 1) {
-            // Single speaker - show image in top-right position
+            // Single speaker - add image in speaker section
             const speaker = speakers[0];
-            if (modalPersonImageEl && speaker.id) {
-              // Use .webp extension
-              modalPersonImageEl.src = `/2025/speakers/${speaker.id}.webp`;
-              modalPersonImageEl.style.display = "block";
-              modalPersonImageEl.onerror = () => {
-                modalPersonImageEl.style.display = "none";
-              };
-            }
+            const imageHtml = speaker.id ? `<img src="/2025/speakers/${speaker.id}.webp" alt="${speaker.zh.name}" class="speaker-inline-image">` : "";
 
-            // Show speaker description without inline image
+            // Show speaker description with inline image
             if (speakersWithDesc.length > 0) {
-              speakerDescriptionEl.innerHTML = `<div class="speaker-name emfont-NotoSansTC-600">${speakersWithDesc[0].zh.name}</div>${renderMarkdown(speakersWithDesc[0].zh.bio)}`;
+              speakerDescriptionEl.innerHTML = `<div class="speaker-name emfont-NotoSansTC-600">${imageHtml}<span>${speakersWithDesc[0].zh.name}</span></div>${renderMarkdown(speakersWithDesc[0].zh.bio)}`;
             } else if (speakerText) {
-              speakerDescriptionEl.innerHTML = `<div class="speaker-name emfont-NotoSansTC-600">${speaker.zh.name}</div>${speakerText}是本課程的講師。<br>其他資訊可能得等你自己通靈`;
+              speakerDescriptionEl.innerHTML = `<div class="speaker-name emfont-NotoSansTC-600">${imageHtml}<span>${speaker.zh.name}</span></div>${speakerText}是本課程的講師。<br>其他資訊可能得等你自己通靈`;
             }
           } else if (speakers && speakers.length > 1) {
-            // Multiple speakers - hide top image and show inline images
-            if (modalPersonImageEl) {
-              modalPersonImageEl.style.display = "none";
-            }
-
+            // Multiple speakers with inline images
             if (speakersWithDesc.length > 0) {
               speakerDescriptionEl.innerHTML = speakersWithDesc.map(speaker => {
                 // Use .webp extension
@@ -487,9 +484,6 @@ import type { Course } from "../../types/schedule";
             }
           } else {
             // No speakers
-            if (modalPersonImageEl) {
-              modalPersonImageEl.style.display = "none";
-            }
             speakerDescriptionEl.innerHTML = "無講者資訊";
           }
           speakerDescriptionEl.classList.add("description-text");
@@ -585,14 +579,16 @@ import type { Course } from "../../types/schedule";
 
     // Close modal function
     const closeModal = () => {
-      if (modalElement) {
+      if (modalElement && modalContent) {
         modalContent.style.transform = "scale(0)";
         modalElement.style.backdropFilter = "blur(0px)";
         modalContent.style.transition = "transform .3s cubic-bezier(.5, 1, 0, 1)";
         modalElement.style.backgroundColor = "transparent";
         setTimeout(() => {
           modalElement.style.display = "none";
-          modalContent.style.transition = "transform .3s cubic-bezier(.5, 1, .1, 1.20)";
+          if (modalContent) {
+            modalContent.style.transition = "transform .3s cubic-bezier(.5, 1, .1, 1.20)";
+          }
         }, 300);
         document.body.style.overflow = "";
       }
