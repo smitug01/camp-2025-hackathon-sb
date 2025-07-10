@@ -411,9 +411,17 @@ import type { Course } from "../../types/schedule";
         }
         if (speakerDescriptionEl) {
           speakerDescriptionEl.style.display = "block";
-          if (course.expo && Array.isArray(course.expo) && course.expo.length > 0) {
-            const boothList = course.expo.map(booth => `<li>${booth}</li>`).join("");
-            speakerDescriptionEl.innerHTML = `<ul style="list-style-type: disc; padding-left: 1.5rem; line-height: 1.6;">${boothList}</ul>`;
+          speakerDescriptionEl.innerHTML = "";
+
+          // Get speaker data from the speakers array using speaker IDs
+          const speakers = course.speakers
+            ?.map(speakerId => scheduleData.speakers.find(speaker => speaker.id === speakerId))
+            .filter(speaker => speaker !== undefined) as Speaker[];
+
+          const speakersWithDesc = speakers?.filter(speaker => speaker.zh.bio && speaker.zh.bio.trim() !== "") || [];
+
+          if (speakersWithDesc.length > 0) {
+            speakerDescriptionEl.innerHTML = renderMarkdown(speakersWithDesc[0].zh.bio);
           } else {
             speakerDescriptionEl.innerHTML = "暫無攤位資訊";
           }
