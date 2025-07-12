@@ -26,4 +26,4 @@ RUN pnpm install --frozen-lockfile --prod
 EXPOSE 8080
 
 # Start the preview server
-CMD ["pnpm", "run", "preview", "--host", "0.0.0.0", "--port", "8080"]
+CMD ["pnpm", "run", "preview", "--host", "0.0.0.0", "--port", "8080", "--allowed-hosts=camp-2025-hackathon-sb-419863001113.asia-east1.run.app,camp-2025-hackathon-sb,ricky.place"]
