@@ -28,20 +28,20 @@ const currentLocation = Astro.url.pathname;
 
     <ul class="nav-links emfont-MaokenAssortedSansTC">
       <li>
-        <a href={currentLocation == "/2025/" ? "#info" : l("#info")}
+        <a href={currentLocation == "/" ? "#info" : l("#info")}
           >{t.components.nav.signup}</a
         >
       </li>
       <li>
         <a
-          href={currentLocation == "/2025/"
+          href={currentLocation == "/"
             ? "#schedule"
             : l("#schedule")}>{t.components.nav.record}</a
         >
       </li>
       <li>
         <a
-          href={currentLocation == "/2025/"
+          href={currentLocation == "/"
             ? "#pastEvent"
             : l("#pastEvent")}>{t.components.nav.previous}</a
         >
