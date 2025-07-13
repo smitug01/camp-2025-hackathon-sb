@@ -30,7 +30,7 @@ const t = getLocale(Astro.url);
           <span class="spinner hidden">🎲</span>
         </button>
 
-        <div class="timer-controls">
+        <!-- <div class="timer-controls">
           <button
             id="prepBtn"
             class="timer-btn emfont-NotoSansTC-500"
@@ -60,11 +60,19 @@ const t = getLocale(Astro.url);
             >
               {t.components.draw.timer.restart}
             </button>
+          </div> -->
+          <div class="groups-status">
+            <h3 class="emfont-NotoSansTC-700">
+              {t.components.draw.groupStatus}
+            </h3>
+            <div id="groupsList" class="groups-list">
+              <!-- Groups will be populated by JavaScript -->
+            </div>
           </div>
         </div>
       </div>
 
-      <div id="timer" class="timer hidden emfont-NotoSansTC-600">
+      <!-- <div id="timer" class="timer hidden emfont-NotoSansTC-600">
         <div class="timer-display">
           <div class="timer-type"></div>
           <div class="timer-time">00:00</div>
@@ -72,16 +80,7 @@ const t = getLocale(Astro.url);
         <div class="timer-progress">
           <div class="progress-bar"></div>
         </div>
-      </div>
-
-      <div class="groups-status">
-        <h3 class="emfont-NotoSansTC-700">
-          {t.components.draw.groupStatus}
-        </h3>
-        <div id="groupsList" class="groups-list">
-          <!-- Groups will be populated by JavaScript -->
-        </div>
-      </div>
+      </div> -->
     </div>
 
     <!-- Celebration Animation -->
@@ -733,6 +732,9 @@ const t = getLocale(Astro.url);
         status: "pending",
       }));
 
+      this.groups.splice(1, 1);
+      this.groups.splice(5, 1);
+
       this.availableGroups = [...this.groups];
       this.currentGroup = null;
       this.timer = null;
@@ -753,11 +755,11 @@ const t = getLocale(Astro.url);
       this.prepBtn = document.getElementById("prepBtn");
       this.presentBtn = document.getElementById("presentBtn");
       this.selectedGroup = document.getElementById("selectedGroup");
-      this.timerElement = document.getElementById("timer");
-      this.timerType = this.timerElement.querySelector(".timer-type");
-      this.timerTime = this.timerElement.querySelector(".timer-time");
-      this.progressBar =
-        this.timerElement.querySelector(".progress-bar");
+      // this.timerElement = document.getElementById("timer");
+      // this.timerType = this.timerElement.querySelector(".timer-type");
+      // this.timerTime = this.timerElement.querySelector(".timer-time");
+      // this.progressBar =
+      //   this.timerElement.querySelector(".progress-bar");
       this.groupsList = document.getElementById("groupsList");
       this.celebration = document.getElementById("celebration");
       this.pauseBtn = document.getElementById("pauseBtn");
@@ -854,6 +856,7 @@ const t = getLocale(Astro.url);
           this.currentGroup.status = "current";
 
           // Remove from available groups
+          selectedGroup.status = "completed";
           this.availableGroups.splice(randomIndex, 1);
 
           // Final reveal with dramatic effect
@@ -886,10 +889,6 @@ const t = getLocale(Astro.url);
             this.drawBtn.disabled = false;
             btnText.classList.remove("hidden");
             spinner.classList.add("hidden");
-
-            // Enable timer buttons
-            this.prepBtn.disabled = false;
-            this.presentBtn.disabled = true;
 
             // Update groups display
             this.renderGroups();
