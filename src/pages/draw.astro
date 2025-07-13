@@ -426,18 +426,18 @@ const t = getLocale(Astro.url);
     transition: all 0.3s ease;
   }
 
-  .group-item.pending {
+  .group-item_pending {
     background: #e3f2fd;
     color: #1976d2;
   }
 
-  .group-item.current {
+  .group-item_current {
     background: linear-gradient(135deg, #ff6b6b, #ff8e53);
     color: white;
     animation: glow 2s ease-in-out infinite alternate;
   }
 
-  .group-item.completed {
+  .group-item_completed {
     background: #e8f5e8 !important;
     color: #2e7d32 !important;
     text-decoration: line-through !important;
@@ -1066,10 +1066,12 @@ const t = getLocale(Astro.url);
       this.groupsList.innerHTML = "";
 
       this.groups.forEach((group) => {
-        const groupElement = document.createElement("div");
-        groupElement.className = `group-item ${group.status}`;
-        groupElement.textContent = group.name;
-        this.groupsList.appendChild(groupElement);
+        if (group.status !== "completed") {       
+          const groupElement = document.createElement("div");
+          groupElement.className = `group-item_${group.status}`;
+          groupElement.textContent = group.name;
+          this.groupsList.appendChild(groupElement);
+        }
       });
     }
   }

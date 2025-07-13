@@ -256,7 +256,7 @@ const zhStrings = {
       startText: "按下抽籤開始",
       drawNext: "抽取下一組",
       allDone: "所有隊伍已抽完！",
-      groupStatus: "隊伍狀態",
+      groupStatus: "尚未開始的隊伍",
       timer: {
         prep: "開始 2 分鐘準備",
         presentation: "開始 10 分鐘簡報",

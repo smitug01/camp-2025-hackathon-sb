@@ -280,7 +280,7 @@ const enStrings = {
       startText: "Click to Start Drawing",
       drawNext: "Draw Next Team",
       allDone: "All teams have been drawn!",
-      groupStatus: "Team Status",
+      groupStatus: "Remaining Teams",
       timer: {
         prep: "Start 2-minute Preparation",
         presentation: "Start 10-minute Presentation",
