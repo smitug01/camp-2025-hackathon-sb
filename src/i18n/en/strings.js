@@ -272,6 +272,27 @@ const enStrings = {
       previous: "Past Records",
       coc: "Code of Conduct",
       team: "Organizing Team",
+      draw: "Presentation Draw",
+    },
+    draw: {
+      title: "Hackathon Presentation Draw",
+      subtitle: "9 Teams Random Order • 2 min Prep + 10 min Presentation",
+      startText: "Click to Start Drawing",
+      drawNext: "Draw Next Team",
+      allDone: "All teams have been drawn!",
+      groupStatus: "Team Status",
+      timer: {
+        prep: "Start 2-minute Preparation",
+        presentation: "Start 10-minute Presentation",
+        pause: "Pause",
+        resume: "Resume",
+        restart: "Restart",
+        prepTime: "Preparation Time",
+        presentTime: "Presentation Time"
+      },
+      groups: {
+        group: "Team {{number}}"
+      }
     },
   },
 };

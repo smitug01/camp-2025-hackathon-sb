@@ -6,35 +6,61 @@ const t = getLocale(Astro.url);
 ---
 
 <Layout
-  title="黑客松簡報抽籤"
-  description="黑客松簡報順序隨機抽取"
+  title={t.components.draw.title}
+  description={t.components.draw.subtitle}
 >
   <div class="draw-container emfont-NotoSansTC">
     <div class="header emfont-MaokenAssortedSansTC">
-      <h1 class="emfont-UnboundedSans">黑客松簡報抽籤</h1>
-      <p>9 組隊伍隨機順序 • 2分鐘準備 + 10分鐘簡報</p>
+      <h1 class="emfont-UnboundedSans">{t.components.draw.title}</h1>
+      <p>{t.components.draw.subtitle}</p>
     </div>
 
     <div class="draw-area">
       <div id="drawResult" class="draw-result">
         <div class="group-display">
-          <span id="selectedGroup" class="emfont-NotoSansTC-700">按下抽籤開始</span>
+          <span id="selectedGroup" class="emfont-NotoSansTC-700"
+            >{t.components.draw.startText}</span
+          >
         </div>
       </div>
 
       <div class="controls">
         <button id="drawBtn" class="draw-btn emfont-NotoSansTC-600">
-          <span class="btn-text">抽取下一組</span>
+          <span class="btn-text">{t.components.draw.drawNext}</span>
           <span class="spinner hidden">🎲</span>
         </button>
-        
+
         <div class="timer-controls">
-          <button id="prepBtn" class="timer-btn emfont-NotoSansTC-500" disabled>
-            開始2分鐘準備
+          <button
+            id="prepBtn"
+            class="timer-btn emfont-NotoSansTC-500"
+            disabled
+          >
+            {t.components.draw.timer.prep}
           </button>
-          <button id="presentBtn" class="timer-btn emfont-NotoSansTC-500" disabled>
-            開始10分鐘簡報
+          <button
+            id="presentBtn"
+            class="timer-btn emfont-NotoSansTC-500"
+            disabled
+          >
+            {t.components.draw.timer.presentation}
           </button>
+          <div class="timer-action-controls">
+            <button
+              id="pauseBtn"
+              class="timer-action-btn emfont-NotoSansTC-500"
+              disabled
+            >
+              {t.components.draw.timer.pause}
+            </button>
+            <button
+              id="restartBtn"
+              class="timer-action-btn emfont-NotoSansTC-500"
+              disabled
+            >
+              {t.components.draw.timer.restart}
+            </button>
+          </div>
         </div>
       </div>
 
@@ -49,7 +75,9 @@ const t = getLocale(Astro.url);
       </div>
 
       <div class="groups-status">
-        <h3 class="emfont-NotoSansTC-700">隊伍狀態</h3>
+        <h3 class="emfont-NotoSansTC-700">
+          {t.components.draw.groupStatus}
+        </h3>
         <div id="groupsList" class="groups-list">
           <!-- Groups will be populated by JavaScript -->
         </div>
@@ -63,6 +91,11 @@ const t = getLocale(Astro.url);
       <div class="firework"></div>
     </div>
   </div>
+
+  <script define:vars={{ t }}>
+    // Make translations available to the draw script
+    window.drawTranslations = t;
+  </script>
   <script src="../scripts/main.js"></script>
   <script src="../scripts/lava.js"></script>
 </Layout>
@@ -114,7 +147,7 @@ const t = getLocale(Astro.url);
   }
 
   .group-display {
-    background: linear-gradient(135deg, #009BEF, #0048da);
+    background: linear-gradient(135deg, #009bef, #0048da);
     color: white;
     padding: 2rem;
     border-radius: 15px;
@@ -126,7 +159,11 @@ const t = getLocale(Astro.url);
     align-items: center;
     justify-content: center;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-    transition: all 0.3s ease;
+    transition:
+      all 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+      transform 0.3s ease,
+      background 0.4s ease,
+      box-shadow 0.3s ease;
   }
 
   .group-display.animate {
@@ -135,15 +172,83 @@ const t = getLocale(Astro.url);
 
   .group-display.spinning {
     animation: roulette 3s ease-out;
+    position: relative;
+    overflow: visible;
+  }
+
+  .group-display.spinning::before {
+    content: "";
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    right: -10px;
+    bottom: -10px;
+    background: linear-gradient(
+      45deg,
+      #ff6b6b,
+      #4ecdc4,
+      #667eea,
+      #ff6b6b
+    );
+    background-size: 400% 400%;
+    border-radius: 20px;
+    z-index: -1;
+    animation: rainbow 0.5s ease-in-out infinite;
+    filter: blur(5px);
+  }
+
+  .group-display.spinning::after {
+    content: "✨";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 3rem;
+    opacity: 0.7;
+    animation: spin 1s linear infinite;
   }
 
   .roulette-text {
-    background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #667eea, #ff6b6b);
-    background-size: 300% 300%;
+    background: linear-gradient(
+      45deg,
+      #ff6b6b,
+      #4ecdc4,
+      #667eea,
+      #00fff0,
+      #ff6b6b
+    );
+    background-size: 400% 400%;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    animation: rainbow 0.5s ease-in-out infinite;
+    animation:
+      rainbow 0.3s ease-in-out infinite,
+      neon-glow 1s ease-in-out infinite;
+    position: relative;
+  }
+
+  .roulette-text::before {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+      45deg,
+      #ff6b6b,
+      #4ecdc4,
+      #667eea,
+      #00fff0
+    );
+    background-size: 400% 400%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: rainbow 0.3s ease-in-out infinite reverse;
+    opacity: 0.5;
+    transform: scale(1.05);
+    filter: blur(1px);
   }
 
   .controls {
@@ -215,6 +320,39 @@ const t = getLocale(Astro.url);
   }
 
   .timer-btn:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+    box-shadow: none;
+  }
+
+  .timer-action-controls {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+    margin-top: 1rem;
+    opacity: 1;
+    transition: opacity 0.3s ease;
+  }
+
+  .timer-action-btn {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    font-size: 0.9rem;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 3px 10px rgba(102, 126, 234, 0.3);
+    min-width: 80px;
+  }
+
+  .timer-action-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.5);
+  }
+
+  .timer-action-btn:disabled {
     background: #ccc;
     cursor: not-allowed;
     box-shadow: none;
@@ -300,8 +438,10 @@ const t = getLocale(Astro.url);
   }
 
   .group-item.completed {
-    background: #e8f5e8;
-    color: #2e7d32;
+    background: #e8f5e8 !important;
+    color: #2e7d32 !important;
+    text-decoration: line-through !important;
+    opacity: 0.7 !important;
   }
 
   .celebration {
@@ -312,6 +452,22 @@ const t = getLocale(Astro.url);
     height: 100vh;
     pointer-events: none;
     z-index: 1000;
+    overflow: hidden;
+  }
+
+  .celebration::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(
+      circle at center,
+      rgba(255, 255, 255, 0.1) 0%,
+      transparent 70%
+    );
+    animation: pulse 2s ease-in-out infinite;
   }
 
   .celebration.hidden {
@@ -319,11 +475,37 @@ const t = getLocale(Astro.url);
   }
 
   .firework {
-    width: 4px;
-    height: 4px;
+    width: 6px;
+    height: 6px;
     border-radius: 50%;
     position: absolute;
-    animation: firework 1s ease-out forwards;
+    animation: firework 1.5s ease-out forwards;
+  }
+
+  .firework::before {
+    content: "";
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background: inherit;
+    border-radius: 50%;
+    top: -10px;
+    left: -5px;
+    animation: particle-burst 1s ease-out forwards;
+    animation-delay: 0.5s;
+  }
+
+  .firework::after {
+    content: "";
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background: inherit;
+    border-radius: 50%;
+    top: 10px;
+    right: -5px;
+    animation: particle-burst 1s ease-out forwards;
+    animation-delay: 0.7s;
   }
 
   .firework:nth-child(1) {
@@ -345,45 +527,169 @@ const t = getLocale(Astro.url);
   }
 
   @keyframes pulse {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.05); }
+    0%,
+    100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.05);
+    }
   }
 
   @keyframes spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
   }
 
   @keyframes roulette {
-    0% { transform: scale(1); }
-    25% { transform: scale(1.1) rotate(10deg); }
-    50% { transform: scale(0.95) rotate(-5deg); }
-    75% { transform: scale(1.05) rotate(3deg); }
-    100% { transform: scale(1) rotate(0deg); }
+    0% {
+      transform: scale(1) rotate(0deg);
+      filter: hue-rotate(0deg);
+    }
+    10% {
+      transform: scale(1.15) rotate(18deg);
+      filter: hue-rotate(36deg);
+    }
+    20% {
+      transform: scale(0.9) rotate(-12deg);
+      filter: hue-rotate(72deg);
+    }
+    30% {
+      transform: scale(1.2) rotate(25deg);
+      filter: hue-rotate(108deg);
+    }
+    40% {
+      transform: scale(0.85) rotate(-20deg);
+      filter: hue-rotate(144deg);
+    }
+    50% {
+      transform: scale(1.25) rotate(30deg);
+      filter: hue-rotate(180deg);
+    }
+    60% {
+      transform: scale(0.8) rotate(-25deg);
+      filter: hue-rotate(216deg);
+    }
+    70% {
+      transform: scale(1.3) rotate(35deg);
+      filter: hue-rotate(252deg);
+    }
+    80% {
+      transform: scale(0.9) rotate(-15deg);
+      filter: hue-rotate(288deg);
+    }
+    90% {
+      transform: scale(1.1) rotate(10deg);
+      filter: hue-rotate(324deg);
+    }
+    100% {
+      transform: scale(1) rotate(0deg);
+      filter: hue-rotate(360deg);
+    }
   }
 
   @keyframes rainbow {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
   }
 
   @keyframes glow {
-    0% { box-shadow: 0 0 5px rgba(255, 107, 107, 0.5); }
-    100% { box-shadow: 0 0 20px rgba(255, 107, 107, 0.8); }
+    0% {
+      box-shadow: 0 0 5px rgba(255, 107, 107, 0.5);
+    }
+    100% {
+      box-shadow: 0 0 20px rgba(255, 107, 107, 0.8);
+    }
   }
 
   @keyframes firework {
     0% {
-      transform: translateY(100vh) scale(0);
+      transform: translateY(100vh) scale(0) rotate(0deg);
+      opacity: 1;
+      border-radius: 50%;
+      box-shadow: 0 0 0 0 currentColor;
+    }
+    30% {
+      transform: translateY(60vh) scale(1.5) rotate(180deg);
+      opacity: 1;
+      box-shadow: 0 0 20px 5px currentColor;
+    }
+    60% {
+      transform: translateY(30vh) scale(2) rotate(360deg);
+      opacity: 0.8;
+      border-radius: 30%;
+      box-shadow:
+        0 0 40px 10px currentColor,
+        0 0 60px 20px rgba(255, 255, 255, 0.5);
+    }
+    100% {
+      transform: translateY(10vh) scale(0) rotate(540deg);
+      opacity: 0;
+      border-radius: 0%;
+      box-shadow:
+        0 0 80px 30px currentColor,
+        0 0 120px 50px rgba(255, 255, 255, 0.3);
+    }
+  }
+
+  @keyframes particle-burst {
+    0% {
+      transform: scale(0) rotate(0deg);
       opacity: 1;
     }
     50% {
-      transform: translateY(50vh) scale(1);
+      transform: scale(1.2) rotate(180deg);
+      opacity: 0.8;
+    }
+    100% {
+      transform: scale(0) rotate(360deg);
+      opacity: 0;
+    }
+  }
+
+  @keyframes neon-glow {
+    0%,
+    100% {
+      text-shadow:
+        0 0 5px currentColor,
+        0 0 10px currentColor,
+        0 0 15px currentColor,
+        0 0 20px #00fff0;
+    }
+    50% {
+      text-shadow:
+        0 0 10px currentColor,
+        0 0 20px currentColor,
+        0 0 30px currentColor,
+        0 0 40px #00fff0,
+        0 0 50px #00fff0;
+    }
+  }
+
+  @keyframes matrix-rain {
+    0% {
+      transform: translateY(-100vh);
+      opacity: 0;
+    }
+    10% {
+      opacity: 1;
+    }
+    90% {
       opacity: 1;
     }
     100% {
-      transform: translateY(10vh) scale(0);
+      transform: translateY(100vh);
       opacity: 0;
     }
   }
@@ -418,12 +724,15 @@ const t = getLocale(Astro.url);
 <script>
   class HackathonDraw {
     constructor() {
-      this.groups = Array.from({length: 9}, (_, i) => ({
+      // Get i18n translations
+      this.t = window.drawTranslations;
+
+      this.groups = Array.from({ length: 9 }, (_, i) => ({
         id: i + 1,
         name: `第 ${i + 1} 組`,
-        status: 'pending'
+        status: "pending",
       }));
-      
+
       this.availableGroups = [...this.groups];
       this.currentGroup = null;
       this.timer = null;
@@ -432,7 +741,7 @@ const t = getLocale(Astro.url);
       this.timerPausedTime = 0;
       this.timerPaused = false;
       this.currentTimerType = null;
-      
+
       this.initializeElements();
       this.bindEvents();
       this.renderGroups();
@@ -440,47 +749,60 @@ const t = getLocale(Astro.url);
     }
 
     initializeElements() {
-      this.drawBtn = document.getElementById('drawBtn');
-      this.prepBtn = document.getElementById('prepBtn');
-      this.presentBtn = document.getElementById('presentBtn');
-      this.selectedGroup = document.getElementById('selectedGroup');
-      this.timerElement = document.getElementById('timer');
-      this.timerType = this.timerElement.querySelector('.timer-type');
-      this.timerTime = this.timerElement.querySelector('.timer-time');
-      this.progressBar = this.timerElement.querySelector('.progress-bar');
-      this.groupsList = document.getElementById('groupsList');
-      this.celebration = document.getElementById('celebration');
-      this.pauseBtn = document.getElementById('pauseBtn');
-      this.restartBtn = document.getElementById('restartBtn');
+      this.drawBtn = document.getElementById("drawBtn");
+      this.prepBtn = document.getElementById("prepBtn");
+      this.presentBtn = document.getElementById("presentBtn");
+      this.selectedGroup = document.getElementById("selectedGroup");
+      this.timerElement = document.getElementById("timer");
+      this.timerType = this.timerElement.querySelector(".timer-type");
+      this.timerTime = this.timerElement.querySelector(".timer-time");
+      this.progressBar =
+        this.timerElement.querySelector(".progress-bar");
+      this.groupsList = document.getElementById("groupsList");
+      this.celebration = document.getElementById("celebration");
+      this.pauseBtn = document.getElementById("pauseBtn");
+      this.restartBtn = document.getElementById("restartBtn");
+    }
+
+    getGroupName(number) {
+      return this.t.components.draw.groups.group.replace(
+        "{{number}}",
+        number,
+      );
     }
 
     bindEvents() {
       if (this.drawBtn) {
-        this.drawBtn.addEventListener('click', () => this.drawGroup());
+        this.drawBtn.addEventListener("click", () =>
+          this.drawGroup(),
+        );
       }
       if (this.prepBtn) {
-        this.prepBtn.addEventListener('click', () => {
-          console.log('Prep button clicked');
-          this.startTimer('prep', 2 * 60);
+        this.prepBtn.addEventListener("click", () => {
+          this.startTimer("prep", 2 * 60);
         });
       }
       if (this.presentBtn) {
-        this.presentBtn.addEventListener('click', () => {
-          console.log('Present button clicked');
-          this.startTimer('presentation', 10 * 60);
+        this.presentBtn.addEventListener("click", () => {
+          this.startTimer("presentation", 10 * 60);
         });
       }
       if (this.pauseBtn) {
-        this.pauseBtn.addEventListener('click', () => this.togglePause());
+        this.pauseBtn.addEventListener("click", () =>
+          this.togglePause(),
+        );
       }
       if (this.restartBtn) {
-        this.restartBtn.addEventListener('click', () => this.restartTimer());
+        this.restartBtn.addEventListener("click", () =>
+          this.restartTimer(),
+        );
       }
     }
 
     drawGroup() {
       if (this.availableGroups.length === 0) {
-        this.selectedGroup.textContent = '所有隊伍已抽完！';
+        this.selectedGroup.textContent =
+          this.t.components.draw.allDone;
         this.drawBtn.disabled = true;
         this.showCelebration();
         return;
@@ -488,78 +810,111 @@ const t = getLocale(Astro.url);
 
       // Disable button and show spinner
       this.drawBtn.disabled = true;
-      const btnText = this.drawBtn.querySelector('.btn-text');
-      const spinner = this.drawBtn.querySelector('.spinner');
-      btnText.classList.add('hidden');
-      spinner.classList.remove('hidden');
+      const btnText = this.drawBtn.querySelector(".btn-text");
+      const spinner = this.drawBtn.querySelector(".spinner");
+      btnText.classList.add("hidden");
+      spinner.classList.remove("hidden");
 
       // Start the spinning animation
-      const groupDisplay = document.querySelector('.group-display');
-      groupDisplay.classList.add('spinning');
-      
+      const groupDisplay = document.querySelector(".group-display");
+      groupDisplay.classList.add("spinning");
+
       // Show random cycling effect
-      this.selectedGroup.classList.add('roulette-text');
-      
+      this.selectedGroup.classList.add("roulette-text");
+      this.selectedGroup.setAttribute(
+        "data-text",
+        this.selectedGroup.textContent,
+      );
+
       let cycleCount = 0;
       const maxCycles = 20;
       const cycleInterval = setInterval(() => {
-        const randomGroup = this.availableGroups[Math.floor(Math.random() * this.availableGroups.length)];
+        const randomGroup =
+          this.availableGroups[
+            Math.floor(Math.random() * this.availableGroups.length)
+          ];
         this.selectedGroup.textContent = randomGroup.name;
         cycleCount++;
-        
+
         if (cycleCount >= maxCycles) {
           clearInterval(cycleInterval);
-          
+
           // Final selection
-          const randomIndex = Math.floor(Math.random() * this.availableGroups.length);
+          const randomIndex = Math.floor(
+            Math.random() * this.availableGroups.length,
+          );
           const selectedGroup = this.availableGroups[randomIndex];
-          
+
           // Update current group
           if (this.currentGroup) {
-            this.currentGroup.status = 'completed';
+            this.currentGroup.status = "completed";
           }
-          
+
           this.currentGroup = selectedGroup;
-          this.currentGroup.status = 'current';
-          
+          this.currentGroup.status = "current";
+
           // Remove from available groups
           this.availableGroups.splice(randomIndex, 1);
-          
+
           // Final reveal with dramatic effect
           setTimeout(() => {
+            // Smooth transition to final result
+            this.selectedGroup.style.transition =
+              "all 0.5s cubic-bezier(0.4, 0, 0.2, 1)";
             this.selectedGroup.textContent = selectedGroup.name;
-            this.selectedGroup.classList.remove('roulette-text');
-            groupDisplay.classList.remove('spinning');
-            groupDisplay.classList.add('animate');
-            
+            this.selectedGroup.setAttribute(
+              "data-text",
+              selectedGroup.name,
+            );
+            this.selectedGroup.classList.remove("roulette-text");
+            groupDisplay.classList.remove("spinning");
+            groupDisplay.classList.add("animate");
+
+            // Add scale and glow effect for final reveal
+            setTimeout(() => {
+              groupDisplay.style.transform = "scale(1.1)";
+              groupDisplay.style.boxShadow =
+                "0 0 30px rgba(0, 155, 239, 0.6)";
+            }, 100);
+
+            setTimeout(() => {
+              groupDisplay.style.transform = "scale(1)";
+              groupDisplay.style.boxShadow = "none";
+            }, 400);
+
             // Re-enable button
             this.drawBtn.disabled = false;
-            btnText.classList.remove('hidden');
-            spinner.classList.add('hidden');
-            
+            btnText.classList.remove("hidden");
+            spinner.classList.add("hidden");
+
             // Enable timer buttons
             this.prepBtn.disabled = false;
             this.presentBtn.disabled = true;
-            
+
             // Update groups display
             this.renderGroups();
-            
+
             // Show celebration animation
             this.showCelebration();
-            
+
             setTimeout(() => {
-              groupDisplay.classList.remove('animate');
-            }, 500);
+              groupDisplay.classList.remove("animate");
+              this.selectedGroup.style.transition = "";
+              groupDisplay.style.transform = "";
+              groupDisplay.style.boxShadow = "";
+            }, 800);
           }, 500);
         }
       }, 100);
     }
 
     startTimer(type, seconds) {
-      console.log(`Starting timer: ${type}, ${seconds} seconds`);
       this.stopTimer();
-      
-      const typeText = type === 'prep' ? '準備時間' : '簡報時間';
+
+      const typeText =
+        type === "prep"
+          ? this.t.components.draw.timer.prepTime
+          : this.t.components.draw.timer.presentTime;
       if (this.timerType) {
         this.timerType.textContent = typeText;
       }
@@ -568,43 +923,50 @@ const t = getLocale(Astro.url);
       this.timerPausedTime = 0;
       this.timerPaused = false;
       this.currentTimerType = type;
-      
+
       if (this.timerElement) {
-        this.timerElement.classList.remove('hidden');
+        this.timerElement.classList.remove("hidden");
       }
       this.updateTimerDisplay();
       this.updateTimerButtons();
-      
+
       // Update button states
-      if (type === 'prep') {
+      if (type === "prep") {
         if (this.prepBtn) this.prepBtn.disabled = true;
         if (this.presentBtn) this.presentBtn.disabled = false;
       } else {
         if (this.presentBtn) this.presentBtn.disabled = true;
       }
-      
+
       this.timer = setInterval(() => {
         if (!this.timerPaused) {
           this.updateTimerDisplay();
         }
       }, 100);
-      
-      console.log('Timer started successfully');
+
+      // Ensure timer buttons are enabled after timer starts
+      this.updateTimerButtons();
     }
 
     updateTimerDisplay() {
       const currentTime = Date.now();
-      const elapsed = Math.floor((currentTime - this.timerStartTime - this.timerPausedTime) / 1000);
+      const elapsed = Math.floor(
+        (currentTime - this.timerStartTime - this.timerPausedTime) /
+          1000,
+      );
       const remaining = Math.max(0, this.timerDuration - elapsed);
-      
+
       const minutes = Math.floor(remaining / 60);
       const seconds = remaining % 60;
-      
-      this.timerTime.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-      
-      const progress = Math.min(100, (elapsed / this.timerDuration) * 100);
+
+      this.timerTime.textContent = `${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+
+      const progress = Math.min(
+        100,
+        (elapsed / this.timerDuration) * 100,
+      );
       this.progressBar.style.width = `${progress}%`;
-      
+
       if (remaining === 0 && !this.timerPaused) {
         this.stopTimer();
         this.timerFinished();
@@ -635,7 +997,8 @@ const t = getLocale(Astro.url);
 
     restartTimer() {
       if (this.currentTimerType) {
-        const duration = this.currentTimerType === 'prep' ? 2 * 60 : 10 * 60;
+        const duration =
+          this.currentTimerType === "prep" ? 2 * 60 : 10 * 60;
         this.startTimer(this.currentTimerType, duration);
       }
     }
@@ -645,26 +1008,40 @@ const t = getLocale(Astro.url);
         if (this.timer) {
           this.pauseBtn.disabled = false;
           this.restartBtn.disabled = false;
-          this.pauseBtn.textContent = this.timerPaused ? '繼續' : '暫停';
+          this.pauseBtn.textContent = this.timerPaused
+            ? this.t.components.draw.timer.resume
+            : this.t.components.draw.timer.pause;
         } else {
           this.pauseBtn.disabled = true;
           this.restartBtn.disabled = true;
-          this.pauseBtn.textContent = '暫停';
+          this.pauseBtn.textContent =
+            this.t.components.draw.timer.pause;
         }
       }
     }
 
     timerFinished() {
+      // Mark team as completed if presentation timer finished
+      if (
+        this.currentTimerType === "presentation" &&
+        this.currentGroup
+      ) {
+        this.currentGroup.status = "completed";
+        this.renderGroups();
+      }
+
       // Flash the timer
-      this.timerElement.style.animation = 'pulse 0.5s ease-in-out 3';
-      
+      this.timerElement.style.animation = "pulse 0.5s ease-in-out 3";
+
       // Reset timer state
       this.currentTimerType = null;
       this.updateTimerButtons();
-      
+
       // Play sound notification (if browser allows)
       try {
-        const audio = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEaAjiR1/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEaAjiR1/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEaAjiR1/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEaAjiR1/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEaAjiR1/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEaAjiR1/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEaAjiR1/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEaAjiR1/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEaAjiR1/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEaAjiR1/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEaAjiR1/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEaAjiR1/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEaAjiR1/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEaAjiR1/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEaAjiR1/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEaAjiR1/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEaAjiR1/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEaAjiR1/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEaAjiR1/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEaAjiR1/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEaAjiR1/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEaAjiR1/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEaAjiR1/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEaAjiR1/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEaAjiR1/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEaAjiR1/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEaAjiR1/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEaAjiR1/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEaAjiR1/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEaAjiR1/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEaAjiR1/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEaAjiR1/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEaAjiR1/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEaAjiR1/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEaAjiR1/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEaAjiR1/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEaAjiR1/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEaAjiR1/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEaAjiR1/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEaAjiR1/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEaAjiR1/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEaAjiR1/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEaAjiR1/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEaAjiR1/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEaAjiR1/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEaAjiR1/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEaAjiR1/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEaAjiR1/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEaAjiR1/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEaAjiR1/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEaAjiR1/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEaA=');
+        const audio = new Audio(
+          "data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEaAjiR1/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEaAjiR1/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEaAjiR1/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEaAjiR1/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEaAjiR1/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEaAjiR1/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEaAjiR1/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEaAjiR1/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEaAjiR1/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEaAjiR1/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEaAjiR1/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEaAjiR1/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEaAjiR1/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEaAjiR1/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEaAjiR1/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEaAjiR1/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEaAjiR1/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEaAjiR1/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEaAjiR1/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEaAjiR1/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEaAjiR1/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEaAjiR1/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEaAjiR1/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEaAjiR1/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEaAjiR1/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEaAjiR1/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEaAjiR1/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEaAjiR1/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEaAjiR1/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEaAjiR1/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEaAjiR1/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEaAjiR1/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEaAjiR1/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEaAjiR1/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEaAjiR1/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEaAjiR1/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEaAjiR1/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEaAjiR1/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEaAjiR1/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEaAjiR1/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEaAjiR1/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEaAjiR1/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEaAjiR1/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEaAjiR1/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEaAjiR1/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEaAjiR1/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEaAjiR1/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEaAjiR1/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEaAjiR1/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEaAjiR1/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEaAjiR1/LNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmEaA=",
+        );
         audio.play();
       } catch (e) {
         // Fallback: vibrate if available
@@ -672,24 +1049,24 @@ const t = getLocale(Astro.url);
           navigator.vibrate([200, 100, 200]);
         }
       }
-      
+
       setTimeout(() => {
-        this.timerElement.style.animation = '';
+        this.timerElement.style.animation = "";
       }, 1500);
     }
 
     showCelebration() {
-      this.celebration.classList.remove('hidden');
+      this.celebration.classList.remove("hidden");
       setTimeout(() => {
-        this.celebration.classList.add('hidden');
+        this.celebration.classList.add("hidden");
       }, 2000);
     }
 
     renderGroups() {
-      this.groupsList.innerHTML = '';
-      
-      this.groups.forEach(group => {
-        const groupElement = document.createElement('div');
+      this.groupsList.innerHTML = "";
+
+      this.groups.forEach((group) => {
+        const groupElement = document.createElement("div");
         groupElement.className = `group-item ${group.status}`;
         groupElement.textContent = group.name;
         this.groupsList.appendChild(groupElement);
@@ -698,7 +1075,7 @@ const t = getLocale(Astro.url);
   }
 
   // Initialize the draw system when the page loads
-  document.addEventListener('DOMContentLoaded', () => {
+  document.addEventListener("DOMContentLoaded", () => {
     new HackathonDraw();
   });
 </script>

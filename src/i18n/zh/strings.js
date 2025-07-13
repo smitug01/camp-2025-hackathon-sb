@@ -248,6 +248,27 @@ const zhStrings = {
       previous: "過往紀錄",
       coc: "行為準則",
       team: "籌備團隊",
+      draw: "簡報抽籤",
+    },
+    draw: {
+      title: "黑客松簡報抽籤",
+      subtitle: "9 組隊伍隨機順序 • 2 分鐘準備 + 10 分鐘簡報",
+      startText: "按下抽籤開始",
+      drawNext: "抽取下一組",
+      allDone: "所有隊伍已抽完！",
+      groupStatus: "隊伍狀態",
+      timer: {
+        prep: "開始 2 分鐘準備",
+        presentation: "開始 10 分鐘簡報",
+        pause: "暫停",
+        resume: "繼續",
+        restart: "重新開始",
+        prepTime: "準備時間",
+        presentTime: "簡報時間"
+      },
+      groups: {
+        group: "第 {{number}} 組"
+      }
     },
   },
 };
